@@ -1,4 +1,4 @@
-#' resCG Function
+#' summaryCG Function
 #'
 #' Summary of restab$descr
 #' @param restab an object of class 'createTable'.
@@ -8,18 +8,18 @@
 #' @param col A logical value indicating the xtable color.
 #' @param title Character vector containing the table's caption or title. Default value is NULL.
 #' @param lbl Character vector of length 1 containing the LaTeX label. Default value is NULL.
-#' @export resCG
+#' @export summaryCG
 #' @import compareGroups xtable
 #' @author Miriam Mota  \email{miriam.mota@@vhir.org}
 #' @examples
 #' res <- compareGroups(am ~., data = mtc_bis, method = NA)
 #' restab <- createTable(res)
-#' resCG(restab, mtc_bis, y = "am", xtab = FALSE)
+#' summaryCG(restab, mtc_bis, y = "am", xtab = FALSE)
 #' @return summary table.
 #' @keywords comparegroups summary tests
 
 
-resCG <- function(restab, dat, y, xtab = FALSE, col = TRUE, title = NULL, lbl = NULL){
+summaryCG <- function(restab, dat, y, xtab = FALSE, col = TRUE, title = NULL, lbl = NULL){
 
   restab$avail[restab$avail[,"method"] == "continuous-normal","method"] <- "quantitative-normal"
   restab$avail[restab$avail[,"method"] == "continuous-non-normal","method"] <- "quantitative-non-normal"

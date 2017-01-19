@@ -2,7 +2,7 @@
 
 export(postTexCG)
 export(quickCor)
-export(resCG)
+export(summaryCG)
 import(compareGroups)
 import(mada)
 import(xtable)
