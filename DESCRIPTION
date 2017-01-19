@@ -1,0 +1,14 @@
+Package: anaStatsUEB
+Title: Statistical analysis function, Statistics and Bioinformatics Unit (UEB, VHIR)
+Version: 0.0.0.9000
+Authors@R:  person("Mota", "Miriam", email = "miriam.mota@vhir.org", role = c("aut", "cre"))
+Description: Statistical analysis function - Statistics and Bioinformatics Unit (UEB - VHIR)
+Depends:
+    R (>= 3.3.2), compareGroups, xtable, mada
+License: MIT
+Encoding: UTF-8
+LazyData: true
+Imports: 
+     compareGroups (>= 3.2.2),
+     xtable (>= 1.8-2)
+RoxygenNote: 5.0.1
