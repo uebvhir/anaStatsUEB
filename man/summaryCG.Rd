@@ -4,11 +4,13 @@
 \alias{summaryCG}
 \title{summaryCG Function}
 \usage{
-summaryCG(restab, dat, y, xtab = FALSE, col = TRUE, title = NULL,
+summaryCG(res, restab, dat, y, xtab = FALSE, col = TRUE, title = NULL,
   lbl = NULL)
 }
 \arguments{
-\item{restab}{an object of class 'createTable'.}
+\item{res}{an object of class 'compareGroups'}
+
+\item{restab}{an object of class 'createTable' (of param "res").}
 
 \item{dat}{a data frame containing the variables in the model.}
 
@@ -31,7 +33,7 @@ Summary of restab$descr
 \examples{
 res <- compareGroups(am ~., data = mtc_bis, method = NA)
 restab <- createTable(res)
-summaryCG(restab, mtc_bis, y = "am", xtab = FALSE)
+summaryCG(res, restab,  dat = mtc_bis, y = "am", xtab = FALSE)
 }
 \author{
 Miriam Mota  \email{miriam.mota@vhir.org}

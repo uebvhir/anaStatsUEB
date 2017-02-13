@@ -1,7 +1,8 @@
 #' summaryCG Function
 #'
 #' Summary of restab$descr
-#' @param restab an object of class 'createTable'.
+#' @param res an object of class 'compareGroups'
+#' @param restab an object of class 'createTable' (of param "res").
 #' @param dat a data frame containing the variables in the model.
 #' @param y a vector variable that distinguishes the groups. It must be either a numeric, character, factor or NULL. Default value is NULL which means that descriptives for whole sample are calculated and no test is performed
 #' @param xtab A logical value indicating whether the output is a xtable
@@ -9,19 +10,24 @@
 #' @param title Character vector containing the table's caption or title. Default value is NULL.
 #' @param lbl Character vector of length 1 containing the LaTeX label. Default value is NULL.
 #' @export summaryCG
-#' @import compareGroups xtable
+#' @import compareGroups xtable 
 #' @author Miriam Mota  \email{miriam.mota@@vhir.org}
 #' @examples
 #' res <- compareGroups(am ~., data = mtc_bis, method = NA)
 #' restab <- createTable(res)
-#' summaryCG(restab, mtc_bis, y = "am", xtab = FALSE)
+#' summaryCG(res, restab,  dat = mtc_bis, y = "am", xtab = FALSE)
 #' @return summary table.
 #' @keywords comparegroups summary tests
 
 
-summaryCG <- function(restab, dat, y, xtab = FALSE, col = TRUE, title = NULL, lbl = NULL){
+summaryCG <- function(res, restab, dat, y, xtab = FALSE, col = TRUE, title = NULL, lbl = NULL){
 
-  varnames <- names(dat) [label(dat) %in% rownames(restab$avail)]
+  if(sum(label(dat) == "")!= 0){
+    varnames <- names(dat) [names(dat) %in% rownames(restab$avail)]
+  }else{
+    varnames <- names(dat) [label(dat) %in% rownames(restab$avail)]
+  }
+  
   restab$avail[restab$avail[,"method"] == "continuous-normal","method"] <- "quantitative-normal"
   restab$avail[restab$avail[,"method"] == "continuous-non-normal","method"] <- "quantitative-non-normal"
 
@@ -41,12 +47,17 @@ summaryCG <- function(restab, dat, y, xtab = FALSE, col = TRUE, title = NULL, lb
     )
   }
 
-  pval.ch <- restab$descr[,"p.overall"][complete.cases(restab$descr[,"p.overall"])]
-  pval <- as.character(as.numeric(gsub("<","",pval.ch)))
-  if (xtab & col) { pval <- ifelse(pval < 0.05, paste0("\\colorbox{thistle}{", pval, "}"), pval)}
+  
+  pval <- NA
+  for (i in 1:length(rownames(restab$avail))){  
+    pval[i] <- na.omit(as.numeric(as.character(summary(res)[[varnames[i]]][,"p.overall"])))[1]  
+    }
+  pval.adj <-p.adjust(pval,method = "fdr")
+  if (xtab & col) { pval <- ifelse(pval < 0.05, paste0("\\colorbox{thistle}{", round(pval,3), "}"), round(pval,3))}
+  if (xtab & col) { pval.adj <- ifelse(pval.adj < 0.05, paste0("\\colorbox{thistle}{", round(pval.adj,3), "}"), round(pval.adj,3))}
 
   resum <- cbind(variable = rownames(restab$avail), restab$avail[ , !colnames(restab$avail) %in% c("select","Fact OR/HR")],
-                 test,p.value = pval)
+                 test,p.value = pval, adj.p.value = pval.adj)
 
   colnames(resum)[colnames(resum) == "[ALL]"] <- "N"
   colnames(resum)[colnames(resum) == "method"] <- "type"
