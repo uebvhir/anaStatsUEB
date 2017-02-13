@@ -23,12 +23,21 @@ summaryCG(res, restab, dat, y, xtab = FALSE, col = TRUE, title = NULL,
 \item{title}{Character vector containing the table's caption or title. Default value is NULL.}
 
 \item{lbl}{Character vector of length 1 containing the LaTeX label. Default value is NULL.}
+
+\item{met.adj}{correction method. Can be abbreviated. Default value is "fdr"}
 }
 \value{
 summary table.
 }
 \description{
 Summary of restab$descr
+}
+\details{
+The adjustment methods include the Bonferroni correction ("bonferroni") in which the 
+p-values are multiplied by the number of comparisons. Less conservative corrections
+ are also included by Holm (1979) ("holm"), Hochberg (1988) ("hochberg"), Hommel 
+ (1988) ("hommel"), Benjamini & Hochberg (1995) ("BH" or its alias "fdr"), 
+ and Benjamini & Yekutieli (2001) ("BY"), respectively.
 }
 \examples{
 res <- compareGroups(am ~., data = mtc_bis, method = NA)

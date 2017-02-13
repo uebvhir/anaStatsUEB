@@ -5,10 +5,16 @@
 #' @param restab an object of class 'createTable' (of param "res").
 #' @param dat a data frame containing the variables in the model.
 #' @param y a vector variable that distinguishes the groups. It must be either a numeric, character, factor or NULL. Default value is NULL which means that descriptives for whole sample are calculated and no test is performed
+#' @param met.adj correction method. Can be abbreviated. Default value is "fdr"
 #' @param xtab A logical value indicating whether the output is a xtable
 #' @param col A logical value indicating the xtable color.
 #' @param title Character vector containing the table's caption or title. Default value is NULL.
 #' @param lbl Character vector of length 1 containing the LaTeX label. Default value is NULL.
+#' @details The adjustment methods include the Bonferroni correction ("bonferroni") in which the 
+#' p-values are multiplied by the number of comparisons. Less conservative corrections
+#'  are also included by Holm (1979) ("holm"), Hochberg (1988) ("hochberg"), Hommel 
+#'  (1988) ("hommel"), Benjamini & Hochberg (1995) ("BH" or its alias "fdr"), 
+#'  and Benjamini & Yekutieli (2001) ("BY"), respectively.
 #' @export summaryCG
 #' @import compareGroups xtable 
 #' @author Miriam Mota  \email{miriam.mota@@vhir.org}
