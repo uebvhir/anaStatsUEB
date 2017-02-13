@@ -20,12 +20,13 @@
 #' @keywords comparegroups summary tests
 
 
-summaryCG <- function(res, restab, dat, y, xtab = FALSE, col = TRUE, title = NULL, lbl = NULL){
+summaryCG <- function(res, restab, dat, y, xtab = FALSE, col = TRUE, title = NULL, lbl = NULL, met.adj = "fdr"){
 
   if(sum(label(dat) == "")!= 0){
-    varnames <- names(dat) [names(dat) %in% rownames(restab$avail)]
+    varnames <- labnames <- names(dat) [names(dat) %in% rownames(restab$avail)]
   }else{
     varnames <- names(dat) [label(dat) %in% rownames(restab$avail)]
+    labnames <- rownames(restab$avail)
   }
   
   restab$avail[restab$avail[,"method"] == "continuous-normal","method"] <- "quantitative-normal"
@@ -50,9 +51,9 @@ summaryCG <- function(res, restab, dat, y, xtab = FALSE, col = TRUE, title = NUL
   
   pval <- NA
   for (i in 1:length(rownames(restab$avail))){  
-    pval[i] <- na.omit(as.numeric(as.character(summary(res)[[varnames[i]]][,"p.overall"])))[1]  
+    pval[i] <- na.omit(as.numeric(as.character(summary(res)[[labnames[i]]][,"p.overall"])))[1]  
     }
-  pval.adj <-p.adjust(pval,method = "fdr")
+  pval.adj <-p.adjust(pval,method = met.adj)
   if (xtab & col) { pval <- ifelse(pval < 0.05, paste0("\\colorbox{thistle}{", round(pval,3), "}"), round(pval,3))}
   if (xtab & col) { pval.adj <- ifelse(pval.adj < 0.05, paste0("\\colorbox{thistle}{", round(pval.adj,3), "}"), round(pval.adj,3))}
 
