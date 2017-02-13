@@ -21,6 +21,7 @@
 
 summaryCG <- function(restab, dat, y, xtab = FALSE, col = TRUE, title = NULL, lbl = NULL){
 
+  varnames <- names(dat) [label(dat) %in% rownames(restab$avail)]
   restab$avail[restab$avail[,"method"] == "continuous-normal","method"] <- "quantitative-normal"
   restab$avail[restab$avail[,"method"] == "continuous-non-normal","method"] <- "quantitative-non-normal"
 
@@ -35,7 +36,7 @@ summaryCG <- function(restab, dat, y, xtab = FALSE, col = TRUE, title = NULL, lb
              test[i] <- "U Mann-Withney test"
            },
            "categorical" = {
-             test[i] <- ifelse(sum(table(dat[,y], dat[,rownames(restab$avail)[i]]) < 5) == 0 , "Chi-squared test", "Fisher's exact test" )
+             test[i] <- ifelse(sum(table(dat[,y], dat[,varnames[i]]) < 5) == 0 , "Chi-squared test", "Fisher's exact test" )
            }
     )
   }
