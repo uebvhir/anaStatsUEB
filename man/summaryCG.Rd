@@ -47,6 +47,9 @@ summaryCG(res, restab,  dat = mtc_bis, y = "am", xtab = FALSE)
 \author{
 Miriam Mota  \email{miriam.mota@vhir.org}
 }
+\seealso{
+\code{\link{p.adjust}}
+}
 \keyword{comparegroups}
 \keyword{summary}
 \keyword{tests}

@@ -16,6 +16,7 @@
 #'  (1988) ("hommel"), Benjamini & Hochberg (1995) ("BH" or its alias "fdr"), 
 #'  and Benjamini & Yekutieli (2001) ("BY"), respectively.
 #' @export summaryCG
+#' @seealso \code{\link{p.adjust}}
 #' @import compareGroups xtable 
 #' @author Miriam Mota  \email{miriam.mota@@vhir.org}
 #' @examples
