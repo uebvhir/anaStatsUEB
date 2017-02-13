@@ -16,9 +16,9 @@ summaryCG(res, restab, dat, y, xtab = FALSE, col = TRUE, title = NULL,
 
 \item{y}{a vector variable that distinguishes the groups. It must be either a numeric, character, factor or NULL. Default value is NULL which means that descriptives for whole sample are calculated and no test is performed}
 
-\item{xtab}{A logical value indicating whether the output is a xtable}
+\item{xtab}{A logical value indicating whether the output is a xtable. Default value is FALSE.}
 
-\item{col}{A logical value indicating the xtable color.}
+\item{col}{A logical value indicating the xtable color. Default value is TRUE.}
 
 \item{title}{Character vector containing the table's caption or title. Default value is NULL.}
 

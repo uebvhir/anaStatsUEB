@@ -6,8 +6,8 @@
 #' @param dat a data frame containing the variables in the model.
 #' @param y a vector variable that distinguishes the groups. It must be either a numeric, character, factor or NULL. Default value is NULL which means that descriptives for whole sample are calculated and no test is performed
 #' @param met.adj correction method. Can be abbreviated. Default value is "fdr"
-#' @param xtab A logical value indicating whether the output is a xtable
-#' @param col A logical value indicating the xtable color.
+#' @param xtab A logical value indicating whether the output is a xtable. Default value is FALSE.
+#' @param col A logical value indicating the xtable color. Default value is TRUE.
 #' @param title Character vector containing the table's caption or title. Default value is NULL.
 #' @param lbl Character vector of length 1 containing the LaTeX label. Default value is NULL.
 #' @details The adjustment methods include the Bonferroni correction ("bonferroni") in which the 
