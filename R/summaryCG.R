@@ -44,10 +44,10 @@ summaryCG <- function(res, restab, dat, y, xtab = FALSE, col = TRUE, title = NUL
     m_var = restab$avail[,"method"][i]
     switch(m_var,
            "quantitative-normal" = {
-             test[i] <- "Student's t-Test"
+             test[i] <-  ifelse(length(levels(dat[,y])) == 2, "Student's t-Test", "ANOVA") 
            },
            "quantitative-non-normal" = {
-             test[i] <- "U Mann-Withney test"
+             test[i] <- ifelse(length(levels(dat[,y])) == 2, "U Mann-Withney test", "Kruskall-Wallis")
            },
            "categorical" = {
              test[i] <- ifelse(sum(table(dat[,y], dat[,varnames[i]]) < 5) == 0 , "Chi-squared test", "Fisher's exact test" )
