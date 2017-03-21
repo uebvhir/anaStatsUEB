@@ -30,9 +30,9 @@
 summaryCG <- function(res, restab, dat, y, xtab = FALSE, col = TRUE, title = NULL, lbl = NULL, met.adj = "fdr"){
 
   if(sum(label(dat) == "")!= 0){
-    varnames <- labnames <- names(dat) [names(dat) %in% rownames(restab$avail)]
+    varnames <- labnames <- rownames(restab$avail) [rownames(restab$avail) %in% names(dat)]
   }else{
-    varnames <- names(dat) [label(dat) %in% rownames(restab$avail)]
+    varnames <- rownames(restab$avail) [rownames(restab$avail) %in% label(dat) ]
     labnames <- rownames(restab$avail)
   }
   
