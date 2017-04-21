@@ -45,4 +45,3 @@ Miriam Mota  \email{miriam.mota@vhir.org}
 \keyword{plotcor}
 \keyword{quickCor}
 \keyword{sperman}
-

@@ -22,4 +22,3 @@ Miriam Mota \email{mmota.foix@gmail.com}
 \keyword{error}
 \keyword{export2latex}
 \keyword{tex}
-

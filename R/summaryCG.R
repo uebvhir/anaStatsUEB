@@ -27,7 +27,9 @@
 #' @keywords comparegroups summary tests
 
 
-summaryCG <- function(res, restab, dat, y, xtab = FALSE, col = TRUE, title = NULL, lbl = NULL, met.adj = "fdr"){
+summaryCG <- function(res, restab, dat, y, xtab = FALSE, col = TRUE, title = NULL, lbl = NULL, 
+                      met.adj = "fdr",
+                      sz.xtab = "small"){
 
   if(sum(label(dat) == "")!= 0){
     varnames <- labnames <- rownames(restab$avail) [rownames(restab$avail) %in% names(dat)]
@@ -72,7 +74,7 @@ summaryCG <- function(res, restab, dat, y, xtab = FALSE, col = TRUE, title = NUL
 
 
   if (xtab) {
-    print(xtable(resum, caption = title, label = lbl), size = "small"  ,
+    print(xtable(resum, caption = title, label = lbl), size = sz.xtab  ,
           sanitize.text.function = function(x) x,
           include.rownames = FALSE)
   }else{

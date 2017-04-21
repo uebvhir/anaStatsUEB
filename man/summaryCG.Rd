@@ -5,7 +5,7 @@
 \title{summaryCG Function}
 \usage{
 summaryCG(res, restab, dat, y, xtab = FALSE, col = TRUE, title = NULL,
-  lbl = NULL, met.adj = "fdr")
+  lbl = NULL, met.adj = "fdr", sz.xtab = "small")
 }
 \arguments{
 \item{res}{an object of class 'compareGroups'}
@@ -44,13 +44,12 @@ res <- compareGroups(am ~., data = mtc_bis, method = NA)
 restab <- createTable(res)
 summaryCG(res, restab,  dat = mtc_bis, y = "am", xtab = FALSE)
 }
-\author{
-Miriam Mota  \email{miriam.mota@vhir.org}
-}
 \seealso{
 \code{\link{p.adjust}}
+}
+\author{
+Miriam Mota  \email{miriam.mota@vhir.org}
 }
 \keyword{comparegroups}
 \keyword{summary}
 \keyword{tests}
-
