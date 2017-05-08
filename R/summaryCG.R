@@ -9,6 +9,7 @@
 #' @param xtab A logical value indicating whether the output is a xtable. Default value is FALSE.
 #' @param col A logical value indicating the xtable color. Default value is TRUE.
 #' @param title Character vector containing the table's caption or title. Default value is NULL.
+#' @param sz.xtab A character vector that is inserted just before the tabular environment starts. This can be used to set the font size and a variety of other table settings. Initial backslashes are automatically prefixed, if not supplied by user. Default value is small.
 #' @param lbl Character vector of length 1 containing the LaTeX label. Default value is NULL.
 #' @details The adjustment methods include the Bonferroni correction ("bonferroni") in which the 
 #' p-values are multiplied by the number of comparisons. Less conservative corrections

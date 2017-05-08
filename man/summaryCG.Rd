@@ -25,6 +25,8 @@ summaryCG(res, restab, dat, y, xtab = FALSE, col = TRUE, title = NULL,
 \item{lbl}{Character vector of length 1 containing the LaTeX label. Default value is NULL.}
 
 \item{met.adj}{correction method. Can be abbreviated. Default value is "fdr"}
+
+\item{sz.xtab}{A character vector that is inserted just before the tabular environment starts. This can be used to set the font size and a variety of other table settings. Initial backslashes are automatically prefixed, if not supplied by user. Default value is small.}
 }
 \value{
 summary table.
