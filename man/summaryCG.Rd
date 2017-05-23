@@ -35,10 +35,10 @@ summary table.
 Summary of restab$descr
 }
 \details{
-The adjustment methods include the Bonferroni correction ("bonferroni") in which the 
+The adjustment methods include the Bonferroni correction ("bonferroni") in which the
 p-values are multiplied by the number of comparisons. Less conservative corrections
- are also included by Holm (1979) ("holm"), Hochberg (1988) ("hochberg"), Hommel 
- (1988) ("hommel"), Benjamini & Hochberg (1995) ("BH" or its alias "fdr"), 
+ are also included by Holm (1979) ("holm"), Hochberg (1988) ("hochberg"), Hommel
+ (1988) ("hommel"), Benjamini & Hochberg (1995) ("BH" or its alias "fdr"),
  and Benjamini & Yekutieli (2001) ("BY"), respectively.
 }
 \examples{
