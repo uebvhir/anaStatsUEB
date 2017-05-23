@@ -49,10 +49,10 @@ quickCor <- function(x, y, dat,
     abline(fit, col = "red", lwd = 3, lty = 3)
     txt.plot <- ifelse(pearson,
                        paste("Pearson Correlation = ", result["Pearson","rho"],
-                             "\n 95%CI",result["Pearson","IC"],"pvalue = ",
+                             "\n 95%CI",result["Pearson","IC"],"p-value = ",
                              result["Pearson","p-value"]),
                        paste("Spearman Correlation = ", result["Spearman","rho"],
-                             "\n 95%CI",result["Spearman","IC"],"pvalue = ",
+                             "\n 95%CI",result["Spearman","IC"],"p-value = ",
                              result["Spearman","p-value"]))
     legend(pos, c("Observations","Linear fit"), cex = 0.8, # horiz = TRUE,
            lty = c(-1,3), pch = c(19, NA), lwd = c(1,2),col = c("purple","red"))
