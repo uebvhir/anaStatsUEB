@@ -9,6 +9,7 @@
 #' @param corplot A logical value indicating whether the output is a plot. Default value is TRUE.
 #' @param pos a character string indicating the legend location. Options: "bottomright",  "bottom", "bottomleft", "left", "topleft", "top", "topright", "right" and "center".
 #' @param A character vector that is inserted just before the tabular environment starts. This can be used to set the font size and a variety of other table settings. Initial backslashes are automatically prefixed, if not supplied by user. Default value is "small".
+#' @param cex.txt character expansion factor. NULL and NA are equivalent to 0.8. This is an absolute measure, not scaled by par("cex") or by setting par("mfrow") or par("mfcol"). Can be a vector.
 #' @export quickCor
 #' @import xtable mada
 #' @author Miriam Mota  \email{miriam.mota@@vhir.org}
@@ -24,7 +25,7 @@
 
 quickCor <- function(x, y, dat,
                      nround = 3, xtab = TRUE, pos = "bottomleft", sz.xtab = "small",
-                     pearson = TRUE, corplot = TRUE)
+                     pearson = TRUE, corplot = TRUE, cex.txt = 0.8, cex.main = 0.8)
 {
   pe <- cor.test(dat[,x],dat[,y], method = "pearson")
   sp <- cor.test(dat[,x],dat[,y], method = "spearman")
@@ -46,7 +47,7 @@ quickCor <- function(x, y, dat,
     plot(dat[,x], dat[,y],
          xlab = x, ylab = y,
          col = "purple", pch = 19,
-         main =  paste("Correlation",x, "whit",y)  )
+         main =  paste("Correlation ",x, "whit",y), cex.main = cex.main  )
     abline(fit, col = "red", lwd = 3, lty = 3)
     txt.plot <- ifelse(pearson,
                        paste("Pearson Correlation = ", result["Pearson","rho"],
@@ -57,7 +58,7 @@ quickCor <- function(x, y, dat,
                              result["Spearman","p-value"]))
     legend(pos, c("Observations","Linear fit"), cex = 0.8, # horiz = TRUE,
            lty = c(-1,3), pch = c(19, NA), lwd = c(1,2),col = c("purple","red"))
-    mtext(txt.plot, cex = 0.8, line = -1.8 )
+    mtext(txt.plot, cex = cex.txt, line = -1.8 )
 
   }
   if (xtab) {
