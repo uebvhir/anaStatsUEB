@@ -8,6 +8,7 @@
 #' @param pearson A logical value indicating whether the text output is Pearson. Default value is TRUE.
 #' @param corplot A logical value indicating whether the output is a plot. Default value is TRUE.
 #' @param pos a character string indicating the legend location. Options: "bottomright",  "bottom", "bottomleft", "left", "topleft", "top", "topright", "right" and "center".
+#' @param A character vector that is inserted just before the tabular environment starts. This can be used to set the font size and a variety of other table settings. Initial backslashes are automatically prefixed, if not supplied by user. Default value is "small".
 #' @export quickCor
 #' @import xtable mada
 #' @author Miriam Mota  \email{miriam.mota@@vhir.org}
@@ -22,7 +23,7 @@
 
 
 quickCor <- function(x, y, dat,
-                     nround = 3, xtab = TRUE, pos = "bottomleft",
+                     nround = 3, xtab = TRUE, pos = "bottomleft", sz.xtab = "small",
                      pearson = TRUE, corplot = TRUE)
 {
   pe <- cor.test(dat[,x],dat[,y], method = "pearson")
@@ -60,7 +61,7 @@ quickCor <- function(x, y, dat,
 
   }
   if (xtab) {
-    xtable(result, caption = paste("Correlation",x, "whit",y))
+    print(xtable(result, caption = paste("Correlation",x, "whit",y)),size = sz.xtab)
   }else{
     return( list(coeff = summary(fit), result = result) )
   }

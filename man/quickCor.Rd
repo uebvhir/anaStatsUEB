@@ -5,7 +5,7 @@
 \title{quickCor Function}
 \usage{
 quickCor(x, y, dat, nround = 3, xtab = TRUE, pos = "bottomleft",
-  pearson = TRUE, corplot = TRUE)
+  sz.xtab = "small", pearson = TRUE, corplot = TRUE)
 }
 \arguments{
 \item{x, y}{numeric vectors of data values. x and y must have the same length.}
@@ -21,6 +21,8 @@ quickCor(x, y, dat, nround = 3, xtab = TRUE, pos = "bottomleft",
 \item{pearson}{A logical value indicating whether the text output is Pearson. Default value is TRUE.}
 
 \item{corplot}{A logical value indicating whether the output is a plot. Default value is TRUE.}
+
+\item{A}{character vector that is inserted just before the tabular environment starts. This can be used to set the font size and a variety of other table settings. Initial backslashes are automatically prefixed, if not supplied by user. Default value is "small".}
 }
 \value{
 results:
