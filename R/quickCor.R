@@ -47,7 +47,8 @@ quickCor <- function(x, y, dat,
     plot(dat[,x], dat[,y],
          xlab = x, ylab = y,
          col = "purple", pch = 19,
-         main =  paste("Correlation ",x, "whit",y), cex.main = cex.main  )
+         main =  paste(#"Correlation ",
+                       x, "whit",y), cex.main = cex.main  )
     abline(fit, col = "red", lwd = 3, lty = 3)
     txt.plot <- ifelse(pearson,
                        paste("Pearson Correlation = ", result["Pearson","rho"],
