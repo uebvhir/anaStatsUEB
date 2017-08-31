@@ -10,7 +10,7 @@ postTexCG(nameFile)
 \item{nameFile}{Character vector of length 1 containing the name of file.}
 }
 \value{
-Reescribe el fichero eliminando "2*"
+Reescribe el fichero eliminando '2*'
 }
 \description{
 Corrige problema con funcion export2latex

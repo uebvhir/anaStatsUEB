@@ -24,46 +24,55 @@
 
 
 quickCor <- function(x, y, dat,
-                     nround = 3, xtab = TRUE, pos = "bottomleft", sz.xtab = "small",
-                     pearson = TRUE, corplot = TRUE, cex.txt = 0.8, cex.main = 0.8)
-{
-  pe <- cor.test(dat[,x],dat[,y], method = "pearson")
-  sp <- cor.test(dat[,x],dat[,y], method = "spearman")
-  ic.sp <- CIrho(sp$estimate, dim(na.omit(dat[ ,c(x,y)]))[1], level = 0.95 )
-  Pearson <- c(round(pe$estimate,nround),
-               paste0("(", round(pe$conf.int[1],nround), ", ", round(pe$conf.int[2],nround), ")"),
-               round(pe$p.value,nround) )
+                     nround = 3,
+                     xtab = TRUE,
+                     pos = "bottomleft",
+                     sz.xtab = "small",
+                     pearson = TRUE,
+                     corplot = TRUE,
+                     cex.txt = 0.8,
+                     cex.main = 0.8) {
+  pe <- cor.test(dat[, x], dat[, y], method = "pearson")
+  sp <- cor.test(dat[, x], dat[, y], method = "spearman")
+  ic.sp <- CIrho(sp$estimate, dim(na.omit(dat[ , c(x, y)]))[1], level = 0.95 )
+  Pearson <- c(round(pe$estimate, nround),
+               paste0("(", round(pe$conf.int[1], nround), ", ", round(pe$conf.int[2], nround), ")"),
+               round(pe$p.value, nround) )
 
-  Spearman <- c(round(sp$estimate,nround),
-                paste0("(", round(ic.sp[2],nround), ", ", round(ic.sp[3],nround), ")"),
-                round(sp$p.value,nround) )
+  Spearman <- c(round(sp$estimate, nround),
+                paste0("(", round(ic.sp[2], nround), ", ", round(ic.sp[3], nround), ")"),
+                round(sp$p.value, nround) )
 
   result <- t(data.frame(Pearson, Spearman))
-  colnames(result) <- c("rho", "IC","p-value")
+  colnames(result) <- c("rho", "IC", "p-value")
 
-  fit <- lm(dat[,y] ~ dat[,x])
+  fit <- lm(dat[, y] ~ dat[, x])
 
   if (corplot) {
-    plot(dat[,x], dat[,y],
+    plot(dat[, x], dat[, y],
          xlab = x, ylab = y,
-         col = "purple", pch = 19,
-         main =  paste(#"Correlation ",
-                       x, "whit",y), cex.main = cex.main  )
+         col = "purple",
+         pch = 19,
+         main =  paste(x, "with", y), cex.main = cex.main  )
     abline(fit, col = "red", lwd = 3, lty = 3)
     txt.plot <- ifelse(pearson,
-                       paste("Pearson Correlation = ", result["Pearson","rho"],
-                             "\n 95%CI",result["Pearson","IC"],"p-value = ",
-                             result["Pearson","p-value"]),
-                       paste("Spearman Correlation = ", result["Spearman","rho"],
-                             "\n 95%CI",result["Spearman","IC"],"p-value = ",
-                             result["Spearman","p-value"]))
-    legend(pos, c("Observations","Linear fit"), cex = 0.8, # horiz = TRUE,
-           lty = c(-1,3), pch = c(19, NA), lwd = c(1,2),col = c("purple","red"))
+                       paste("Pearson Correlation = ", result["Pearson", "rho"],
+                             "\n 95%CI", result["Pearson", "IC"], "p-value = ",
+                             result["Pearson", "p-value"]),
+                       paste("Spearman Correlation = ",
+                             result["Spearman", "rho"],
+                             "\n 95%CI", result["Spearman", "IC"], "p-value = ",
+                             result["Spearman", "p-value"]))
+    legend(pos, c("Observations", "Linear fit"), cex = 0.8, # horiz = TRUE,
+           lty = c(-1, 3), pch = c(19, NA),
+           lwd = c(1, 2), col = c("purple", "red"))
     mtext(txt.plot, cex = cex.txt, line = -1.8 )
 
   }
   if (xtab) {
-    print(xtable(result, caption = paste("Correlation",x, "whit",y)),size = sz.xtab)
+    print(xtable(result,
+                 caption = paste("Correlation", x, "whit", y)),
+          size = sz.xtab)
   }else{
     return( list(coeff = summary(fit), result = result) )
   }

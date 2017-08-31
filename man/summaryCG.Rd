@@ -10,7 +10,7 @@ summaryCG(res, restab, dat, y, xtab = FALSE, col = TRUE, title = NULL,
 \arguments{
 \item{res}{an object of class 'compareGroups'}
 
-\item{restab}{an object of class 'createTable' (of param "res").}
+\item{restab}{an object of class 'createTable' (of param 'res').}
 
 \item{dat}{a data frame containing the variables in the model.}
 
@@ -24,7 +24,7 @@ summaryCG(res, restab, dat, y, xtab = FALSE, col = TRUE, title = NULL,
 
 \item{lbl}{Character vector of length 1 containing the LaTeX label. Default value is NULL.}
 
-\item{met.adj}{correction method. Can be abbreviated. Default value is "fdr"}
+\item{met.adj}{correction method. Can be abbreviated. Default value is 'fdr'}
 
 \item{sz.xtab}{A character vector that is inserted just before the tabular environment starts. This can be used to set the font size and a variety of other table settings. Initial backslashes are automatically prefixed, if not supplied by user. Default value is small.}
 }
@@ -35,16 +35,16 @@ summary table.
 Summary of restab$descr
 }
 \details{
-The adjustment methods include the Bonferroni correction ("bonferroni") in which the
+The adjustment methods include the Bonferroni correction ('bonferroni') in which the
 p-values are multiplied by the number of comparisons. Less conservative corrections
- are also included by Holm (1979) ("holm"), Hochberg (1988) ("hochberg"), Hommel
- (1988) ("hommel"), Benjamini & Hochberg (1995) ("BH" or its alias "fdr"),
- and Benjamini & Yekutieli (2001) ("BY"), respectively.
+ are also included by Holm (1979) ('holm'), Hochberg (1988) ('hochberg'), Hommel
+ (1988) ('hommel'), Benjamini & Hochberg (1995) ('BH' or its alias 'fdr'),
+ and Benjamini & Yekutieli (2001) ('BY'), respectively.
 }
 \examples{
 res <- compareGroups(am ~., data = mtc_bis, method = NA)
 restab <- createTable(res)
-summaryCG(res, restab,  dat = mtc_bis, y = "am", xtab = FALSE)
+summaryCG(res, restab,  dat = mtc_bis, y = 'am', xtab = FALSE)
 }
 \seealso{
 \code{\link{p.adjust}}
