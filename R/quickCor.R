@@ -10,12 +10,14 @@
 #' @param pos a character string indicating the legend location. Options: "bottomright",  "bottom", "bottomleft", "left", "topleft", "top", "topright", "right" and "center".
 #' @param A character vector that is inserted just before the tabular environment starts. This can be used to set the font size and a variety of other table settings. Initial backslashes are automatically prefixed, if not supplied by user. Default value is "small".
 #' @param cex.txt character expansion factor. NULL and NA are equivalent to 0.8. This is an absolute measure, not scaled by par("cex") or by setting par("mfrow") or par("mfcol"). Can be a vector.
+#' @param sz.xtab A character vector that is inserted just before the tabular environment starts. This can be used to set the font size and a variety of other table settings. Initial backslashes are automatically prefixed, if not supplied by user. Default value is NULL.
+#' @param cex.main settings for main- and sub-title and axis annotation, see \code{\link{title}} and \code{\link{par}}.
 #' @export quickCor
+#' @usage #' @usage \\method{names}{mtc_bis}(x) <- value
 #' @import xtable mada
 #' @author Miriam Mota  \email{miriam.mota@@vhir.org}
 #' @examples
-#' data(mtcars)
-#' quickCor(x = "mpg", y = "hp", dat = mtcars,
+#' quickCor(x = "mpg", y = "hp", dat = mtc_bis,
 #' nround = 3, xtab = FALSE, pearson = TRUE, corplot = TRUE)
 #' @return results:
 #' @return coeff:
@@ -27,11 +29,14 @@ quickCor <- function(x, y, dat,
                      nround = 3,
                      xtab = TRUE,
                      pos = "bottomleft",
-                     sz.xtab = "small",
+                     sz.xtab = NULL,
                      pearson = TRUE,
                      corplot = TRUE,
                      cex.txt = 0.8,
                      cex.main = 0.8) {
+
+  if (!is.numeric(dat[, x])) stop("La variable x debe ser numérica")
+  if (!is.numeric(dat[, y])) stop("La variable y debe ser numérica")
   pe <- cor.test(dat[, x], dat[, y], method = "pearson")
   sp <- cor.test(dat[, x], dat[, y], method = "spearman")
   ic.sp <- CIrho(sp$estimate, dim(na.omit(dat[ , c(x, y)]))[1], level = 0.95 )

@@ -4,9 +4,7 @@
 \alias{quickCor}
 \title{quickCor Function}
 \usage{
-quickCor(x, y, dat, nround = 3, xtab = TRUE, pos = "bottomleft",
-  sz.xtab = "small", pearson = TRUE, corplot = TRUE, cex.txt = 0.8,
-  cex.main = 0.8)
+#' @usage \\method{names}{mtc_bis}(x) <- value
 }
 \arguments{
 \item{x, y}{numeric vectors of data values. x and y must have the same length.}
@@ -19,11 +17,15 @@ quickCor(x, y, dat, nround = 3, xtab = TRUE, pos = "bottomleft",
 
 \item{pos}{a character string indicating the legend location. Options: "bottomright",  "bottom", "bottomleft", "left", "topleft", "top", "topright", "right" and "center".}
 
+\item{sz.xtab}{A character vector that is inserted just before the tabular environment starts. This can be used to set the font size and a variety of other table settings. Initial backslashes are automatically prefixed, if not supplied by user. Default value is NULL.}
+
 \item{pearson}{A logical value indicating whether the text output is Pearson. Default value is TRUE.}
 
 \item{corplot}{A logical value indicating whether the output is a plot. Default value is TRUE.}
 
 \item{cex.txt}{character expansion factor. NULL and NA are equivalent to 0.8. This is an absolute measure, not scaled by par("cex") or by setting par("mfrow") or par("mfcol"). Can be a vector.}
+
+\item{cex.main}{settings for main- and sub-title and axis annotation, see \code{\link{title}} and \code{\link{par}}.}
 
 \item{A}{character vector that is inserted just before the tabular environment starts. This can be used to set the font size and a variety of other table settings. Initial backslashes are automatically prefixed, if not supplied by user. Default value is "small".}
 }
@@ -38,8 +40,7 @@ plot
 La función quickCor
 }
 \examples{
-data(mtcars)
-quickCor(x = "mpg", y = "hp", dat = mtcars,
+quickCor(x = "mpg", y = "hp", dat = mtc_bis,
 nround = 3, xtab = FALSE, pearson = TRUE, corplot = TRUE)
 }
 \author{
