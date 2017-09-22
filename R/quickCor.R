@@ -13,13 +13,14 @@
 #' @param sz.xtab A character vector that is inserted just before the tabular environment starts. This can be used to set the font size and a variety of other table settings. Initial backslashes are automatically prefixed, if not supplied by user. Default value is NULL.
 #' @param cex.main settings for main- and sub-title and axis annotation, see \code{\link{title}} and \code{\link{par}}.
 #' @param xtab.type Type of table to produce. Possible values for type are "latex" or "html". Default value is "latex".
+#' @param sub a sub title for the plot.
 #' @export quickCor
 #' @usage #' @usage \\method{names}{mtc_bis}(x) <- value
 #' @import xtable mada
 #' @author Miriam Mota  \email{miriam.mota@@vhir.org}
 #' @examples
 #' quickCor(x = "mpg", y = "hp", dat = mtc_bis,
-#' nround = 3, xtab = FALSE, pearson = TRUE, corplot = TRUE)
+#' nround = 3, xtab = FALSE, pearson = TRUE, corplot = TRUE, sub = "subtitle")
 #' @return results:
 #' @return coeff:
 #' @return plot
@@ -35,7 +36,8 @@ quickCor <- function(x, y, dat,
                      corplot = TRUE,
                      cex.txt = 0.8,
                      cex.main = 0.8,
-                     xtab.type = "latex") {
+                     xtab.type = "latex",
+                     subtitle = NULL) {
 
   if (!is.numeric(dat[, x])) stop("La variable x debe ser numérica")
   if (!is.numeric(dat[, y])) stop("La variable y debe ser numérica")
@@ -60,7 +62,8 @@ quickCor <- function(x, y, dat,
          xlab = x, ylab = y,
          col = "purple",
          pch = 19,
-         main =  paste(x, "with", y), cex.main = cex.main  )
+         main =  paste(x, "with", y), cex.main = cex.main )
+    mtext(sub, 3, line=.8)
     abline(fit, col = "red", lwd = 3, lty = 3)
     txt.plot <- ifelse(pearson,
                        paste("Pearson Correlation = ", result["Pearson", "rho"],
