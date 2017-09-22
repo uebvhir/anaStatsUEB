@@ -12,6 +12,7 @@
 #' @param cex.txt character expansion factor. NULL and NA are equivalent to 0.8. This is an absolute measure, not scaled by par("cex") or by setting par("mfrow") or par("mfcol"). Can be a vector.
 #' @param sz.xtab A character vector that is inserted just before the tabular environment starts. This can be used to set the font size and a variety of other table settings. Initial backslashes are automatically prefixed, if not supplied by user. Default value is NULL.
 #' @param cex.main settings for main- and sub-title and axis annotation, see \code{\link{title}} and \code{\link{par}}.
+#' @param xtab.type Type of table to produce. Possible values for type are "latex" or "html". Default value is "latex".
 #' @export quickCor
 #' @usage #' @usage \\method{names}{mtc_bis}(x) <- value
 #' @import xtable mada
@@ -33,7 +34,8 @@ quickCor <- function(x, y, dat,
                      pearson = TRUE,
                      corplot = TRUE,
                      cex.txt = 0.8,
-                     cex.main = 0.8) {
+                     cex.main = 0.8,
+                     xtab.type = "latex") {
 
   if (!is.numeric(dat[, x])) stop("La variable x debe ser numérica")
   if (!is.numeric(dat[, y])) stop("La variable y debe ser numérica")
@@ -76,7 +78,8 @@ quickCor <- function(x, y, dat,
   }
   if (xtab) {
     print(xtable(result,
-                 caption = paste("Correlation", x, "whit", y)),
+                 caption = paste("Correlation", x, "whit", y)), 
+          type = xtab.type,
           size = sz.xtab)
   }else{
     return( list(coeff = summary(fit), result = result) )
