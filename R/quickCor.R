@@ -37,7 +37,7 @@ quickCor <- function(x, y, dat,
                      cex.txt = 0.8,
                      cex.main = 0.8,
                      xtab.type = "latex",
-                     subtitle = NULL) {
+                     sub = NULL) {
 
   if (!is.numeric(dat[, x])) stop("La variable x debe ser numérica")
   if (!is.numeric(dat[, y])) stop("La variable y debe ser numérica")

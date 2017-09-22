@@ -29,9 +29,9 @@
 
 \item{xtab.type}{Type of table to produce. Possible values for type are "latex" or "html". Default value is "latex".}
 
-\item{A}{character vector that is inserted just before the tabular environment starts. This can be used to set the font size and a variety of other table settings. Initial backslashes are automatically prefixed, if not supplied by user. Default value is "small".}
-
 \item{sub}{a sub title for the plot.}
+
+\item{A}{character vector that is inserted just before the tabular environment starts. This can be used to set the font size and a variety of other table settings. Initial backslashes are automatically prefixed, if not supplied by user. Default value is "small".}
 }
 \value{
 results:
