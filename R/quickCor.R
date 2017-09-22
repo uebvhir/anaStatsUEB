@@ -81,7 +81,7 @@ quickCor <- function(x, y, dat,
   }
   if (xtab) {
     print(xtable(result,
-                 caption = paste("Correlation", x, "whit", y)), 
+                 caption = paste("Correlation", x, "whit", y,".", sub)), 
           type = xtab.type,
           size = sz.xtab)
   }else{
