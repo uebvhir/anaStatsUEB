@@ -39,10 +39,10 @@ summaryCG <- function(res,
                       met.adj = "fdr",
                       sz.xtab = "small") {
 
-    if (sum(label(dat) == "") != 0) {
+    if (sum(Hmisc::label(dat) == "") != 0) {
         varnames <- labnames <- rownames(restab$avail)[rownames(restab$avail) %in% names(dat)]
     } else {
-        varnames <- rownames(restab$avail)[rownames(restab$avail) %in% label(dat)]
+        varnames <- rownames(restab$avail)[rownames(restab$avail) %in% Hmisc::label(dat)]
         labnames <- rownames(restab$avail)
     }
 
