@@ -38,64 +38,65 @@ summaryCG <- function(res,
                       lbl = NULL,
                       met.adj = "fdr",
                       sz.xtab = "small") {
+  dat[,y] <- factor(dat[,y])
 
-    if (sum(Hmisc::label(dat) == "") != 0) {
-        varnames <- labnames <- rownames(restab$avail)[rownames(restab$avail) %in% names(dat)]
-    } else {
-        varnames <- rownames(restab$avail)[rownames(restab$avail) %in% Hmisc::label(dat)]
-        labnames <- rownames(restab$avail)
-    }
+  if (sum(Hmisc::label(dat) == "") != 0) {
+    varnames <- labnames <- rownames(restab$avail)[rownames(restab$avail) %in% names(dat)]
+  } else {
+    varnames <- rownames(restab$avail)[rownames(restab$avail) %in% Hmisc::label(dat)]
+    labnames <- rownames(restab$avail)
+  }
 
-    restab$avail[restab$avail[, "method"] == "continuous-normal", "method"] <- "quantitative-normal"
-    restab$avail[restab$avail[, "method"] == "continuous-non-normal", "method"] <- "quantitative-non-normal"
+  restab$avail[restab$avail[, "method"] == "continuous-normal", "method"] <- "quantitative-normal"
+  restab$avail[restab$avail[, "method"] == "continuous-non-normal", "method"] <- "quantitative-non-normal"
 
-    test <- NULL
-    for (i in 1:dim(restab$avail)[1]) {
-        m_var <- restab$avail[, "method"][i]
-        switch(m_var, `quantitative-normal` = {
-            test[i] <- ifelse(length(levels(dat[, y])) == 2, "Student's t-Test", "ANOVA")
-        }, `quantitative-non-normal` = {
-            test[i] <- ifelse(length(levels(dat[, y])) == 2, "U Mann-Withney test", "Kruskall-Wallis")
-        }, categorical = {
-            test[i] <- ifelse(sum(table(dat[, y], dat[, varnames[i]]) < 5) == 0,
-                              "Chi-squared test",
-                              "Fisher's exact test")
-        })
-    }
+  test <- NULL
+  for (i in 1:dim(restab$avail)[1]) {
+    m_var <- restab$avail[, "method"][i]
+    switch(m_var, `quantitative-normal` = {
+      test[i] <- ifelse(length(levels(dat[, y])) == 2, "Student's t-Test", "ANOVA")
+    }, `quantitative-non-normal` = {
+      test[i] <- ifelse(length(levels(dat[, y])) == 2, "U Mann-Withney test", "Kruskall-Wallis")
+    }, categorical = {
+      test[i] <- ifelse(sum(table(dat[, y], dat[, varnames[i]]) < 5) == 0,
+                        "Chi-squared test",
+                        "Fisher's exact test")
+    })
+  }
 
-    pval <- NA
-    for (i in 1:length(rownames(restab$avail))) {
-        pval[i] <- na.omit(as.numeric(as.character(summary(res)[[labnames[i]]][, "p.overall"])))[1]
-    }
-    pval.adj <- p.adjust(pval, method = met.adj)
-    if (xtab & col) {
-        pval <- ifelse(pval < 0.05,
-                       paste0("\\colorbox{thistle}{", round(pval, 3), "}"),
-                       round(pval, 3))
-    }
-    if (xtab & col) {
-        pval.adj <- ifelse(pval.adj < 0.05,
-                           paste0("\\colorbox{thistle}{", round(pval.adj, 3), "}"),
-                           round(pval.adj, 3))
-    }
+  pval <- NA
+  for (i in 1:length(rownames(restab$avail))) {
+    pval[i] <- na.omit(as.numeric(as.character(summary(res)[[labnames[i]]][, "p.overall"])))[1]
+  }
+  pval.adj <- p.adjust(pval, method = met.adj)
+  if (xtab & col) {
+    pval <- ifelse(pval < 0.05,
+                   paste0("\\colorbox{thistle}{", round(pval, 3), "}"),
+                   round(pval, 3))
+  }
+  if (xtab & col) {
+    pval.adj <- ifelse(pval.adj < 0.05,
+                       paste0("\\colorbox{thistle}{", round(pval.adj, 3), "}"),
+                       round(pval.adj, 3))
+  }
 
-    resum <- cbind(variable = rownames(restab$avail),
-                   restab$avail[, !colnames(restab$avail) %in% c("select","Fact OR/HR")],
-                   test,
-                   p.value = pval,
-                   adj.p.value = pval.adj)
+  resum <- cbind(variable = rownames(restab$avail),
+                 restab$avail[, !colnames(restab$avail) %in% c("select","Fact OR/HR")],
+                 test,
+                 p.value = pval,
+                 adj.p.value = pval.adj)
 
-    colnames(resum)[colnames(resum) == "[ALL]"] <- "N"
-    colnames(resum)[colnames(resum) == "method"] <- "type"
+  colnames(resum)[colnames(resum) == "[ALL]"] <- "N"
+  colnames(resum)[colnames(resum) == "method"] <- "type"
 
-    resum[, "type"][(resum[, "type"] == "quantitative-normal") |
-                      (resum[, "type"] == "quantitative-non-normal")] <- "quantitative"
-    if (xtab) {
-        print(xtable(resum, caption = title, label = lbl),
-              size = sz.xtab,
-              sanitize.text.function = function(x) x,
-              include.rownames = FALSE)
-    } else {
-        return(resum)
-    }
+  resum[, "type"][(resum[, "type"] == "quantitative-normal") |
+                    (resum[, "type"] == "quantitative-non-normal")] <- "quantitative"
+  if (xtab) {
+    print(xtable(resum, caption = title, label = lbl),
+          size = sz.xtab,
+          sanitize.text.function = function(x) x,
+          include.rownames = FALSE)
+  } else {
+    return(resum)
+  }
 }
