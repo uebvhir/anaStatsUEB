@@ -69,6 +69,7 @@ summaryCG <- function(res,
   for (i in 1:length(rownames(restab$avail))) {
     pval[i] <- na.omit(as.numeric(as.character(summary(res)[[labnames[i]]][, "p.overall"])))[1]
   }
+  idx_order <- order(pval)
   pval.adj <- p.adjust(pval, method = met.adj)
   if (xtab & col) {
     pval <- ifelse(pval < 0.05,
@@ -93,7 +94,7 @@ summaryCG <- function(res,
   resum[, "type"][(resum[, "type"] == "quantitative-normal") |
                     (resum[, "type"] == "quantitative-non-normal")] <- "quantitative"
 
-  if(sort.pval) resum <- resum[order(as.numeric(resum[,"p.value"])), ]
+  if(sort.pval) resum <- resum[idx_order, ]
 
   if (xtab) {
     print(xtable(resum, caption = title, label = lbl),
