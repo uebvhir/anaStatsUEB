@@ -102,6 +102,7 @@ summaryCG <- function(res,
           sanitize.text.function = function(x) x,
           include.rownames = FALSE)
   } else {
+    if(sort.pval) resum <- resum[idx_order, ]
     return(resum)
   }
 }
