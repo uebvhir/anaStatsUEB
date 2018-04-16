@@ -42,7 +42,7 @@ p-values are multiplied by the number of comparisons. Less conservative correcti
  and Benjamini & Yekutieli (2001) ('BY'), respectively.
 }
 \examples{
-res <- compareGroups(am ~., data = mtc_bis, method = NA)
+res <- compareGroups(am ~., dat = mtc_bis, method = NA)
 restab <- createTable(res)
 summaryCG(res, restab,  dat = mtc_bis, y = 'am', xtab = FALSE)
 }

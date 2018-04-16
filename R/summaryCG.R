@@ -21,7 +21,7 @@
 #' @import compareGroups xtable
 #' @author Miriam Mota  \email{miriam.mota@@vhir.org}
 #' @examples
-#' res <- compareGroups(am ~., data = mtc_bis, method = NA)
+#' res <- compareGroups(am ~., dat = mtc_bis, method = NA)
 #' restab <- createTable(res)
 #' summaryCG(res, restab,  dat = mtc_bis, y = 'am', xtab = FALSE)
 #' @return summary table.
@@ -92,10 +92,10 @@ summaryCG <- function(res,
 
   resum[, "type"][(resum[, "type"] == "quantitative-normal") |
                     (resum[, "type"] == "quantitative-non-normal")] <- "quantitative"
+
+  if(sort.pval) resum <- resum[order(resum[,"p.value"]), ]
+
   if (xtab) {
-
-    if(sort.pval)   resum <- resum[order[, "p.value"],]
-
     print(xtable(resum, caption = title, label = lbl),
           size = sz.xtab,
           sanitize.text.function = function(x) x,
