@@ -94,7 +94,7 @@ summaryCG <- function(res,
                     (resum[, "type"] == "quantitative-non-normal")] <- "quantitative"
   if (xtab) {
 
-    if(sort.pval)   resum <- resum[order(resum$p.value),]
+    if(sort.pval)   resum <- resum[order[, "p.value"],]
 
     print(xtable(resum, caption = title, label = lbl),
           size = sz.xtab,
