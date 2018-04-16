@@ -5,7 +5,7 @@
 \title{summaryCG Function}
 \usage{
 summaryCG(res, restab, dat, y, xtab = FALSE, col = TRUE, title = NULL,
-  lbl = NULL, met.adj = "fdr", sz.xtab = "small")
+  lbl = NULL, met.adj = "fdr", sz.xtab = "small", sort.pval = FALSE)
 }
 \arguments{
 \item{res}{an object of class 'compareGroups'}

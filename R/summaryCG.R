@@ -37,7 +37,8 @@ summaryCG <- function(res,
                       title = NULL,
                       lbl = NULL,
                       met.adj = "fdr",
-                      sz.xtab = "small") {
+                      sz.xtab = "small",
+                      sort.pval = FALSE) {
   dat[,y] <- factor(dat[,y])
 
   if (sum(Hmisc::label(dat) == "") != 0) {
@@ -92,6 +93,9 @@ summaryCG <- function(res,
   resum[, "type"][(resum[, "type"] == "quantitative-normal") |
                     (resum[, "type"] == "quantitative-non-normal")] <- "quantitative"
   if (xtab) {
+
+    if(sort.pval)   resum <- resum[order(resum$p.value),]
+
     print(xtable(resum, caption = title, label = lbl),
           size = sz.xtab,
           sanitize.text.function = function(x) x,
