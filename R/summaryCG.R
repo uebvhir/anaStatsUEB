@@ -93,7 +93,7 @@ summaryCG <- function(res,
   resum[, "type"][(resum[, "type"] == "quantitative-normal") |
                     (resum[, "type"] == "quantitative-non-normal")] <- "quantitative"
 
-  if(sort.pval) resum <- resum[order(resum[,"p.value"]), ]
+  if(sort.pval) resum <- resum[order(as.numeric(resum[,"p.value"])), ]
 
   if (xtab) {
     print(xtable(resum, caption = title, label = lbl),
