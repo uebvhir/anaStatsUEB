@@ -21,7 +21,7 @@
 #' @keywords factor variable class levels labels
 
 
-factor_ueb <- function(x, levels, labels, del.empty.val = T){
+factor_ueb <- function(x, levels, labels, del.empty.val = TRUE){
   levels_dif <- unique(x) %in% levels
   if (!all(levels_dif)) { warning("Los individuos con valor '", unique(x)[!levels_dif],
                                  "' han sido considerados NA \n", call. = FALSE) }
