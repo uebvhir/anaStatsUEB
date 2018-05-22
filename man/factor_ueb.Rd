@@ -28,7 +28,7 @@ factor_ueb(variable, levels = c(0,1), labels = c("No", "Si"))
 variable <- c(0,0,0,1,1,1,0,10,1,0)
 factor_ueb(variable, levels = c(0,1), labels = c("No", "Si"))
 
-variable <- c(0,0,0,1,1,1,0,1,1,0)
+variable <- c(0,0,0,1,1,1,0,1,1,0, NA)
 factor_ueb(variable, levels = c(0,1), labels = c("No", "Si"))
 }
 \author{
