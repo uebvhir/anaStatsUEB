@@ -23,10 +23,12 @@
 
 factor_ueb <- function(x, levels, labels, del.empty.val = TRUE){
 
+  name_sep <- strsplit(deparse(substitute(x)), "$",fixed = T)[[1]]
+
   unique_noNA <- unique(x)[!unique(x) %in% NA]
   levels_dif <- unique_noNA  %in% levels
   if (!all(levels_dif)) { warning("Los individuos con valor '", unique_noNA[!levels_dif],
-                                 "' han sido considerados NA \n", call. = FALSE) }
+                                 "' para la variable ",name_sep[length(name_sep)]," han sido considerados NA \n", call. = FALSE) }
   var_factor <- factor(x, levels = levels, labels = labels )
   if (del.empty.val) var_factor <- factor(var_factor)
   return(var_factor)
