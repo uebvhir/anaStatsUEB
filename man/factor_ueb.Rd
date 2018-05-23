@@ -4,7 +4,8 @@
 \alias{factor_ueb}
 \title{factor_ueb Function}
 \usage{
-factor_ueb(x, levels, labels, del.empty.val = TRUE)
+factor_ueb(x, levels, labels, del.empty.val = TRUE, name.var = NULL,
+  show.id = TRUE)
 }
 \arguments{
 \item{x}{a vector of data, usually taking a small number of distinct values.}
@@ -14,6 +15,8 @@ factor_ueb(x, levels, labels, del.empty.val = TRUE)
 \item{labels}{either an optional character vector of (unique) labels for the levels (in the same order as levels after removing those in exclude), or a character string of length 1.}
 
 \item{del.empty.val}{elimina los niveles que tienen 0 casos}
+
+\item{show.id}{TRUE o FALSE. Muestra codigo para ver que individuos que se han perdido. Por defecto, TRUE.}
 }
 \value{
 factor returns an object of class "factor" which has a set of integer codes the length of x with a "levels" attribute of mode character and unique (!anyDuplicated(.)) entries. If argument ordered is true (or ordered() is used) the result has class c("ordered", "factor"). Undocumentedly for a long time, factor(x) loses all attributes(x) but "names", and resets "levels" and "class".
@@ -22,7 +25,7 @@ factor returns an object of class "factor" which has a set of integer codes the 
 The function factor is used to encode a vector as a factor (the terms ‘category’ and ‘enumerated type’ are also used for factors).
 }
 \examples{
-variable <- c(0,0,0,1,1,1,0,"a",1,0)
+variable <- c(0,0,0,1,1,1,0,"a",1,0, "B")
 factor_ueb(variable, levels = c(0,1), labels = c("No", "Si"))
 
 variable <- c(0,0,0,1,1,1,0,10,1,0)
