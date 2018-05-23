@@ -32,9 +32,7 @@ factor_ueb <- function(x, levels, labels, del.empty.val = TRUE, name.var = NULL)
                                   "' para la variable ",name.var," han sido considerados NA \n", call. = FALSE) }
   var_factor <- factor(x, levels = levels, labels = labels )
   if (del.empty.val) var_factor <- factor(var_factor)
-  if (show.id) {
 
-    return(var_factor)
-  }
+  return(var_factor)
 }
 
