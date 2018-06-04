@@ -75,13 +75,13 @@ quickCor <- function(x, y, dat,
                              result["Spearman", "p-value"]))
     legend(pos, c("Observations", "Linear fit"), cex = 0.8, # horiz = TRUE,
            lty = c(-1, 3), pch = c(19, NA),
-           lwd = c(1, 2), col = c("purple", "red"))
+           lwd = c(1, 2), col = c("purple", "red"),bg="transparent")
     mtext(txt.plot, cex = cex.txt, line = -1.8 )
 
   }
   if (xtab) {
     print(xtable(result,
-                 caption = paste("Correlation", x, "whit", y,".", sub)), 
+                 caption = paste("Correlation", x, "whit", y,".", sub)),
           type = xtab.type,
           size = sz.xtab)
   }else{
