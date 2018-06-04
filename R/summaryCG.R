@@ -97,10 +97,18 @@ summaryCG <- function(res,
   if (sort.pval) resum <- resum[idx_order, ]
 
   if (xtab) {
+    add.to.row <- list(pos = list(0), command = NULL)
+    command <- paste0("\\hline\n\\endhead\n",
+                      "\\hline\n",
+                      "\\multicolumn{", dim(x)[2] + 1, "}{l}",
+                      "{\\footnotesize Continued on next page}\n",
+                      "\\endfoot\n",
+                      "\\endlastfoot\n")
+    add.to.row$command <- command
     print(xtable(resum, caption = title, label = lbl),
           size = sz.xtab,
           sanitize.text.function = function(x) x,
-          include.rownames = FALSE, tabular.environment = "longtable", floating = FALSE)
+          include.rownames = FALSE, tabular.environment = "longtable", floating = FALSE, add.to.row = add.to.row)
   } else {
     return(resum)
   }
