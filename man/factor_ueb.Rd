@@ -15,7 +15,7 @@ factor_ueb(x, levels, labels, del.empty.val = TRUE, name.var = NULL)
 
 \item{del.empty.val}{elimina los niveles que tienen 0 casos}
 
-\item{name_var}{nom de la variable. Per defecte agafa la part dreta del "$" (exemple: mtcars$mpg, utilitza "mpg")}
+\item{name.var}{nom de la variable. Per defecte agafa la part dreta del "$" (exemple: mtcars$mpg, utilitza "mpg")}
 }
 \value{
 factor returns an object of class "factor" which has a set of integer codes the length of x with a "levels" attribute of mode character and unique (!anyDuplicated(.)) entries. If argument ordered is true (or ordered() is used) the result has class c("ordered", "factor"). Undocumentedly for a long time, factor(x) loses all attributes(x) but "names", and resets "levels" and "class".
