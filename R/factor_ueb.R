@@ -5,6 +5,7 @@
 #' @param levels an optional vector of the values (as character strings) that x might have taken. The default is the unique set of values taken by as.character(x), sorted into increasing order of x. Note that this set can be specified as smaller than sort(unique(x))
 #' @param labels either an optional character vector of (unique) labels for the levels (in the same order as levels after removing those in exclude), or a character string of length 1.
 #' @param del.empty.val elimina los niveles que tienen 0 casos
+#' @param name_var nom de la variable. Per defecte agafa la part dreta del "$" (exemple: mtcars$mpg, utilitza "mpg")
 #' @export factor_ueb
 #' @author Miriam Mota  \email{miriam.mota@@vhir.org}
 #' @examples
