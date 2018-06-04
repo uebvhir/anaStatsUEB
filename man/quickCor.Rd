@@ -31,6 +31,8 @@
 
 \item{sub}{a sub title for the plot.}
 
+\item{lm.fit}{A logical value indicating if show a linear regression line. Default value is TRUE.}
+
 \item{A}{character vector that is inserted just before the tabular environment starts. This can be used to set the font size and a variety of other table settings. Initial backslashes are automatically prefixed, if not supplied by user. Default value is "small".}
 }
 \value{
@@ -46,6 +48,16 @@ La función quickCor
 \examples{
 quickCor(x = "mpg", y = "hp", dat = mtc_bis,
 nround = 3, xtab = FALSE, pearson = TRUE, corplot = TRUE, sub = "subtitle")
+# Spearman correlation
+quickCor(x = "mpg", y = "hp", dat = mtc_bis,
+nround = 3, xtab = FALSE, pearson = FALSE, corplot = TRUE, sub = "subtitle")
+# No es mostra recta de regressio
+quickCor(x = "mpg", y = "hp", dat = mtc_bis,
+nround = 3, xtab = FALSE, pearson = TRUE, corplot = TRUE, sub = "subtitle", lm.fit =FALSE)
+# canviem la posicio de la llegenda
+quickCor(x = "mpg", y = "hp", dat = mtc_bis,
+nround = 3, xtab = FALSE, pearson = TRUE, corplot = TRUE, sub = "subtitle",
+pos = "bottomright")
 }
 \author{
 Miriam Mota  \email{miriam.mota@vhir.org}

@@ -14,6 +14,7 @@
 #' @param cex.main settings for main- and sub-title and axis annotation, see \code{\link{title}} and \code{\link{par}}.
 #' @param xtab.type Type of table to produce. Possible values for type are "latex" or "html". Default value is "latex".
 #' @param sub a sub title for the plot.
+#' @param lm.fit A logical value indicating if show a linear regression line. Default value is TRUE.
 #' @export quickCor
 #' @usage #' @usage \\method{names}{mtc_bis}(x) <- value
 #' @import xtable mada
@@ -21,6 +22,16 @@
 #' @examples
 #' quickCor(x = "mpg", y = "hp", dat = mtc_bis,
 #' nround = 3, xtab = FALSE, pearson = TRUE, corplot = TRUE, sub = "subtitle")
+#' # Spearman correlation
+#' quickCor(x = "mpg", y = "hp", dat = mtc_bis,
+#' nround = 3, xtab = FALSE, pearson = FALSE, corplot = TRUE, sub = "subtitle")
+#' # No es mostra recta de regressio
+#' quickCor(x = "mpg", y = "hp", dat = mtc_bis,
+#' nround = 3, xtab = FALSE, pearson = TRUE, corplot = TRUE, sub = "subtitle", lm.fit =FALSE)
+#' # canviem la posicio de la llegenda
+#' quickCor(x = "mpg", y = "hp", dat = mtc_bis,
+#' nround = 3, xtab = FALSE, pearson = TRUE, corplot = TRUE, sub = "subtitle",
+#' pos = "bottomright")
 #' @return results:
 #' @return coeff:
 #' @return plot
@@ -37,7 +48,8 @@ quickCor <- function(x, y, dat,
                      cex.txt = 0.8,
                      cex.main = 0.8,
                      xtab.type = "latex",
-                     sub = NULL) {
+                     sub = NULL,
+                     lm.fit = TRUE) {
 
   if (!is.numeric(dat[, x])) stop("La variable x debe ser numérica")
   if (!is.numeric(dat[, y])) stop("La variable y debe ser numérica")
@@ -63,8 +75,8 @@ quickCor <- function(x, y, dat,
          col = "purple",
          pch = 19,
          main =  paste(x, "with", y), cex.main = cex.main )
-    mtext(sub, 3, line=.8)
-    abline(fit, col = "red", lwd = 3, lty = 3)
+    mtext(sub, 3, line = .8)
+
     txt.plot <- ifelse(pearson,
                        paste("Pearson Correlation = ", result["Pearson", "rho"],
                              "\n 95%CI", result["Pearson", "IC"], "p-value = ",
@@ -73,9 +85,17 @@ quickCor <- function(x, y, dat,
                              result["Spearman", "rho"],
                              "\n 95%CI", result["Spearman", "IC"], "p-value = ",
                              result["Spearman", "p-value"]))
-    legend(pos, c("Observations", "Linear fit"), cex = 0.8, # horiz = TRUE,
-           lty = c(-1, 3), pch = c(19, NA),
-           lwd = c(1, 2), col = c("purple", "red"),bg="transparent")
+
+    if (lm.fit) {
+      abline(fit, col = "red", lwd = 3, lty = 3)
+      legend(pos, c("Observations", "Linear fit"), cex = 0.8, # horiz = TRUE,
+             lty = c(-1, 3), pch = c(19, NA),
+             lwd = c(1, 2), col = c("purple", "red"),bg = "transparent")
+    }else{
+      legend(pos, "Observations", cex = 0.8,
+             lty = -1, pch = 19,
+             lwd = 1, col = "purple",bg = "transparent")
+    }
     mtext(txt.plot, cex = cex.txt, line = -1.8 )
 
   }
