@@ -65,10 +65,12 @@ summaryCG <- function(res,
     })
   }
 
-  pval <- NA
-  for (i in 1:length(rownames(restab$avail))) {
-    pval[i] <- na.omit(as.numeric(as.character(summary(res)[[labnames[i]]][, "p.overall"])))[1]
-  }
+  # pval <- NA
+  # for (i in 1:length(rownames(restab$avail))) {
+  #   pval[i] <- na.omit(as.numeric(as.character(summary(res)[[labnames[i]]][, "p.overall"])))[1]
+  # }
+  pval <- getResults(restab, "p.overall")
+
   idx_order <- order(pval)
   pval.adj <- p.adjust(pval, method = met.adj)
   if (xtab & col) {
