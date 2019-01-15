@@ -41,7 +41,7 @@ summaryCG <- function(res,
                       sz.xtab = 8,
                       xtab.type = "latex",
                       sort.pval = FALSE,
-                      color = "#e6ccff",
+                      color = "#aea0ae",
                       color.font = "white") {
   dat[,y] <- factor(dat[,y])
 
