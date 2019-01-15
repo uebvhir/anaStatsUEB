@@ -41,7 +41,7 @@ summaryCG <- function(res,
                       sz.xtab = 8,
                       xtab.type = "latex",
                       sort.pval = FALSE,
-                      color = "#d9b3ff") {
+                      color = "#c299ff") {
   dat[,y] <- factor(dat[,y])
 
   if (sum(Hmisc::label(dat) == "") != 0) {
