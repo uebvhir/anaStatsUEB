@@ -4,8 +4,9 @@
 \alias{summaryCG}
 \title{summaryCG Function}
 \usage{
-summaryCG(res, restab, dat, y, xtab = FALSE, col = TRUE, title = NULL,
-  lbl = NULL, met.adj = "fdr", sz.xtab = "small", sort.pval = FALSE)
+summaryCG(res, restab, dat, y, xtab = FALSE, col = TRUE,
+  title = NULL, lbl = NULL, met.adj = "fdr", sz.xtab = 8,
+  xtab.type = "latex", sort.pval = FALSE)
 }
 \arguments{
 \item{res}{an object of class 'compareGroups'}
@@ -27,6 +28,8 @@ summaryCG(res, restab, dat, y, xtab = FALSE, col = TRUE, title = NULL,
 \item{met.adj}{correction method. Can be abbreviated. Default value is 'fdr'}
 
 \item{sz.xtab}{A character vector that is inserted just before the tabular environment starts. This can be used to set the font size and a variety of other table settings. Initial backslashes are automatically prefixed, if not supplied by user. Default value is small.}
+
+\item{xtab.type}{A character string. Possible values are latex, html, markdown, pandoc, and rst; this will be automatically determined if the function is called within knitr; it can also be set in the global option knitr.table.format. If format is a function, it must return a character string.}
 }
 \value{
 summary table.
