@@ -41,7 +41,7 @@ summaryCG <- function(res,
                       sz.xtab = 8,
                       xtab.type = "latex",
                       sort.pval = FALSE,
-                      color = "#d279d2") {
+                      color = "#d9b3ff") {
   dat[,y] <- factor(dat[,y])
 
   if (sum(Hmisc::label(dat) == "") != 0) {
@@ -76,12 +76,12 @@ summaryCG <- function(res,
 
   idx_order <- order(pval)
   pval.adj <- p.adjust(pval, method = met.adj)
-  if (xtab & col) {
+  if ((xtab.type == "latex") & col) {
     pval <- ifelse(pval < 0.05,
                    paste0("\\colorbox{thistle}{", round(pval, 3), "}"),
                    round(pval, 3))
   }
-  if (xtab & col) {
+  if ((xtab.type == "latex") & col) {
     pval.adj <- ifelse(pval.adj < 0.05,
                        paste0("\\colorbox{thistle}{", round(pval.adj, 3), "}"),
                        round(pval.adj, 3))
@@ -100,19 +100,20 @@ summaryCG <- function(res,
                     (resum[, "type"] == "quantitative-non-normal")] <- "quantitative"
 
   if (sort.pval) resum <- resum[idx_order, ]
-  resum <- as.data.frame(resum)
 
   if (xtab) {
     # print(xtable(resum, caption = title, label = lbl),
     #       size = sz.xtab,
     #       sanitize.text.function = function(x) x,
     #       include.rownames = FALSE, tabular.environment = "longtable", floating = FALSE)
-
-    resum <- kable(resum, format = xtab.type, booktabs = T,
-          caption = title, longtable = TRUE, escape = F) %>%
+    resum[,"p.value"] <- round(as.numeric(as.character(resum[,"p.value"])),3)
+    resum[,"adj.p.value"] <- round(as.numeric(as.character(resum[,"adj.p.value"])),3)
+    resum_xtab <- kable(resum, format = xtab.type, booktabs = T,
+          caption = title, longtable = TRUE, escape = F, digits = 3) %>%
       kable_styling(latex_options = c("striped","hold_position", "repeat_header"), font_size = sz.xtab, full_width = F, position = "left") %>%
-      row_spec(which(as.numeric(resum[,"adj.p.value"])  < 0.05), bold = T, color = "white", background = color)
+      row_spec(which(as.numeric(as.character(resum[,"adj.p.value"]))  < 0.05), bold = T, color = "white", background = color)
+    return(resum_xtab)
   }
-    return(resum)
+  return(resum)
 
 }
