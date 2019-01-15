@@ -107,7 +107,8 @@ summaryCG <- function(res,
     #       include.rownames = FALSE, tabular.environment = "longtable", floating = FALSE)
 
     kable(resum, format = xtab.type, booktabs = T,
-          caption = title, longtable = TRUE, escape = F)
+          caption = title, longtable = TRUE, escape = F)%>%
+      kable_styling(latex_options = c("striped","hold_position", "repeat_header"), sz.xtab = size, full_width = F, position = "left")
   } else {
     return(resum)
   }
