@@ -41,7 +41,8 @@ summaryCG <- function(res,
                       sz.xtab = 8,
                       xtab.type = "latex",
                       sort.pval = FALSE,
-                      color = "#c299ff") {
+                      color = "#c299ff",
+                      color.font = "white") {
   dat[,y] <- factor(dat[,y])
 
   if (sum(Hmisc::label(dat) == "") != 0) {
@@ -111,7 +112,7 @@ summaryCG <- function(res,
     resum_xtab <- kable(resum, format = xtab.type, booktabs = T,
           caption = title, longtable = TRUE, escape = F, digits = 3) %>%
       kable_styling(latex_options = c("striped","hold_position", "repeat_header"), font_size = sz.xtab, full_width = F, position = "left") %>%
-      row_spec(which(as.numeric(as.character(resum[,"adj.p.value"]))  < 0.05), bold = T, color = "white", background = color)
+      row_spec(which(as.numeric(as.character(resum[,"adj.p.value"]))  < 0.05), bold = T, color = color.font, background = color)
     return(resum_xtab)
   }
   return(resum)
