@@ -108,7 +108,8 @@ summaryCG <- function(res,
 
     resum <- kable(resum, format = xtab.type, booktabs = T,
           caption = title, longtable = TRUE, escape = F) %>%
-      kable_styling(latex_options = c("striped","hold_position", "repeat_header"), font_size = sz.xtab, full_width = F, position = "left")
+      kable_styling(latex_options = c("striped","hold_position", "repeat_header"), font_size = sz.xtab, full_width = F, position = "left") %>%
+      row_spec(which(as.numeric(resum[,"adj.p.value"])  < 0.05), bold = T, color = "white", background = "#d279d2")
   }
     return(resum)
 
