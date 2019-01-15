@@ -19,7 +19,7 @@
 #'  and Benjamini & Yekutieli (2001) ('BY'), respectively.
 #' @export summaryCG
 #' @seealso \code{\link{p.adjust}}
-#' @import compareGroups xtable
+#' @import compareGroups knitr
 #' @author Miriam Mota  \email{miriam.mota@@vhir.org}
 #' @examples
 #' res <- compareGroups(am ~., dat = mtc_bis, method = NA)
