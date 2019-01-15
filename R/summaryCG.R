@@ -40,7 +40,8 @@ summaryCG <- function(res,
                       met.adj = "fdr",
                       sz.xtab = 8,
                       xtab.type = "latex",
-                      sort.pval = FALSE) {
+                      sort.pval = FALSE,
+                      color = "#d279d2") {
   dat[,y] <- factor(dat[,y])
 
   if (sum(Hmisc::label(dat) == "") != 0) {
@@ -86,11 +87,11 @@ summaryCG <- function(res,
                        round(pval.adj, 3))
   }
 
-  resum <- cbind(variable = rownames(restab$avail),
+  resum <- as.data.frame(cbind(variable = rownames(restab$avail),
                  restab$avail[, !colnames(restab$avail) %in% c("select","Fact OR/HR")],
                  test,
                  p.value = pval,
-                 adj.p.value = pval.adj)
+                 adj.p.value = pval.adj))
 
   colnames(resum)[colnames(resum) == "[ALL]"] <- "N"
   colnames(resum)[colnames(resum) == "method"] <- "type"
@@ -109,7 +110,7 @@ summaryCG <- function(res,
     resum <- kable(resum, format = xtab.type, booktabs = T,
           caption = title, longtable = TRUE, escape = F) %>%
       kable_styling(latex_options = c("striped","hold_position", "repeat_header"), font_size = sz.xtab, full_width = F, position = "left") %>%
-      row_spec(which(as.numeric(resum[,"adj.p.value"])  < 0.05), bold = T, color = "white", background = "#d279d2")
+      row_spec(which(as.numeric(resum[,"adj.p.value"])  < 0.05), bold = T, color = "white", background = color)
   }
     return(resum)
 
