@@ -87,11 +87,11 @@ summaryCG <- function(res,
                        round(pval.adj, 3))
   }
 
-  resum <- as.data.frame(cbind(variable = rownames(restab$avail),
+  resum <- cbind(variable = rownames(restab$avail),
                  restab$avail[, !colnames(restab$avail) %in% c("select","Fact OR/HR")],
                  test,
                  p.value = pval,
-                 adj.p.value = pval.adj))
+                 adj.p.value = pval.adj)
 
   colnames(resum)[colnames(resum) == "[ALL]"] <- "N"
   colnames(resum)[colnames(resum) == "method"] <- "type"
@@ -100,6 +100,7 @@ summaryCG <- function(res,
                     (resum[, "type"] == "quantitative-non-normal")] <- "quantitative"
 
   if (sort.pval) resum <- resum[idx_order, ]
+  resum <- as.data.frame(resum)
 
   if (xtab) {
     # print(xtable(resum, caption = title, label = lbl),
