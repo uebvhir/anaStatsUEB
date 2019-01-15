@@ -19,7 +19,7 @@
 #'  and Benjamini & Yekutieli (2001) ('BY'), respectively.
 #' @export summaryCG
 #' @seealso \code{\link{p.adjust}}
-#' @import compareGroups knitr
+#' @import compareGroups knitr kableExtra
 #' @author Miriam Mota  \email{miriam.mota@@vhir.org}
 #' @examples
 #' res <- compareGroups(am ~., dat = mtc_bis, method = NA)
@@ -109,7 +109,7 @@ summaryCG <- function(res,
     resum <- kable(resum, format = xtab.type, booktabs = T,
           caption = title, longtable = TRUE, escape = F) %>%
       kable_styling(latex_options = c("striped","hold_position", "repeat_header"), font_size = sz.xtab, full_width = F, position = "left")
-  } else {
-    return(resum)
   }
+    return(resum)
+
 }
