@@ -10,6 +10,7 @@
 #' @param col A logical value indicating the xtable color. Default value is TRUE.
 #' @param title Character vector containing the table's caption or title. Default value is NULL.
 #' @param sz.xtab A character vector that is inserted just before the tabular environment starts. This can be used to set the font size and a variety of other table settings. Initial backslashes are automatically prefixed, if not supplied by user. Default value is small.
+#' @param xtab.type A character string. Possible values are latex, html, markdown, pandoc, and rst; this will be automatically determined if the function is called within knitr; it can also be set in the global option knitr.table.format. If format is a function, it must return a character string.
 #' @param lbl Character vector of length 1 containing the LaTeX label. Default value is NULL.
 #' @details The adjustment methods include the Bonferroni correction ('bonferroni') in which the
 #' p-values are multiplied by the number of comparisons. Less conservative corrections
@@ -37,7 +38,8 @@ summaryCG <- function(res,
                       title = NULL,
                       lbl = NULL,
                       met.adj = "fdr",
-                      sz.xtab = "small",
+                      sz.xtab = 8,
+                      xtab.type = "latex",
                       sort.pval = FALSE) {
   dat[,y] <- factor(dat[,y])
 
@@ -99,10 +101,13 @@ summaryCG <- function(res,
   if (sort.pval) resum <- resum[idx_order, ]
 
   if (xtab) {
-    print(xtable(resum, caption = title, label = lbl),
-          size = sz.xtab,
-          sanitize.text.function = function(x) x,
-          include.rownames = FALSE, tabular.environment = "longtable", floating = FALSE)
+    # print(xtable(resum, caption = title, label = lbl),
+    #       size = sz.xtab,
+    #       sanitize.text.function = function(x) x,
+    #       include.rownames = FALSE, tabular.environment = "longtable", floating = FALSE)
+
+    kable(resum, format = xtab.type, booktabs = T,
+          caption = title, longtable = TRUE, escape = F)
   } else {
     return(resum)
   }
