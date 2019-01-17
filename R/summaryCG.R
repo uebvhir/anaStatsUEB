@@ -86,9 +86,7 @@ summaryCG <- function(res,
     pval.adj <- ifelse(pval.adj < 0.05,
                        paste0("\\colorbox{thistle}{", round(pval.adj, 3), "}"),
                        round(pval.adj, 3))
-  }else{
-    resum[,"p.value"] <- round(as.numeric(as.character(resum[,"p.value"])),3)
-    resum[,"adj.p.value"] <- round(as.numeric(as.character(resum[,"adj.p.value"])),3)
+
   }
 
   resum <- cbind(variable = rownames(restab$avail),
@@ -104,6 +102,11 @@ summaryCG <- function(res,
                     (resum[, "type"] == "quantitative-non-normal")] <- "quantitative"
 
   if (sort.pval) resum <- resum[idx_order, ]
+
+  if(xtab.type == "html"){
+    resum[,"p.value"] <- round(as.numeric(as.character(resum[,"p.value"])),3)
+    resum[,"adj.p.value"] <- round(as.numeric(as.character(resum[,"adj.p.value"])),3)
+  }
 
   if (xtab) {
     # print(xtable(resum, caption = title, label = lbl),
