@@ -86,6 +86,9 @@ summaryCG <- function(res,
     pval.adj <- ifelse(pval.adj < 0.05,
                        paste0("\\colorbox{thistle}{", round(pval.adj, 3), "}"),
                        round(pval.adj, 3))
+  }else{
+    resum[,"p.value"] <- round(as.numeric(as.character(resum[,"p.value"])),3)
+    resum[,"adj.p.value"] <- round(as.numeric(as.character(resum[,"adj.p.value"])),3)
   }
 
   resum <- cbind(variable = rownames(restab$avail),
@@ -107,8 +110,7 @@ summaryCG <- function(res,
     #       size = sz.xtab,
     #       sanitize.text.function = function(x) x,
     #       include.rownames = FALSE, tabular.environment = "longtable", floating = FALSE)
-    resum[,"p.value"] <- round(as.numeric(as.character(resum[,"p.value"])),3)
-    resum[,"adj.p.value"] <- round(as.numeric(as.character(resum[,"adj.p.value"])),3)
+
     resum_xtab <- kable(resum, format = xtab.type, booktabs = T,
           caption = title, longtable = TRUE, escape = F, digits = 3) %>%
       kable_styling(latex_options = c("striped","hold_position", "repeat_header"), font_size = sz.xtab, full_width = F, position = "left") %>%

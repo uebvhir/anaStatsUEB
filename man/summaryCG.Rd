@@ -6,7 +6,8 @@
 \usage{
 summaryCG(res, restab, dat, y, xtab = FALSE, col = TRUE,
   title = NULL, lbl = NULL, met.adj = "fdr", sz.xtab = 8,
-  xtab.type = "latex", sort.pval = FALSE, color = "#d279d2")
+  xtab.type = "latex", sort.pval = FALSE, color = "#d6c9d6",
+  color.font = "white")
 }
 \arguments{
 \item{res}{an object of class 'compareGroups'}
