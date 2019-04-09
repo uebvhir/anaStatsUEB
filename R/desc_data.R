@@ -59,7 +59,7 @@ desc_data <- function(data,
 
   # Creacio data frame final
   df_res <- as.data.frame( cbind(nms,clss,lbl, mm_lev, compl_mis))
-  Hmisc::label(df_res, self = F) <- c("Variable",
+  colnames <- c("Variable",
                       "Type",
                       "Description",
                       "[Min,Max] or Levels",
@@ -75,7 +75,7 @@ desc_data <- function(data,
       mm_lev = cell_spec(mm_lev, color = ifelse(nlev > maxlev, "red", "black"), escape = F),
       compl_mis = cell_spec(compl_mis, color = ifelse(percNA > maxNA, "red", "black"), escape = F)
     ) %>%
-    kable(format = format, booktabs = T,  col.names = labels(df_res), caption = caption, longtable = TRUE, escape = F) %>%
+    kable(format = format, booktabs = T,  col.names = colnames, caption = caption, longtable = TRUE, escape = F) %>%
     kable_styling(latex_options = c("striped","hold_position", "repeat_header"),
                   font_size = size, full_width = F, position = "left")
 }
