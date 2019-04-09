@@ -9,7 +9,7 @@
 #' @param caption Character vector containing the table's caption or title. Default value is a summary.
 #' @keywords read clean data summary depurate
 #' @export desc_data
-#' @import kableExtra Hmisc dplyr
+#' @import kableExtra Hmisc dplyr papeR
 #' @examples
 #' # desc_data(iris, format = "html")
 #' # desc_data(airquality, format = "html", maxNA = 20)
