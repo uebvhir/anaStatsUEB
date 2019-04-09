@@ -56,12 +56,12 @@ desc_data <- function(data,
 
 
   # Creacio data frame final
-  df_res <-as.data.frame( cbind(nms,clss,lbl, mm_lev, compl_mis))
-  papeR::labels(df_res) <- c("Variable",
-                             "Type",
-                             "Description",
-                             "[Min,Max] or Levels",
-                             paste0("Valid cases, n (%)",new_line," Missings, n (%)"))
+  df_res <- as.data.frame( cbind(nms,clss,lbl, mm_lev, compl_mis))
+  labels(df_res) <- c("Variable",
+                      "Type",
+                      "Description",
+                      "[Min,Max] or Levels",
+                      paste0("Valid cases, n (%)",new_line," Missings, n (%)"))
 
 
   # Eliminació de columna en cas de que no hi hagi labels
