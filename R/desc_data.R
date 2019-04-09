@@ -16,12 +16,14 @@
 
 
 
+
+
 desc_data <- function(data,
-                      format = "html",
-                      maxlev = 7,
-                      maxNA = 80,
-                      size = 13,
-                      caption = NULL) {
+                format = "html",
+                maxlev = 7,
+                maxNA = 80,
+                size = 13,
+                caption = NULL) {
 
   new_line <- switch(format, "html" = " <br> ", "latex" = " \\\\ " ) #, "R" = " \n ")
   caption <- paste0("Summary Data.", new_line,
