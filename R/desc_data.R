@@ -16,14 +16,12 @@
 
 
 
-
-
 desc_data <- function(data,
-                format = "html",
-                maxlev = 7,
-                maxNA = 80,
-                size = 13,
-                caption = NULL) {
+                      format = "html",
+                      maxlev = 7,
+                      maxNA = 80,
+                      size = 13,
+                      caption = NULL) {
 
   new_line <- switch(format, "html" = " <br> ", "latex" = " \\\\ " ) #, "R" = " \n ")
   caption <- paste0("Summary Data.", new_line,
@@ -34,9 +32,9 @@ desc_data <- function(data,
   ## creacio de les diferents columnes
   nms <- names(data)
 
-  clss <- sapply(data, class)
+  clss <- sapply(data, function(x) class(x)[length(class(x))])
 
-  lbl <- Hmisc::label(data)
+  lbl <- labels(data)
 
   mm_lev <- unlist(lapply(data, function(x) {
     class_x <- class(x)[length(class(x))]
@@ -60,10 +58,10 @@ desc_data <- function(data,
   # Creacio data frame final
   df_res <-as.data.frame( cbind(nms,clss,lbl, mm_lev, compl_mis))
   papeR::labels(df_res) <- c("Variable",
-                      "Type",
-                      "Description",
-                      "[Min,Max] or Levels",
-                      paste0("Valid cases, n (%)",new_line," Missings, n (%)"))
+                             "Type",
+                             "Description",
+                             "[Min,Max] or Levels",
+                             paste0("Valid cases, n (%)",new_line," Missings, n (%)"))
 
 
   # Eliminació de columna en cas de que no hi hagi labels
