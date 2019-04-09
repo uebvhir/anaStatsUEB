@@ -9,10 +9,10 @@
 #' @param caption Character vector containing the table's caption or title. Default value is a summary.
 #' @keywords read clean data summary depurate
 #' @export desc_data
-#' @import kableExtra Hmisc dplyr papeR
+#' @import kableExtra Hmisc dplyr
 #' @examples
-#' # desc_data(iris, format = "html")
-#' # desc_data(airquality, format = "html", maxNA = 20)
+#' desc_data(iris, format = "html")
+#' desc_data(airquality, format = "html", maxNA = 20)
 
 
 
@@ -59,7 +59,7 @@ desc_data <- function(data,
 
   # Creacio data frame final
   df_res <- as.data.frame( cbind(nms,clss,lbl, mm_lev, compl_mis))
-  papeR::label(df_res, self = F) <- c("Variable",
+  Hmisc::label(df_res, self = F) <- c("Variable",
                       "Type",
                       "Description",
                       "[Min,Max] or Levels",
