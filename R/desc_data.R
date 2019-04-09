@@ -34,7 +34,7 @@ desc_data <- function(data,
 
   clss <- sapply(data, function(x) class(x)[length(class(x))])
 
-  lbl <- labels(data)
+  lbl <- papeR::labels(data)
 
   mm_lev <- unlist(lapply(data, function(x) {
     class_x <- class(x)[length(class(x))]
@@ -57,7 +57,7 @@ desc_data <- function(data,
 
   # Creacio data frame final
   df_res <- as.data.frame( cbind(nms,clss,lbl, mm_lev, compl_mis))
-  labels(df_res) <- c("Variable",
+  papeR::labels(df_res) <- c("Variable",
                       "Type",
                       "Description",
                       "[Min,Max] or Levels",
