@@ -34,7 +34,7 @@ desc_data <- function(data,
 
   clss <- sapply(data, function(x) class(x)[length(class(x))])
 
-  lbl <- labels(data)
+  lbl <- Hmisc::label(data)
 
   mm_lev <- unlist(lapply(data, function(x) {
     class_x <- class(x)[length(class(x))]
