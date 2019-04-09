@@ -11,8 +11,8 @@
 #' @export desc_data
 #' @import kableExtra Hmisc dplyr
 #' @examples
-#' desc_data(iris, format = "html")
-#' desc_data(airquality, format = "html", maxNA = 20)
+#' # desc_data(iris, format = "html")
+#' # desc_data(airquality, format = "html", maxNA = 20)
 
 
 
