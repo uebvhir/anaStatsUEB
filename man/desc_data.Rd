@@ -24,8 +24,8 @@ desc_data(data, format = "html", maxlev = 7, maxNA = 80, size = 13,
 DESCRIPCIO DE LA FUNCIO
 }
 \examples{
-desc_data(iris, format = "html")
-desc_data(airquality, format = "html", maxNA = 20)
+# desc_data(iris, format = "html")
+# desc_data(airquality, format = "html", maxNA = 20)
 }
 \keyword{clean}
 \keyword{data}
