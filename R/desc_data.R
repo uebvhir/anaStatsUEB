@@ -59,7 +59,7 @@ desc_data <- function(data,
 
   # Creacio data frame final
   df_res <- as.data.frame( cbind(nms,clss,lbl, mm_lev, compl_mis))
-  Hmisc::label(df_res, self = F) <- c("Variable",
+  papeR::label(df_res, self = F) <- c("Variable",
                       "Type",
                       "Description",
                       "[Min,Max] or Levels",
