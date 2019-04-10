@@ -109,3 +109,4 @@ quickCor <- function(x, y, dat,
   }
 
 }
+

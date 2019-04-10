@@ -11,4 +11,6 @@ LazyData: true
 Imports: 
      compareGroups (>= 3.2.2),
      xtable (>= 1.8-2)
+Suggests:
+    survminer
 RoxygenNote: 6.1.1

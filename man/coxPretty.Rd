@@ -5,7 +5,7 @@
 \title{A coxPretty Function}
 \usage{
 coxPretty(frml, data, summary.cox = getOption(c("ht", "r", "no"), "ht"),
-  mod_original = TRUE, title = NULL, namevar = NULL, ...)
+  mod_original = FALSE, title = NULL, namevar = NULL, ...)
 }
 \arguments{
 \item{frml}{a formula object, with the response on the left of a ~ operator, and the terms on the right. The response must be a survival object as returned by the Surv function.}
