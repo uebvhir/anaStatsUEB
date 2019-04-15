@@ -34,6 +34,7 @@ summary.quanti <- function(x,
                            show.pval = TRUE,
                            show.all = TRUE,
                            show.n = TRUE,
+                           prep2sum = FALSE,
                            byrow = FALSE){
 
 
@@ -51,6 +52,7 @@ summary.quanti <- function(x,
   ci_uni <- paste0("CI[",round(ci_uni$lower, nround), ";", round(ci_uni$upper, nround), "]")
   res_uni <- data.frame( ALL = paste0(mn_sd, new_line, ci_uni, new_line, md_iqr))
   res_uni <- cbind(variable = x, res_uni)
+  if (prep2sum) res_uni <- cbind(variable = x, levels = "" , res_uni)
   if (show.n) res_uni$n <- length(xx[complete.cases(xx)])
 
   ### Análisis per grup
@@ -67,6 +69,7 @@ summary.quanti <- function(x,
     colnames(res_all) <- levels(yy)
     rownames(res_all) <- x
     res_all <- cbind(variable = x, res_all)
+    if (prep2sum) res_all <- cbind(variable = x, levels = "" , res_all)
 
     ### Es mostra columna ALL
     if (show.all)    res_all$ALL  <- res_uni$ALL
@@ -75,14 +78,14 @@ summary.quanti <- function(x,
     if (show.pval) {
       ## Decidim test que es realitza
       if (is.null(test))    test <- switch(method,
-                                           "param" = ifelse(length(levels(yy)) > 2, "anova","t.test"),
-                                           "non-param" = ifelse(length(levels(yy)) > 2, "kruskal","wilcox"))
+                                           "param" = ifelse(length(levels(yy)) > 2, "Anova","Student's T"),
+                                           "non-param" = ifelse(length(levels(yy)) > 2, "Kruska-Wallis","Mann–Whitney U"))
       ## Calculem test
       pval <- switch(test,
-                     "t.test" = t.test(xx~yy)$p.va,
-                     "wilcox" = wilcox.test(xx~yy)$p.va,
-                     "anova" = summary(aov(xx~yy))[[1]][["Pr(>F)"]][1],
-                     "kruskal" = kruskal.test(xx~yy)$p.va)
+                     "Student's T" = t.test(xx~yy)$p.va,
+                     "Mann–Whitney U" = wilcox.test(xx~yy)$p.va,
+                     "Anova" = summary(aov(xx~yy))[[1]][["Pr(>F)"]][1],
+                     "Kruska-Wallis" = kruskal.test(xx~yy)$p.va)
 
       res_all$p.value <- ifelse(pval < 0.001, "0.001", round(pval,3) )
       caption = paste0(caption, " <br> p.value:  ", test)

@@ -89,11 +89,11 @@ summary.quali <- function(x,
     ## Es realitza test estadístic
     if (show.pval) {
       ## Decidim test que es realitza
-      if (is.null(test))    test <- ifelse( any(table(xx, yy)) < 5 , "Fisher","Chi")
+      if (is.null(test))    test <- ifelse( any(table(xx, yy)) < 5 , "Fisher's exact","Chi-squared")
       ## Calculem test
       pval <- switch(test,
-                     "Fisher" = fisher.test(table(xx,yy))$p.va,
-                     "Chi" = chisq.test(xx,yy)$p.val)
+                     "Fisher's exact" = fisher.test(table(xx,yy))$p.va,
+                     "Chi-squared" = chisq.test(xx,yy)$p.val)
 
       res_all$p.value <- c(ifelse(pval < 0.001, "0.001", round(pval,3) ), rep("", nrow(res_all) - 1))
       caption <-  paste(caption," <br> p.value: ",test)
