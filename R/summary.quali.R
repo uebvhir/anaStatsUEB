@@ -33,8 +33,9 @@ summary.quali <- function(x,
                           byrow = FALSE){
 
   ## Comprovacions variades
-  if (length(table(data[,group])) > 10) warning("La variable group tiene mas de 10 niveles")
-  if (class(data[,group])[length(class(data[,group]))] != "factor") stop("La variable group debe ser factor")
+  if (!is.null(group)) {
+    if (length(length(table(data[,group]))) > 10) warning("La variable group tiene mas de 10 niveles")
+    if (class(data[,group])[length(class(data[,group]))] != "factor") stop("La variable group debe ser factor")}
   if (class(data[,x])[length(class(data[,x]))] != "factor") stop("La variable x debe ser factor")
 
   ## Assignació paametres i variables
@@ -45,8 +46,10 @@ summary.quali <- function(x,
 
   ## Resum univariat
   uni <- binom.confint(table(xx), sum(table(xx)), methods = "exact")
-  res_uni <- data.frame( ALL =  paste0(uni$x, "(", round(uni$mean*100,nround), "% )", new_line,
+  res_uni <- data.frame( ALL =  paste0(uni$x, " (", round(uni$mean*100,nround), "%)", new_line,
                                        "[",round(uni$lower*100, nround),";", round(uni$upper*100, nround), "]" ),row.names =  levels(xx) )
+  res_uni <- cbind(variable = c(x,rep("",nrow(res_uni) - 1)),levels = levels(xx), res_uni)
+
   if (!is.null(group)) {
     # Calculem resum estadístic n(%) IC
 
@@ -54,25 +57,28 @@ summary.quali <- function(x,
     if (!byrow) {
       res_bi <-  apply(table(xx, yy), 2, function(x)  {
         bb <- binom.confint(x,sum(x), methods = "exact")
-        data.frame(paste0(bb$x, "(", round(bb$mean*100,nround), "% )", new_line,
+        data.frame(paste0(bb$x, " (", round(bb$mean*100,nround), "%)", new_line,
                           "[",round(bb$lower*100, nround),";", round(bb$upper*100, nround), "]" ))
       })
       res_all <- do.call(cbind,res_bi)
       colnames(res_all) <- levels(yy)
-    ## PER FILES
+      rownames(res_all) <- levels(xx)
+      res_all <- cbind(variable = c(x,rep("",nrow(res_all) - 1)),levels = levels(xx), res_all)
+      ## PER FILES
     } else{
       res_bi <-  apply(table(xx, yy), 1, function(x)  {
         bb <- binom.confint(x,sum(x), methods = "exact")
-        data.frame(paste0(bb$x, "(", round(bb$mean*100,nround), "% )", new_line,
+        data.frame(paste0(bb$x, " (", round(bb$mean*100,nround), "%)", new_line,
                           "[",round(bb$lower*100, nround),";", round(bb$upper*100, nround), "]" ))
       })
       res_all <- data.frame(t(do.call(cbind,res_bi)))
       colnames(res_all) <- levels(yy)
       rownames(res_all) <- levels(xx)
+      res_all <- cbind(variable = c(x,rep("",nrow(res_all) - 1)),levels = levels(xx), res_all)
     }
 
     ## Afegim columna ALL als resultats
-    if (show.all)    res_all$ALL  <- res_uni
+    if (show.all)    res_all$ALL  <- res_uni$ALL
 
     ## Es realitza test estadístic
     if (show.pval) {
@@ -88,14 +94,11 @@ summary.quali <- function(x,
     }
   }
 
-  tab <- kable(res_all) %>%
-    kable_styling(latex_options = c("striped","hold_position", "repeat_header"), font_size = 14) %>%
-    row_spec(0,background = "#993489", color = "white")
+
 
 
   ## RESULTATS
   ifelse(exists("res_all"),
-         return(list(rows = x, columns = group, summary = res_all, tab = tab )),
+         return(list(rows = x, columns = group, summary = res_all )),
          return(list(variable = x, summary = res_uni)))
 }
-
