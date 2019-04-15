@@ -82,7 +82,7 @@ summary.quali <- function(x,
 
     ## Afegim columna ALL als resultats
     if (show.all)    res_all$ALL  <- res_uni$ALL
-    if (show.n)     res_all$n <-  c(sum(table(xx,yy)),rep("",nrow(res_all) - 1))
+
 
     ## Es realitza test estadístic
     if (show.pval) {
@@ -96,6 +96,8 @@ summary.quali <- function(x,
       res_all$p.value <- c(ifelse(pval < 0.001, "0.001", round(pval,3) ), rep("", nrow(res_all) - 1))
 
     }
+
+    if (show.n)     res_all$n <-  c(sum(table(xx,yy)),rep("",nrow(res_all) - 1))
   }
 
 
