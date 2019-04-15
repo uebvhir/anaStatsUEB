@@ -5,8 +5,8 @@
 \title{A summary.quanti Function}
 \usage{
 \method{summary}{quanti}(x, group = NULL, data, method = "param",
-  format = "html", nround = 2, test = NULL, show.pval = TRUE,
-  show.all = TRUE, byrow = FALSE)
+  format = "html", nround = 1, test = NULL, show.pval = TRUE,
+  show.all = TRUE, show.n = TRUE, byrow = FALSE)
 }
 \arguments{
 \item{x}{numeric or integer variable}
@@ -27,18 +27,20 @@
 
 \item{show.all}{logical indicating whether the 'ALL' column (all data without stratifying by groups) is displayed or not. Default value is FALSE if grouping variable is defined, and FALSE if there are no groups.}
 
+\item{show.n}{ogical indicating whether number of individuals analyzed for each row-variable is displayed or not in the 'descr' table. Default value is TRUE.}
+
 \item{byrow}{logical or NA. Percentage of categorical variables must be reported by rows (TRUE), by columns (FALSE) or by columns and rows to sum up 1 (NA). Default value is FALSE, which means that percentages are reported by columns (withing groups).}
 }
 \description{
 DESCRIPCIO DE LA FUNCIO
 }
 \examples{
-# set.seed(1)
-# data <- df <- data.frame(MUT = factor(c(rep("A", 12),rep("B",13))),
-#                          var = rnorm(25))
-#
-# summary.quanti(x = "var",group = "MUT",data = df)
-# summary.quanti(x = "var",group = "MUT",data = df,show.all = F, show.pval = F)
+ # set.seed(1)
+ # data <- df <- data.frame(MUT = factor(c(rep("A", 12),rep("B",13))),
+ #                          var = rnorm(25))
+
+ # summary.quanti(x = "var", data = df)
+ # summary.quanti(x = "var",group = "MUT",data = df)
 }
 \keyword{ci}
 \keyword{descriptive}

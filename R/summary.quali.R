@@ -9,27 +9,29 @@
 #' @param test character string indicating the test to use. Possible values are 'Fisher','Chi'. Default value is NULL
 #' @param show.pval logical indicating whether p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is TRUE.
 #' @param show.all logical indicating whether the 'ALL' column (all data without stratifying by groups) is displayed or not. Default value is FALSE if grouping variable is defined, and FALSE if there are no groups.
+#' @param show.n ogical indicating whether number of individuals analyzed for each row-variable is displayed or not in the 'descr' table. Default value is TRUE.
 #' @param byrow logical or NA. Percentage of categorical variables must be reported by rows (TRUE), by columns (FALSE) or by columns and rows to sum up 1 (NA). Default value is FALSE, which means that percentages are reported by columns (withing groups).
 #' @keywords summary ci qualitative descriptive exploratory
 #' @export summary.quali
 #' @import binom
 #' @examples
-#' # set.seed(1)
-#' # data <- df <- data.frame(MUT = factor(c(rep("A", 12),rep("B",13))),
-#' #                           var = factor(sample(c("Yes", "no"), 25, replace = T)))
-#' # summary.quali(x = "var", data = df)
-#' # summary.quali(group = "MUT",x = "var", data = df, show.all = F)
-#' # summary.quali(group = "MUT",x = "var", data = df, byrow = T)
+#'  # set.seed(1)
+#'  # data <- df <- data.frame(MUT = factor(c(rep("A", 12),rep("B",13))),
+#'  #                           var = factor(sample(c("Yes", "no"), 25, replace = T)))
+#'  # summary.quali(x = "var", data = df)
+#'  # summary.quali(group = "MUT",x = "var", data = df, show.all = F)
+#'  # summary.quali(group = "MUT",x = "var", data = df, byrow = T)
 
 
 summary.quali <- function(x,
                           group = NULL,
                           data,
                           format = "html",
-                          nround = 2,
+                          nround = 1,
                           test = NULL,
                           show.pval = TRUE,
                           show.all = TRUE,
+                          show.n = TRUE,
                           byrow = FALSE){
 
   ## Comprovacions variades
@@ -49,6 +51,7 @@ summary.quali <- function(x,
   res_uni <- data.frame( ALL =  paste0(uni$x, " (", round(uni$mean*100,nround), "%)", new_line,
                                        "[",round(uni$lower*100, nround),";", round(uni$upper*100, nround), "]" ),row.names =  levels(xx) )
   res_uni <- cbind(variable = c(x,rep("",nrow(res_uni) - 1)),levels = levels(xx), res_uni)
+  if (show.n) res_uni$n <-  c(sum(table(xx)),rep("",nrow(res_uni) - 1))
 
   if (!is.null(group)) {
     # Calculem resum estadístic n(%) IC
@@ -79,6 +82,7 @@ summary.quali <- function(x,
 
     ## Afegim columna ALL als resultats
     if (show.all)    res_all$ALL  <- res_uni$ALL
+    if (show.n)     res_all$n <-  c(sum(table(xx,yy)),rep("",nrow(res_all) - 1))
 
     ## Es realitza test estadístic
     if (show.pval) {
@@ -89,7 +93,7 @@ summary.quali <- function(x,
                      "Fisher" = fisher.test(table(xx,yy))$p.va,
                      "Chi" = chisq.test(xx,yy)$p.val)
 
-      res_all$p.value <- c(pval, rep("", nrow(res_all) - 1))
+      res_all$p.value <- c(ifelse(pval < 0.001, "0.001", round(pval,3) ), rep("", nrow(res_all) - 1))
 
     }
   }
