@@ -51,8 +51,11 @@ summary.quanti <- function(x,
 
   ci_uni <- paste0("CI[",round(ci_uni$lower, nround), ";", round(ci_uni$upper, nround), "]")
   res_uni <- data.frame( ALL = paste0(mn_sd, new_line, ci_uni, new_line, md_iqr))
-  res_uni <- cbind(variable = x, res_uni)
-  if (prep2sum) res_uni <- cbind(variable = x, levels = "" , res_uni)
+
+  if (!prep2sum) {
+    res_uni <- cbind(variable = x, res_uni)
+  }else{
+    res_uni <- cbind(variable = x, levels = "" , res_uni)}
   if (show.n) res_uni$n <- length(xx[complete.cases(xx)])
 
   ### Análisis per grup
@@ -68,8 +71,11 @@ summary.quanti <- function(x,
                                    paste0( sum_bi$xx[,"median"]," [", sum_bi$xx[,"q25.25%"],", ", sum_bi$xx[,"q75.75%"], "]" ))))
     colnames(res_all) <- levels(yy)
     rownames(res_all) <- x
-    res_all <- cbind(variable = x, res_all)
-    if (prep2sum) res_all <- cbind(variable = x, levels = "" , res_all)
+
+    if (!prep2sum) {
+      res_all <- cbind(variable = x, res_all)
+    }else{
+      res_all <- cbind(variable = x, levels = "" , res_all)}
 
     ### Es mostra columna ALL
     if (show.all)    res_all$ALL  <- res_uni$ALL
