@@ -96,6 +96,7 @@ summary.quali <- function(x,
                      "Chi" = chisq.test(xx,yy)$p.val)
 
       res_all$p.value <- c(ifelse(pval < 0.001, "0.001", round(pval,3) ), rep("", nrow(res_all) - 1))
+      caption <-  paste(caption," <br> p.value: ",test)
 
     }
 
@@ -108,6 +109,6 @@ summary.quali <- function(x,
 
   ## RESULTATS
   ifelse(exists("res_all"),
-         return(list(rows = x, columns = group,test = test, caption = caption, summary = res_all )),
+         return(list(rows = x, columns = group,test = test, caption = caption , summary = res_all )),
          return(list(variable = x, caption = c("n(%) <br> [Exact CI]"), summary = res_uni)))
 }

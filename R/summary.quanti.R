@@ -70,7 +70,7 @@ summary.quanti <- function(x,
 
     ### Es mostra columna ALL
     if (show.all)    res_all$ALL  <- res_uni$ALL
-
+    caption = "mean(sd) <br> [IC95% mean] <br> median[IQR]"
     ### Test
     if (show.pval) {
       ## Decidim test que es realitza
@@ -85,13 +85,14 @@ summary.quanti <- function(x,
                      "kruskal" = kruskal.test(xx~yy)$p.va)
 
       res_all$p.value <- ifelse(pval < 0.001, "0.001", round(pval,3) )
+      caption = paste0(caption, " <br> p.value:  ", test)
 
     }
 
     if (show.n) res_all$n <- length(xx[complete.cases(yy)])
 
   }
-  caption = c("mean(sd) <br> [IC95% mean] <br> median[IQR] ")
+
 
   ## RESULTATS
   ifelse(exists("res_all"),
