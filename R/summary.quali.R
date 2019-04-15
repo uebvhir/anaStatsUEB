@@ -49,7 +49,7 @@ summary.quali <- function(x,
   ## Resum univariat
   uni <- binom.confint(table(xx), sum(table(xx)), methods = "exact")
   res_uni <- data.frame( ALL =  paste0(uni$x, " (", round(uni$mean*100,nround), "%)", new_line,
-                                       "[",round(uni$lower*100, nround),";", round(uni$upper*100, nround), "]" ),row.names =  levels(xx) )
+                                       "[",round(uni$lower*100, nround),"; ", round(uni$upper*100, nround), "]" ),row.names =  levels(xx) )
   res_uni <- cbind(variable = c(x,rep("",nrow(res_uni) - 1)),levels = levels(xx), res_uni)
   if (show.n) res_uni$n <-  c(sum(table(xx)),rep("",nrow(res_uni) - 1))
 
@@ -61,25 +61,25 @@ summary.quali <- function(x,
       res_bi <-  apply(table(xx, yy), 2, function(x)  {
         bb <- binom.confint(x,sum(x), methods = "exact")
         data.frame(paste0(bb$x, " (", round(bb$mean*100,nround), "%)", new_line,
-                          "[",round(bb$lower*100, nround),";", round(bb$upper*100, nround), "]" ))
+                          "[",round(bb$lower*100, nround),"; ", round(bb$upper*100, nround), "]" ))
       })
       res_all <- do.call(cbind,res_bi)
       colnames(res_all) <- levels(yy)
       rownames(res_all) <- levels(xx)
       res_all <- cbind(variable = c(x,rep("",nrow(res_all) - 1)),levels = levels(xx), res_all)
-      caption <- c("by col <br> n(%) <br> Exact CI")
+      caption <- c("by col <br> n(%) <br> [Exact CI]")
       ## PER FILES
     } else{
       res_bi <-  apply(table(xx, yy), 1, function(x)  {
         bb <- binom.confint(x,sum(x), methods = "exact")
         data.frame(paste0(bb$x, " (", round(bb$mean*100,nround), "%)", new_line,
-                          "[",round(bb$lower*100, nround),";", round(bb$upper*100, nround), "]" ))
+                          "[",round(bb$lower*100, nround),"; ", round(bb$upper*100, nround), "]" ))
       })
       res_all <- data.frame(t(do.call(cbind,res_bi)))
       colnames(res_all) <- levels(yy)
       rownames(res_all) <- levels(xx)
       res_all <- cbind(variable = c(x,rep("",nrow(res_all) - 1)),levels = levels(xx), res_all)
-      caption <- c("by row <br> n(%) <br> Exact CI")
+      caption <- c("by row <br> n(%) <br> [Exact CI]")
     }
 
     ## Afegim columna ALL als resultats
@@ -109,5 +109,5 @@ summary.quali <- function(x,
   ## RESULTATS
   ifelse(exists("res_all"),
          return(list(rows = x, columns = group,test = test, caption = caption, summary = res_all )),
-         return(list(variable = x, caption = c("n(%) <br> Exact CI"), summary = res_uni)))
+         return(list(variable = x, caption = c("n(%) <br> [Exact CI]"), summary = res_uni)))
 }

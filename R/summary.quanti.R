@@ -62,8 +62,8 @@ summary.quanti <- function(x,
                                                                   q75 = round(quantile(x,na.rm = T, probs = 0.75),nround)))
     ci_bi <- ci.mean(xx ~ yy, data = data)
     res_all <- data.frame(t(paste0(paste0( sum_bi$xx[,"mean"]," (", sum_bi$xx[,"sd"], ")" ), new_line,
-                                   paste0("IC[",round(ci_bi$lower,nround), ";", round(ci_bi$upper,nround),"]" ), new_line,
-                                   paste0( sum_bi$xx[,"median"]," [", sum_bi$xx[,"q25.25%"],",", sum_bi$xx[,"q75.75%"], "]" ))))
+                                   paste0("IC[",round(ci_bi$lower,nround), "; ", round(ci_bi$upper,nround),"]" ), new_line,
+                                   paste0( sum_bi$xx[,"median"]," [", sum_bi$xx[,"q25.25%"],", ", sum_bi$xx[,"q75.75%"], "]" ))))
     colnames(res_all) <- levels(yy)
     rownames(res_all) <- x
     res_all <- cbind(variable = x, res_all)
@@ -89,13 +89,14 @@ summary.quanti <- function(x,
     }
 
     if (show.n) res_all$n <- length(xx[complete.cases(yy)])
-  }
 
+  }
+  caption = c("mean(sd) <br> [IC95% mean] <br> median[IQR] ")
 
   ## RESULTATS
   ifelse(exists("res_all"),
-         return(list(rows = x, columns = group, summary = res_all )),
-         return(list(variable = x, summary = res_uni)))
+         return(list(rows = x, columns = group, caption = caption, summary = res_all )),
+         return(list(variable = x,caption = caption,  summary = res_uni)))
 
 }
 
