@@ -88,10 +88,14 @@ summary.quali <- function(x,
     }
   }
 
+  tab <- kable(res_all) %>%
+    kable_styling(latex_options = c("striped","hold_position", "repeat_header"), font_size = 14) %>%
+    row_spec(0,background = "#993489", color = "white")
+
 
   ## RESULTATS
   ifelse(exists("res_all"),
-         return(list(rows = x, columns = group, summary = res_all )),
+         return(list(rows = x, columns = group, summary = res_all, tab = tab )),
          return(list(variable = x, summary = res_uni)))
 }
 
