@@ -33,7 +33,7 @@ summary.quali <- function(x,
                           byrow = FALSE){
 
   ## Comprovacions variades
-  if (table(data[,group]) > 10) warning("La variable group tiene mas de 10 niveles")
+  if (length(table(data[,group])) > 10) warning("La variable group tiene mas de 10 niveles")
   if (class(data[,group])[length(class(data[,group]))] != "factor") stop("La variable group debe ser factor")
   if (class(data[,x])[length(class(data[,x]))] != "factor") stop("La variable x debe ser factor")
 
