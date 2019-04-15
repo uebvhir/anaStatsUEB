@@ -67,6 +67,7 @@ summary.quali <- function(x,
       colnames(res_all) <- levels(yy)
       rownames(res_all) <- levels(xx)
       res_all <- cbind(variable = c(x,rep("",nrow(res_all) - 1)),levels = levels(xx), res_all)
+      caption <- c("by col <br> n(%) <br> Exact CI")
       ## PER FILES
     } else{
       res_bi <-  apply(table(xx, yy), 1, function(x)  {
@@ -78,6 +79,7 @@ summary.quali <- function(x,
       colnames(res_all) <- levels(yy)
       rownames(res_all) <- levels(xx)
       res_all <- cbind(variable = c(x,rep("",nrow(res_all) - 1)),levels = levels(xx), res_all)
+      caption <- c("by row <br> n(%) <br> Exact CI")
     }
 
     ## Afegim columna ALL als resultats
@@ -98,6 +100,7 @@ summary.quali <- function(x,
     }
 
     if (show.n)     res_all$n <-  c(sum(table(xx,yy)),rep("",nrow(res_all) - 1))
+
   }
 
 
@@ -105,6 +108,6 @@ summary.quali <- function(x,
 
   ## RESULTATS
   ifelse(exists("res_all"),
-         return(list(rows = x, columns = group, summary = res_all )),
-         return(list(variable = x, summary = res_uni)))
+         return(list(rows = x, columns = group,test = test, caption = caption, summary = res_all )),
+         return(list(variable = x, caption = c("n(%) <br> Exact CI"), summary = res_uni)))
 }
