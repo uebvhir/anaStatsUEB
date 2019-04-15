@@ -35,7 +35,7 @@ summary.quali <- function(x,
   ## Comprovacions variades
   if (table(data[,group]) > 10) warning("La variable group tiene mas de 10 niveles")
   if (class(data[,group])[length(class(data[,group]))] != "factor") stop("La variable group debe ser factor")
-  if (!is.numeric(data[,x])) stop("La variable x debe ser numeric or integer ")
+  if (class(data[,x])[length(class(data[,x]))] != "factor") stop("La variable x debe ser factor")
 
   ## Assignació paametres i variables
   new_line <- switch(format, "html" = " <br> ", "latex" = " \\\\ " , "R" = " \n ")
