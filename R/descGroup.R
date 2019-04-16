@@ -20,7 +20,6 @@
 descGroup <- function(covariates, group = NULL,  data, method = "non-param", ...){
 
 
-
   data <- data[,names(data) %in% c(covariates,group)]
   if (!is.null(group)) varname_group <- ifelse( Hmisc::label(data[,group]) != "", Hmisc::label(data[,group]), group)
 
@@ -57,5 +56,5 @@ descGroup <- function(covariates, group = NULL,  data, method = "non-param", ...
                   threeparttable = T, notation = "symbol" )
     # pack_rows(index = table(var)[unique(var)])
 
-return(list(group, covariates,pvalues, results, results_ht))
+return(list(group = group, covariates = covariates,pvalues = pvalues, results = results_ht))
 }

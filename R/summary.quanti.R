@@ -27,6 +27,7 @@
 #'  #   row_spec(0,background = "#993489", color = "white")
 
 
+
 summary.quanti <- function(x,
                            group = NULL,
                            data,
