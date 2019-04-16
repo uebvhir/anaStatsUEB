@@ -17,7 +17,13 @@
 #'  # data$id <- as.character(data$id)
 #'  # descGroup(group  = "MUT",covariates = c("var","size","id"), data = data)
 
-descGroup <- function(covariates, group = NULL,  data, method = "non-param", font_size = 11, ...){
+
+descGroup <- function(covariates,
+                      group = NULL,
+                      data,
+                      method = "non-param",
+                      font_size = 11,
+                      width_lev = "8em", ...){
 
 
   data <- data[,names(data) %in% c(covariates,group)]
@@ -46,15 +52,22 @@ descGroup <- function(covariates, group = NULL,  data, method = "non-param", fon
                     paste0("Summary of results by groups of ", varname_group))
   # names(caption) <- c("Legend", ".")
   # var <- sapply(strsplit(rownames(results), ".", fixed = T),"[[", 1)
+  align = rep("c",ncol(results))
+  align[names(results) == "levels"] <- "l"
+  # results <- results[,!names(results) %in% "variable"]
+  # groups_row <- table(var)[unique(var)]
 
-  results_ht <- kable(results,escape = F, row.names = F,align = "c",
-        caption = caption)  %>%
+  # groups_row <- cumsum(groups_row)
+  results_ht <- kable(results,escape = F, row.names = F,align = align,
+                      caption = caption)  %>%
     kable_styling(latex_options = c("striped","hold_position", "repeat_header"),
                   font_size = font_size, full_width = F) %>%
     row_spec(0,background = "#993489", color = "white") %>%
+    column_spec(2, width_max = width_lev) %>%
+    column_spec(1, bold = T)  %>%
     add_footnote(footnote, escape = F,
-                  threeparttable = T, notation = "symbol" )
-    # pack_rows(index = table(var)[unique(var)])
+                 threeparttable = T, notation = "symbol" ) #%>%
+  # pack_rows(groups_row ,hline_after = F, indent = F)
 
-return(list(group = group, covariates = covariates,pvalues = pvalues, results = results_ht))
+  return(list(group = group, covariates = covariates,pvalues = pvalues, results = results_ht))
 }

@@ -103,11 +103,12 @@ caption = descriptive
                                            "param" = ifelse(length(levels(yy)) > 2, "Anova","Student's T"),
                                            "non-param" = ifelse(length(levels(yy)) > 2, "Kruska-Wallis","Mann–Whitney U"))
       ## Calculem test
-      pval <- switch(test,
+      pval <- try(switch(test,
                      "Student's T" = t.test(xx~yy)$p.va,
                      "Mann–Whitney U" = wilcox.test(xx~yy)$p.va,
                      "Anova" = summary(aov(xx~yy))[[1]][["Pr(>F)"]][1],
-                     "Kruska-Wallis" = kruskal.test(xx~yy)$p.va)
+                     "Kruska-Wallis" = kruskal.test(xx~yy)$p.va), TRUE)
+      pval <- ifelse(pval == "try-error", ".",pval)
 
       res_all$p.value <- ifelse(pval < 0.001, "0.001", round(pval,3) )
       caption = paste0(caption, "<font size='1'> <br> p.value:  ", test, "</font>")

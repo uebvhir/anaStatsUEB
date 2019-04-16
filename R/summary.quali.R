@@ -105,9 +105,10 @@ summary.quali <- function(x,
       ## Decidim test que es realitza
       if (is.null(test))    test <- ifelse( any(table(xx, yy)) < 5 , "Fisher's exact","Chi-squared")
       ## Calculem test
-      pval <- switch(test,
+      pval <- try(switch(test,
                      "Fisher's exact" = fisher.test(table(xx,yy))$p.va,
-                     "Chi-squared" = chisq.test(xx,yy)$p.val)
+                     "Chi-squared" = chisq.test(xx,yy)$p.val), TRUE)
+      pval <- ifelse(pval == "try-error", ".",pval)
 
       res_all$p.value <- c(ifelse(pval < 0.001, "0.001", round(pval,3) ), rep("", nrow(res_all) - 1))
       caption <-  paste(caption,"<font size='1'> <br> p.value: ",test, "</font>")
