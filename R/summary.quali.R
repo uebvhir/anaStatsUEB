@@ -110,7 +110,7 @@ summary.quali <- function(x,
                      "Chi-squared" = chisq.test(xx,yy)$p.val), TRUE)
       pval <- ifelse(pval == "try-error", ".",pval)
 
-      res_all$p.value <- c(ifelse(pval < 0.001, "0.001", round(pval,3) ), rep("", nrow(res_all) - 1))
+      res_all$p.value <- c(ifelse(pval < 0.001, "0.001", try(round(pval,3),TRUE) ), rep("", nrow(res_all) - 1))
       caption <-  paste(caption,"<font size='1'> <br> p.value: ",test, "</font>")
 
     }

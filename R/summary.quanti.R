@@ -110,7 +110,7 @@ caption = descriptive
                      "Kruska-Wallis" = kruskal.test(xx~yy)$p.va), TRUE)
       pval <- ifelse(pval == "try-error", ".",pval)
 
-      res_all$p.value <- ifelse(pval < 0.001, "0.001", round(pval,3) )
+      res_all$p.value <- ifelse(pval < 0.001, "0.001", try(round(pval,3),TRUE) )
       caption = paste0(caption, "<font size='1'> <br> p.value:  ", test, "</font>")
 
     }
