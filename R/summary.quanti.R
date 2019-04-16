@@ -35,6 +35,7 @@ summary.quanti <- function(x,
                            show.all = TRUE,
                            show.n = TRUE,
                            prep2sum = FALSE,
+                           sub.ht = TRUE,
                            byrow = FALSE){
 
 
