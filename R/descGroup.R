@@ -17,7 +17,7 @@
 #'  # data$id <- as.character(data$id)
 #'  # descGroup(group  = "MUT",covariates = c("var","size","id"), data = data)
 
-descGroup <- function(covariates, group = NULL,  data, method = "non-param", ...){
+descGroup <- function(covariates, group = NULL,  data, method = "non-param", font_size = 11, ...){
 
 
   data <- data[,names(data) %in% c(covariates,group)]
@@ -50,7 +50,7 @@ descGroup <- function(covariates, group = NULL,  data, method = "non-param", ...
   results_ht <- kable(results,escape = F, row.names = F,align = "c",
         caption = caption)  %>%
     kable_styling(latex_options = c("striped","hold_position", "repeat_header"),
-                  font_size = 11, full_width = F) %>%
+                  font_size = font_size, full_width = F) %>%
     row_spec(0,background = "#993489", color = "white") %>%
     add_footnote(footnote, escape = F,
                   threeparttable = T, notation = "symbol" )
