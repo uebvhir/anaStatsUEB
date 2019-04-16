@@ -108,8 +108,8 @@ caption = descriptive
                      "Mann–Whitney U" = wilcox.test(xx~yy)$p.va,
                      "Anova" = summary(aov(xx~yy))[[1]][["Pr(>F)"]][1],
                      "Kruska-Wallis" = kruskal.test(xx~yy)$p.va), TRUE)
-      pval <- ifelse(pval == "try-error", ".",pval)
-      pval_round <- ifelse(try(round(pval,3), TRUE) == "try_error", ".", round(pval,3))
+      pval <- ifelse(grepl("Error", pval), ".",pval)
+      pval_round <- ifelse(grepl("Error", try(round(pval,3), TRUE)), ".", round(pval,3))
 
 
       res_all$p.value <- ifelse(pval != "." & pval < 0.001, "0.001", pval_round  )
