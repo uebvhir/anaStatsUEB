@@ -109,8 +109,10 @@ caption = descriptive
                      "Anova" = summary(aov(xx~yy))[[1]][["Pr(>F)"]][1],
                      "Kruska-Wallis" = kruskal.test(xx~yy)$p.va), TRUE)
       pval <- ifelse(pval == "try-error", ".",pval)
+      pval_round <- ifelse(try(round(pval,3), TRUE) == "try_error", ".", round(pval,3))
 
-      res_all$p.value <- ifelse(pval < 0.001, "0.001", try(round(pval,3),TRUE) )
+
+      res_all$p.value <- ifelse(pval != "." & pval < 0.001, "0.001", pval_round  )
       caption = paste0(caption, "<font size='1'> <br> p.value:  ", test, "</font>")
 
     }
