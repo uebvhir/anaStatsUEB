@@ -123,6 +123,6 @@ summary.quali <- function(x,
 
   ## RESULTATS
   ifelse(exists("res_all"),
-         return(list(rows = x, columns = group,test = test, caption = caption, methods = descriptive , summary = res_all )),
-         return(list(variable = x, caption = caption, summary = res_uni)))
+         return(list(rows = x, columns = group,test = test,pval = pval, caption = caption, methods = descriptive , summary = res_all )),
+         return(list(variable = x, methods = caption, caption = caption, summary = res_uni)))
 }

@@ -6,7 +6,7 @@
 \usage{
 \method{summary}{quanti}(x, group = NULL, data, method = "param",
   format = "html", nround = 1, test = NULL, show.pval = TRUE,
-  show.all = TRUE, show.n = TRUE, prep2sum = FALSE, byrow = FALSE)
+  show.all = TRUE, show.n = TRUE, prep2sum = FALSE, sub.ht = TRUE)
 }
 \arguments{
 \item{x}{numeric or integer variable}
@@ -40,7 +40,10 @@ DESCRIPCIO DE LA FUNCIO
  #                          var = rnorm(25))
 
  # summary.quanti(x = "var", data = df)
- # summary.quanti(x = "var",group = "MUT",data = df)
+ # tab <- summary.quanti(x = "var",group = "MUT",data = df)
+ # kable(tab$summary,escape = F, row.names = F,align = "c", caption = tab$caption) \%>\%
+ #   kable_styling(latex_options = c("striped","hold_position", "repeat_header"), full_width = F, font_size = 14) \%>\%
+ #   row_spec(0,background = "#993489", color = "white")
 }
 \keyword{ci}
 \keyword{descriptive}

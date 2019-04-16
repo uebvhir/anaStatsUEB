@@ -120,8 +120,8 @@ caption = descriptive
 
   ## RESULTATS
   ifelse(exists("res_all"),
-         return(list(rows = x, columns = group, caption = caption, methods = descriptive, summary = res_all )),
-         return(list(variable = x,caption = caption,  summary = res_uni)))
+         return(list(rows = x, columns = group, pval = pval, caption = caption, methods = descriptive, summary = res_all )),
+         return(list(variable = x,methods = caption, caption = caption,  summary = res_uni)))
 
 }
 
