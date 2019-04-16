@@ -21,7 +21,10 @@
 #'  #                          var = rnorm(25))
 #'
 #'  # summary.quanti(x = "var", data = df)
-#'  # summary.quanti(x = "var",group = "MUT",data = df)
+#'  # tab <- summary.quanti(x = "var",group = "MUT",data = df)
+#'  # kable(tab$summary,escape = F, row.names = F,align = "c", caption = tab$caption) %>%
+#'  #   kable_styling(latex_options = c("striped","hold_position", "repeat_header"), full_width = F, font_size = 14) %>%
+#'  #   row_spec(0,background = "#993489", color = "white")
 
 
 summary.quanti <- function(x,
@@ -35,8 +38,7 @@ summary.quanti <- function(x,
                            show.all = TRUE,
                            show.n = TRUE,
                            prep2sum = FALSE,
-                           sub.ht = TRUE,
-                           byrow = FALSE){
+                           sub.ht = TRUE){
 
 
   ## Definicio de parametres
@@ -59,7 +61,7 @@ summary.quanti <- function(x,
                    round(quantile(xx,na.rm = T, probs = 0.75),nround),"]")
 
   ci_uni <- paste0("CI[",round(ci_uni$lower, nround), ";", round(ci_uni$upper, nround), "]")
-  res_uni <- data.frame( ALL = paste0(mn_sd, new_line, ci_uni, new_line, md_iqr))
+  res_uni <- data.frame( ALL = paste0(sum(complete.cases(xx)),new_line,mn_sd, new_line, ci_uni, new_line, md_iqr))
 
   if (!prep2sum) {
     res_uni <- cbind(variable = paste0(varname_x,sub), res_uni)
@@ -70,26 +72,28 @@ summary.quanti <- function(x,
 
   ### Análisis per grup
   if (!is.null(group)) {
-    sum_bi <- aggregate(xx ~ yy, data = data, FUN = function(x) c(mean = round(mean(x, na.rm = T),nround),
+    sum_bi <- aggregate(xx ~ yy, data = data, FUN = function(x) c(n = sum(complete.cases(x)),
+                                                                  mean = round(mean(x, na.rm = T),nround),
                                                                   sd = round(sd(x, na.rm = T),nround),
                                                                   median = round(median(x,na.rm = T),nround),
                                                                   q25 = round(quantile(x,na.rm = T, probs = 0.25),nround),
                                                                   q75 = round(quantile(x,na.rm = T, probs = 0.75),nround)))
     ci_bi <- ci.mean(xx ~ yy, data = data)
-    res_all <- data.frame(t(paste0(paste0( sum_bi$xx[,"mean"]," (", sum_bi$xx[,"sd"], ")" ), new_line,
+    res_all <- data.frame(t(paste0(paste0(sum_bi$xx[,"n"]), new_line,
+                                   paste0( sum_bi$xx[,"mean"]," (", sum_bi$xx[,"sd"], ")" ), new_line,
                                    paste0("IC[",round(ci_bi$lower,nround), "; ", round(ci_bi$upper,nround),"]" ), new_line,
                                    paste0( sum_bi$xx[,"median"]," [", sum_bi$xx[,"q25.25%"],", ", sum_bi$xx[,"q75.75%"], "]" ))))
     colnames(res_all) <- levels(yy)
     rownames(res_all) <- paste0(varname_x,sub)
 
     if (!prep2sum) {
-      res_all <- cbind(variable = varname_x, res_all)
+      res_all <- cbind(variable = paste0(varname_x,sub), res_all)
     }else{
-      res_all <- cbind(variable = varname_x, levels = "" , res_all)}
+      res_all <- cbind(variable = paste0(varname_x,sub), levels = "" , res_all)}
 
     ### Es mostra columna ALL
     if (show.all)    res_all$ALL  <- res_uni$ALL
-    caption = paste0("Summary of results by groups of ",varname_group,"<font size='1'> 2:  mean(sd) <br> [IC95% mean] <br> median[IQR] </font>")
+    caption = paste0("Summary of results by groups of ",varname_group," <br> <font size='1'> 2:  mean(sd) <br> [IC95% mean] <br> median[IQR] </font>")
     ### Test
     if (show.pval) {
       ## Decidim test que es realitza
