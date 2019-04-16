@@ -18,9 +18,13 @@
 #'  # set.seed(1)
 #'  # data <- df <- data.frame(MUT = factor(c(rep("A", 12),rep("B",13))),
 #'  #                           var = factor(sample(c("Yes", "no"), 25, replace = T)))
-#'  # summary.quali(x = "var", data = df)
+#'  # tab <- summary.quali(x = "var", data = df)
 #'  # summary.quali(group = "MUT",x = "var", data = df, show.all = F)
-#'  # summary.quali(group = "MUT",x = "var", data = df, byrow = T)
+#'  # tab <- summary.quali(group = "MUT",x = "var", data = df, byrow = T)
+#'  # kable(tab$summary,escape = F, row.names = F,align = "c", caption = tab$caption)  %>%
+#'  # kable_styling(latex_options = c("striped","hold_position", "repeat_header"), font_size = 14) %>%
+#'  # row_spec(0,background = "#993489", color = "white")
+
 
 
 summary.quali <- function(x,
@@ -32,7 +36,8 @@ summary.quali <- function(x,
                           show.pval = TRUE,
                           show.all = TRUE,
                           show.n = TRUE,
-                          byrow = FALSE){
+                          byrow = FALSE,
+                          sub.ht = TRUE){
 
   ## Comprovacions variades
   if (!is.null(group)) {
@@ -43,15 +48,21 @@ summary.quali <- function(x,
   ## Assignació paametres i variables
   new_line <- switch(format, "html" = " <br> ", "latex" = " \\\\ " , "R" = " \n ")
   xx <- data[,x]
-  if (!is.null(group)) yy <- data[, group]
+  varname_x <- ifelse( Hmisc::label(data[,x]) != "", Hmisc::label(data[,x]), x)
+  if (!is.null(group)) {
+    varname_group <- ifelse( Hmisc::label(data[,group]) != "", Hmisc::label(data[,group]), group)
+    yy <- data[, group]
+  }
+  if (sub.ht) sub <- "<sub>1</sub>"
 
 
   ## Resum univariat
   uni <- binom.confint(table(xx), sum(table(xx)), methods = "exact")
   res_uni <- data.frame( ALL =  paste0(uni$x, " (", round(uni$mean*100,nround), "%)", new_line,
                                        "[",round(uni$lower*100, nround),"; ", round(uni$upper*100, nround), "]" ),row.names =  levels(xx) )
-  res_uni <- cbind(variable = c(x,rep("",nrow(res_uni) - 1)),levels = levels(xx), res_uni)
+  res_uni <- cbind(variable = c(paste0(varname_x, sub),rep("",nrow(res_uni) - 1)),levels = levels(xx), res_uni)
   if (show.n) res_uni$n <-  c(sum(table(xx)),rep("",nrow(res_uni) - 1))
+  caption <- paste0(" <font size='1'> 1: n(%) <br> [Exact CI] </font>")
 
   if (!is.null(group)) {
     # Calculem resum estadístic n(%) IC
@@ -66,8 +77,8 @@ summary.quali <- function(x,
       res_all <- do.call(cbind,res_bi)
       colnames(res_all) <- levels(yy)
       rownames(res_all) <- levels(xx)
-      res_all <- cbind(variable = c(x,rep("",nrow(res_all) - 1)),levels = levels(xx), res_all)
-      caption <- c("by col <br> n(%) <br> [Exact CI]")
+      res_all <- cbind(variable = c(paste0(varname_x, sub),rep("",nrow(res_all) - 1)),levels = levels(xx), res_all)
+      caption <- paste0("Summary of results by groups of ",varname_group ," <font size='1'> <br> 1: by col <br> n(%) <br> [Exact CI] </font>")
       ## PER FILES
     } else{
       res_bi <-  apply(table(xx, yy), 1, function(x)  {
@@ -78,8 +89,9 @@ summary.quali <- function(x,
       res_all <- data.frame(t(do.call(cbind,res_bi)))
       colnames(res_all) <- levels(yy)
       rownames(res_all) <- levels(xx)
-      res_all <- cbind(variable = c(x,rep("",nrow(res_all) - 1)),levels = levels(xx), res_all)
-      caption <- c("by row <br> n(%) <br> [Exact CI]")
+
+      res_all <- cbind(variable = c(paste0(varname_x, sub),rep("",nrow(res_all) - 1)),levels = levels(xx), res_all)
+      caption <- paste0("Summary of results by groups of ",varname_group ," <font size='1'> <br> 1: by row <br> n(%) <br> [Exact CI] </font>")
     }
 
     ## Afegim columna ALL als resultats
@@ -96,7 +108,7 @@ summary.quali <- function(x,
                      "Chi-squared" = chisq.test(xx,yy)$p.val)
 
       res_all$p.value <- c(ifelse(pval < 0.001, "0.001", round(pval,3) ), rep("", nrow(res_all) - 1))
-      caption <-  paste(caption," <br> p.value: ",test)
+      caption <-  paste(caption,"<font size='1'> <br> p.value: ",test, "</font>")
 
     }
 

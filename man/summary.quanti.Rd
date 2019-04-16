@@ -6,7 +6,7 @@
 \usage{
 \method{summary}{quanti}(x, group = NULL, data, method = "param",
   format = "html", nround = 1, test = NULL, show.pval = TRUE,
-  show.all = TRUE, show.n = TRUE, byrow = FALSE)
+  show.all = TRUE, show.n = TRUE, prep2sum = FALSE, byrow = FALSE)
 }
 \arguments{
 \item{x}{numeric or integer variable}

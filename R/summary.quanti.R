@@ -38,9 +38,17 @@ summary.quanti <- function(x,
                            byrow = FALSE){
 
 
+  ## Definicio de parametres
   new_line <- switch(format, "html" = " <br> ", "latex" = " \\\\ " , "R" = " \n ")
   xx <- data[,x]
-  if (!is.null(group)) yy <- data[, group]
+  varname_x <- ifelse( Hmisc::label(data[,x]) != "", Hmisc::label(data[,x]), x)
+  if (!is.null(group)) {
+    varname_group <- ifelse( Hmisc::label(data[,group]) != "", Hmisc::label(data[,group]), group)
+    yy <- data[, group]
+  }
+  caption = "<font size='1'> 2:  mean(sd) <br> [IC95% mean] <br> median[IQR] </font>"
+  if (sub.ht) sub <- "<sub>2</sub>"
+
 
   ## Resum univariat mean(sd) \\ IC mean \\ median[IQR]
   ci_uni <- ci.mean(xx)
@@ -53,10 +61,11 @@ summary.quanti <- function(x,
   res_uni <- data.frame( ALL = paste0(mn_sd, new_line, ci_uni, new_line, md_iqr))
 
   if (!prep2sum) {
-    res_uni <- cbind(variable = x, res_uni)
+    res_uni <- cbind(variable = paste0(varname_x,sub), res_uni)
   }else{
-    res_uni <- cbind(variable = x, levels = "" , res_uni)}
+    res_uni <- cbind(variable = paste0(varname_x,sub), levels = "" , res_uni)}
   if (show.n) res_uni$n <- length(xx[complete.cases(xx)])
+
 
   ### Análisis per grup
   if (!is.null(group)) {
@@ -70,16 +79,16 @@ summary.quanti <- function(x,
                                    paste0("IC[",round(ci_bi$lower,nround), "; ", round(ci_bi$upper,nround),"]" ), new_line,
                                    paste0( sum_bi$xx[,"median"]," [", sum_bi$xx[,"q25.25%"],", ", sum_bi$xx[,"q75.75%"], "]" ))))
     colnames(res_all) <- levels(yy)
-    rownames(res_all) <- x
+    rownames(res_all) <- paste0(varname_x,sub)
 
     if (!prep2sum) {
-      res_all <- cbind(variable = x, res_all)
+      res_all <- cbind(variable = varname_x, res_all)
     }else{
-      res_all <- cbind(variable = x, levels = "" , res_all)}
+      res_all <- cbind(variable = varname_x, levels = "" , res_all)}
 
     ### Es mostra columna ALL
     if (show.all)    res_all$ALL  <- res_uni$ALL
-    caption = "mean(sd) <br> [IC95% mean] <br> median[IQR]"
+    caption = paste0("Summary of results by groups of ",varname_group,"<font size='1'> 2:  mean(sd) <br> [IC95% mean] <br> median[IQR] </font>")
     ### Test
     if (show.pval) {
       ## Decidim test que es realitza
@@ -94,7 +103,7 @@ summary.quanti <- function(x,
                      "Kruska-Wallis" = kruskal.test(xx~yy)$p.va)
 
       res_all$p.value <- ifelse(pval < 0.001, "0.001", round(pval,3) )
-      caption = paste0(caption, " <br> p.value:  ", test)
+      caption = paste0(caption, "<font size='1'> <br> p.value:  ", test, "</font>")
 
     }
 
