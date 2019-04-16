@@ -49,10 +49,10 @@ summary.quanti <- function(x,
     varname_group <- ifelse( Hmisc::label(data[,group]) != "", Hmisc::label(data[,group]), group)
     yy <- data[, group]
   }
-  caption = "<font size='1'> 2:  mean(sd) <br> [IC95% mean] <br> median[IQR] </font>"
+
   if (sub.ht) sub <- "<sub>2</sub>"
-
-
+descriptive <-  "<br> <font size='1'> 2: N <br> mean(sd) <br> [IC95% mean] <br> median[IQR] </font>"
+caption = descriptive
   ## Resum univariat mean(sd) \\ IC mean \\ median[IQR]
   ci_uni <- ci.mean(xx)
   mn_sd <- paste0(round(mean(xx,na.rm = T),nround), " (", round(sd(xx,na.rm = T),nround), ")")
@@ -93,7 +93,8 @@ summary.quanti <- function(x,
 
     ### Es mostra columna ALL
     if (show.all)    res_all$ALL  <- res_uni$ALL
-    caption = paste0("Summary of results by groups of ",varname_group," <br> <font size='1'> 2:  mean(sd) <br> [IC95% mean] <br> median[IQR] </font>")
+    title = paste0("Summary of results by groups of ",varname_group)
+    caption = paste0(title,descriptive)
     ### Test
     if (show.pval) {
       ## Decidim test que es realitza
@@ -119,7 +120,7 @@ summary.quanti <- function(x,
 
   ## RESULTATS
   ifelse(exists("res_all"),
-         return(list(rows = x, columns = group, caption = caption, summary = res_all )),
+         return(list(rows = x, columns = group, caption = caption, methods = descriptive, summary = res_all )),
          return(list(variable = x,caption = caption,  summary = res_uni)))
 
 }

@@ -78,7 +78,8 @@ summary.quali <- function(x,
       colnames(res_all) <- levels(yy)
       rownames(res_all) <- levels(xx)
       res_all <- cbind(variable = c(paste0(varname_x, sub),rep("",nrow(res_all) - 1)),levels = levels(xx), res_all)
-      caption <- paste0("Summary of results by groups of ",varname_group ," <font size='1'> <br> 1: by col <br> n(%) <br> [Exact CI] </font>")
+      descriptive <- " <font size='1'> <br> 1: by col <br> n(%) <br> [Exact CI] </font>"
+      caption <- paste0("Summary of results by groups of ",varname_group ,descriptive)
       ## PER FILES
     } else{
       res_bi <-  apply(table(xx, yy), 1, function(x)  {
@@ -91,7 +92,8 @@ summary.quali <- function(x,
       rownames(res_all) <- levels(xx)
 
       res_all <- cbind(variable = c(paste0(varname_x, sub),rep("",nrow(res_all) - 1)),levels = levels(xx), res_all)
-      caption <- paste0("Summary of results by groups of ",varname_group ," <font size='1'> <br> 1: by row <br> n(%) <br> [Exact CI] </font>")
+      descriptive <- " <font size='1'> <br> 1: by row <br> n(%) <br> [Exact CI] </font>"
+      caption <- paste0("Summary of results by groups of ",varname_group ,descriptive)
     }
 
     ## Afegim columna ALL als resultats
@@ -121,6 +123,6 @@ summary.quali <- function(x,
 
   ## RESULTATS
   ifelse(exists("res_all"),
-         return(list(rows = x, columns = group,test = test, caption = caption , summary = res_all )),
-         return(list(variable = x, caption = c("n(%) <br> [Exact CI]"), summary = res_uni)))
+         return(list(rows = x, columns = group,test = test, caption = caption, methods = descriptive , summary = res_all )),
+         return(list(variable = x, caption = caption, summary = res_uni)))
 }
