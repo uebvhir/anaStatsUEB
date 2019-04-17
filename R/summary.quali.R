@@ -116,11 +116,14 @@ summary.quali <- function(x,
                          "Fisher's exact" = fisher.test(table(xx,yy))$p.va,
                          "Chi-squared" = chisq.test(xx,yy)$p.val), TRUE)
       pval <- ifelse(grepl("Error", pval), ".",pval)
-      pval_round <- ifelse(grepl("Error", try(round(pval,3), TRUE)), ".", round(pval,3))
-
+      pval_round <- ifelse(grepl("Error", try(round(pval,3), TRUE)), "-", round(pval,3))
+      pval_round <- switch(test,
+                           "Fisher's exact" = paste0(pval_round,  "<sup>3</sup>"),
+                           "Chi-squared" = paste0(pval_round,  "<sup>4</sup>"))
+      pval_round[grep("-",pval_round, fixed = T)] <- "-"
 
       res_all$p.value <- c(ifelse(pval != "." & pval < 0.001, "<0.001", pval_round ), rep("", nrow(res_all) - 1))
-      txt_pval <- paste0("<font size='1'> <br> p.value: ",test, "</font>")
+      txt_pval <- paste0("<font size='1'> <br> p.value: ",switch(test, "Fisher's exact" = "<sup>3</sup>","Chi-squared" = "<sup>4</sup>"), test, "</font>")
       txt_caption <-  paste(txt_caption,txt_descriptive,txt_descriptive,txt_pval )
 
 
@@ -137,7 +140,7 @@ summary.quali <- function(x,
   ifelse(!is.null(group),
          return(list(rows = x,
                      columns = group,
-                     test = txt_pval,
+                     txt_test = txt_pval,
                      pval = pval,
                      txt_caption = txt_caption,
                      methods = txt_descriptive ,

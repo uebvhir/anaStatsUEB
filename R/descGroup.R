@@ -31,15 +31,16 @@ descGroup <- function(covariates,
                       byrow = FALSE,
                       pval_cut = 0.05, ...){
 
-
+  ## Seleccionem variables i etiquetes
   data <- data[,names(data) %in% c(covariates,group)]
   if (!is.null(group)) varname_group <- ifelse( Hmisc::label(data[,group]) != "", Hmisc::label(data[,group]), group)
 
-
+  ## guardem class de cada variable
   class_data <- unlist(lapply(data, function(x) class(x)[length(class(x))]))
   class_data[which(class_data == "numeric" | class_data == "integer")] <- "numeric"
   class_data <- class_data[!names(class_data) %in% group]
 
+  ## realitzem analisis descriptiu i/o comparatiu
   list_var <- list()
   for (i in seq_along(class_data)) {
     list_var[[names(class_data)[i]]] <- switch(class_data[i],
@@ -49,24 +50,41 @@ descGroup <- function(covariates,
     )
   }
   list_var_sum <- lapply(list_var, function(x)x[["summary"]])
-  list_var_met <- lapply(list_var, function(x)x[["methods"]])
-  # list_var_test <- lapply(list_var, function(x)x[["test"]])
-  pvalues <- unlist(lapply(list_var, function(x)x[["pval"]]))
   results <- do.call("rbind", list_var_sum)
-  footnote <-  do.call("cbind", unique(list_var_met))
+
+  pvalues <- unlist(lapply(list_var, function(x)x[["pval"]]))
+
+  ## Caption de la taula final
+  footnote <- NULL
+  for(i in seq_along(unique(class_data))){
+    desc <- unique(lapply(list_var[class_data == unique(class_data)[i]], function(x)x[["methods"]]))
+    tst <- paste0(unique(lapply(list_var[class_data == unique(class_data)[i]], function(x)x[["txt_test"]])), collapse = "")
+    footnote <- c(footnote, paste0(desc, tst))
+  }
+
+
+  # footnote <-  do.call("cbind", unique(list_var_met))
   caption <- ifelse(is.null(group),
                     "Summary descriptives table",
                     paste0("Summary of results by groups of ", varname_group))
-  # names(caption) <- c("Legend", ".")
+
+  ## CREACIO DE LA TAULA FINAL
+  # variables per files
   var <- sapply(strsplit(rownames(results), ".", fixed = T),"[[", 1)
+
+  ## alineament a la taula
   align = rep("c",ncol(results))
   align[names(results) == "levels"] <- "l"
   # results <- results[,!names(results) %in% "variable"]
   # groups_row <- table(var)[unique(var)]
+
+  ## parametres per donar color a les variables amb p.value inferior a punt de tall
   pval_trunc <- as.numeric(gsub("<","",results$p.value))
   condition <- pval_trunc > pval_cut | is.na(pval_trunc)
   colorRow <- which(rownames(results) %in% grep(paste0(var[which(!condition)],collapse = "|"), rownames(results), value = T) )
   # groups_row <- cumsum(groups_row)
+
+  ## Taula HTML
   results_ht <- results %>%
     # mutate(p.value = cell_spec(p.value, "html", color = ifelse(condition,"black", "white"),
     #                            background = ifelse(condition, "white", "#993489"))) %>%
@@ -79,6 +97,7 @@ descGroup <- function(covariates,
     column_spec(which(names(results) == "ALL"), bold = T)   %>%
     add_footnote(footnote, escape = F,
                  notation = "symbol" )
+
   if (!is.null(group) & (sum(pval_trunc < 0.05, na.rm = T) != 0)) {
     results_ht <- results_ht %>% row_spec(colorRow, bold = F, color = "black",background = "#ebe0e9") }#%>%
   # pack_rows(groups_row ,hline_after = F, indent = F)
