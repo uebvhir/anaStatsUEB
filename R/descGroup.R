@@ -1,3 +1,25 @@
+#' A descGroup Function
+#'
+#' DESCRIPCIO DE LA FUNCIO
+#' @param covariates a character string with names of variables.
+#' @param group factor variable. Outcome. Default value is NULL
+#' @param data data frame, list or environment (or object coercible by 'as.data.frame' to a data frame) containing the variables in the model. If they are not found in 'data', the variables are taken from 'environment(formula)'.
+#' @param method character string indicating the method to test use; possible values are 'param' or 'nonparam'. Default values is 'param'.
+#' @param font_size A numeric input for table font size
+#' @param width_lev defines the maximum width of table columns. Default value is 8em
+#' @param pval_cut cut p.value colored
+#' @keywords summary ci qualitative descriptive exploratory
+#' @export descGroup
+#' @import kableExtra
+#' @examples
+#'  # set.seed(1)
+#'  # data <- df <- data.frame(MUT = factor(c(rep("A", 12),rep("B",13))),
+#'  #                          var = factor(sample(c("Yes", "no"), 25, replace = T)),
+#'  #                          size = rnorm(25),
+#'  #                          id = paste0("a",1:25))
+#'  # data$id <- as.character(data$id)
+#'  # descGroup(group  = "MUT",covariates = c("var","size","id"), data = data)
+
 descGroup <- function(covariates,
                       group = NULL,
                       data,
@@ -38,8 +60,8 @@ descGroup <- function(covariates,
   # results <- results[,!names(results) %in% "variable"]
   # groups_row <- table(var)[unique(var)]
 
-  condition <- as.numeric(results$p.value) < pval_cut | complete.cases(as.numeric(results$p.value))
-  colorRow <- which(rownames(results) %in% grep(paste0(var[which(condition)],collapse = "|"), rownames(results), value = T) )
+  condition <- as.numeric(results$p.value) > pval_cut | is.na(as.numeric(results$p.value))
+  colorRow <- which(rownames(results) %in% grep(paste0(var[which(!condition)],collapse = "|"), rownames(results), value = T) )
   # groups_row <- cumsum(groups_row)
   results_ht <- results %>%
     # mutate(p.value = cell_spec(p.value, "html", color = ifelse(condition,"black", "white"),
@@ -50,8 +72,7 @@ descGroup <- function(covariates,
     row_spec(0,background = "#993489", color = "white") %>%
     column_spec(2, width_max = width_lev) %>%
     column_spec(1, bold = T)  %>%
-    row_spec(colorRow, bold = F, color = "black",
-             background = "#ebe0e9") %>%
+    try(row_spec(colorRow, bold = F, color = "black",background = "#ebe0e9"), silent = T) %>%
     add_footnote(footnote, escape = F,
                  notation = "symbol" ) #%>%
   # pack_rows(groups_row ,hline_after = F, indent = F)
