@@ -44,8 +44,8 @@ descGroup <- function(covariates,
   for (i in seq_along(class_data)) {
     list_var[[names(class_data)[i]]] <- switch(class_data[i],
                                                "numeric" = summary.quanti( x = names(class_data)[i] , group = group ,
-                                                                           method = method, data = data, prep2sum = TRUE, byrow = byrow,... ) ,
-                                               "factor" = summary.quali( x = names(class_data)[i], group = group ,data = data, ...),
+                                                                           method = method, data = data, prep2sum = TRUE,... ) ,
+                                               "factor" = summary.quali( x = names(class_data)[i], group = group ,data = data, byrow = byrow, ...),
     )
   }
   list_var_sum <- lapply(list_var, function(x)x[["summary"]])

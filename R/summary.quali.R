@@ -57,7 +57,7 @@ summary.quali <- function(x,
 
 
   ## Resum univariat
-  if (!byrow) {n <-  sum(table(xx))} else { n <- table(xx) }
+  if (!byrow) {n <-  sum(table(xx))} else {n <- table(xx) }
   uni <- binom.confint(table(xx), n , methods = "exact")
   if (is.null(uni$x)) uni$x <- uni$x.Freq
   if (is.null(uni$mean)) uni$mean <- uni$mean.Freq
