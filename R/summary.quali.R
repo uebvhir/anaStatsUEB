@@ -134,7 +134,13 @@ summary.quali <- function(x,
 
 
   ## RESULTATS
-  ifelse(exists("res_all"),
-         return(list(rows = x, columns = group,test = txt_pval,pval = pval, txt_caption = txt_caption, methods = txt_descriptive , summary = res_all )),
+  ifelse(!is.null(group),
+         return(list(rows = x,
+                     columns = group,
+                     test = txt_pval,
+                     pval = pval,
+                     txt_caption = txt_caption,
+                     methods = txt_descriptive ,
+                     summary = res_all )),
          return(list(variable = x, methods = txt_caption, txt_caption = txt_caption, summary = res_uni)))
 }

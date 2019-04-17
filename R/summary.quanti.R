@@ -123,7 +123,7 @@ txt_caption = txt_descriptive
 
 
   ## RESULTATS
-  ifelse(exists("res_all"),
+  ifelse(!is.null(group),
          return(list(rows = x,
                      columns = group,
                      txt_test = txt_pval,
