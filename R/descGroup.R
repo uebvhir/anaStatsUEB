@@ -38,7 +38,7 @@ descGroup <- function(covariates,
   # results <- results[,!names(results) %in% "variable"]
   # groups_row <- table(var)[unique(var)]
 
-  condition <- as.numeric(results$p.value) > pval_cut | is.na(as.numeric(results$p.value))
+  condition <- as.numeric(results$p.value) < pval_cut | complete.cases(as.numeric(results$p.value))
   colorRow <- which(rownames(results) %in% grep(paste0(var[which(!condition)],collapse = "|"), rownames(results), value = T) )
   # groups_row <- cumsum(groups_row)
   results_ht <- results %>%
