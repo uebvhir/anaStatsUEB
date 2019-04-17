@@ -39,7 +39,7 @@ descGroup <- function(covariates,
   # groups_row <- table(var)[unique(var)]
 
   condition <- as.numeric(results$p.value) < pval_cut | complete.cases(as.numeric(results$p.value))
-  colorRow <- which(rownames(results) %in% grep(paste0(var[which(!condition)],collapse = "|"), rownames(results), value = T) )
+  colorRow <- which(rownames(results) %in% grep(paste0(var[which(condition)],collapse = "|"), rownames(results), value = T) )
   # groups_row <- cumsum(groups_row)
   results_ht <- results %>%
     # mutate(p.value = cell_spec(p.value, "html", color = ifelse(condition,"black", "white"),
