@@ -6,6 +6,7 @@
 #' @param data data frame, list or environment (or object coercible by 'as.data.frame' to a data frame) containing the variables in the model. If they are not found in 'data', the variables are taken from 'environment(formula)'.
 #' @param method character string indicating the method to test use; possible values are 'param' or 'nonparam'. Default values is 'param'.
 #' @param font_size A numeric input for table font size
+#' @param byrow logical or NA. Percentage of categorical variables must be reported by rows (TRUE), by columns (FALSE) or by columns and rows to sum up 1 (NA). Default value is FALSE, which means that percentages are reported by columns (withing groups).
 #' @param width_lev defines the maximum width of table columns. Default value is 8em
 #' @param pval_cut cut p.value colored
 #' @keywords summary ci qualitative descriptive exploratory
@@ -27,6 +28,7 @@ descGroup <- function(covariates,
                       method = "non-param",
                       font_size = 11,
                       width_lev = "8em",
+                      byrow = FALSE,
                       pval_cut = 0.05, ...){
 
 
@@ -42,7 +44,7 @@ descGroup <- function(covariates,
   for (i in seq_along(class_data)) {
     list_var[[names(class_data)[i]]] <- switch(class_data[i],
                                                "numeric" = summary.quanti( x = names(class_data)[i] , group = group ,
-                                                                           method = method, data = data, prep2sum = TRUE, ... ) ,
+                                                                           method = method, data = data, prep2sum = TRUE, byrow = byrow,... ) ,
                                                "factor" = summary.quali( x = names(class_data)[i], group = group ,data = data, ...),
     )
   }
