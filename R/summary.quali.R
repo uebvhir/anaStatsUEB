@@ -118,7 +118,7 @@ summary.quali <- function(x,
       pval_round <- ifelse(grepl("Error", try(round(pval,3), TRUE)), ".", round(pval,3))
 
 
-      res_all$p.value <- c(ifelse(pval != "." & pval < 0.001, "0.001", pval_round ), rep("", nrow(res_all) - 1))
+      res_all$p.value <- c(ifelse(pval != "." & pval < 0.001, "<0.001", pval_round ), rep("", nrow(res_all) - 1))
       caption <-  paste(caption,"<font size='1'> <br> p.value: ",test, "</font>")
 
     }

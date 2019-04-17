@@ -112,7 +112,7 @@ caption = descriptive
       pval_round <- ifelse(grepl("Error", try(round(pval,3), TRUE)), ".", round(pval,3))
 
 
-      res_all$p.value <- ifelse(pval != "." & pval < 0.001, "0.001", pval_round  )
+      res_all$p.value <- ifelse(pval != "." & pval < 0.001, "<0.001", pval_round  )
       caption = paste0(caption, "<font size='1'> <br> p.value:  ", test, "</font>")
 
     }
