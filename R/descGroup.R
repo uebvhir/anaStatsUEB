@@ -19,7 +19,6 @@
 #'  #                          id = paste0("a",1:25))
 #'  # data$id <- as.character(data$id)
 #'  # descGroup(group  = "MUT",covariates = c("var","size","id"), data = data)
-
 descGroup <- function(covariates,
                       group = NULL,
                       data,
@@ -71,10 +70,11 @@ descGroup <- function(covariates,
                   font_size = font_size, full_width = F) %>%
     row_spec(0,background = "#993489", color = "white") %>%
     column_spec(2, width_max = width_lev) %>%
-    column_spec(1, bold = T)  %>%
-    try(row_spec(colorRow, bold = F, color = "black",background = "#ebe0e9"), silent = T) %>%
+    column_spec(1, bold = T)   %>%
     add_footnote(footnote, escape = F,
-                 notation = "symbol" ) #%>%
+                 notation = "symbol" )
+  if (!is.null(group)) {
+    results_ht <- results_ht %>% row_spec(colorRow, bold = F, color = "black",background = "#ebe0e9") }#%>%
   # pack_rows(groups_row ,hline_after = F, indent = F)
 
   return(list(group = group, covariates = covariates, selVar = unique(var[colorRow]), pvalues = pvalues, results = results_ht))
