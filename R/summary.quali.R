@@ -57,7 +57,8 @@ summary.quali <- function(x,
 
 
   ## Resum univariat
-  uni <- binom.confint(table(xx), sum(table(xx)), methods = "exact")
+  if(!byrow) {n <-  sum(table(xx))} else { n <- table(xx) }
+  uni <- binom.confint(table(xx), n , methods = "exact")
   if (is.null(uni$x)) uni$x <- uni$x.Freq
   if (is.null(uni$mean)) uni$mean <- uni$mean.Freq
   res_uni <- data.frame( ALL =  paste0(uni$x, " (", round(uni$mean*100,nround), "%)", new_line,
