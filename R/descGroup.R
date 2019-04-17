@@ -69,13 +69,18 @@ descGroup <- function(covariates,
     kable_styling(latex_options = c("striped","hold_position", "repeat_header"),
                   font_size = font_size, full_width = F) %>%
     row_spec(0,background = "#993489", color = "white") %>%
-    column_spec(2, width_max = width_lev) %>%
-    column_spec(1, bold = T)   %>%
+    column_spec(which(names(results) == "levels"), width_max = width_lev) %>%
+    column_spec(which(names(results) == "variable"), bold = T)   %>%
+    column_spec(which(names(results) == "ALL"), bold = T)   %>%
     add_footnote(footnote, escape = F,
                  notation = "symbol" )
   if (!is.null(group)) {
     results_ht <- results_ht %>% row_spec(colorRow, bold = F, color = "black",background = "#ebe0e9") }#%>%
   # pack_rows(groups_row ,hline_after = F, indent = F)
+
+
+
+
 
   return(list(group = group, covariates = covariates, selVar = unique(var[colorRow]), pvalues = pvalues, results = results_ht))
 }
