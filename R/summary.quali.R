@@ -11,7 +11,7 @@
 #' @param show.all logical indicating whether the 'ALL' column (all data without stratifying by groups) is displayed or not. Default value is FALSE if grouping variable is defined, and FALSE if there are no groups.
 #' @param show.n ogical indicating whether number of individuals analyzed for each row-variable is displayed or not in the 'descr' table. Default value is TRUE.
 #' @param byrow logical or NA. Percentage of categorical variables must be reported by rows (TRUE), by columns (FALSE) or by columns and rows to sum up 1 (NA). Default value is FALSE, which means that percentages are reported by columns (withing groups).
-#' @keywords summary ci qualitative descriptive exploratory
+#' @keywords summary ci qualitative txt_descriptive exploratory
 #' @export summary.quali
 #' @import binom
 #' @examples
@@ -21,7 +21,7 @@
 #'  # tab <- summary.quali(x = "var", data = df)
 #'  # summary.quali(group = "MUT",x = "var", data = df, show.all = F)
 #'  # tab <- summary.quali(group = "MUT",x = "var", data = df, byrow = T)
-#'  # kable(tab$summary,escape = F, row.names = F,align = "c", caption = tab$caption)  %>%
+#'  # kable(tab$summary,escape = F, row.names = F,align = "c", txt_caption = tab$txt_caption)  %>%
 #'  # kable_styling(latex_options = c("striped","hold_position", "repeat_header"), font_size = 14) %>%
 #'  # row_spec(0,background = "#993489", color = "white")
 
@@ -64,7 +64,7 @@ summary.quali <- function(x,
                                        "[",round(uni$lower*100, nround),"; ", round(uni$upper*100, nround), "]" ),row.names =  levels(xx) )
   res_uni <- cbind(variable = c(paste0(varname_x, sub),rep("",nrow(res_uni) - 1)),levels = levels(xx), res_uni)
   if (show.n) res_uni$n <-  c(sum(table(xx)),rep("",nrow(res_uni) - 1))
-  caption <- paste0(" <font size='1'> 1: n(%) <br> [Exact CI] </font>")
+  txt_caption <- paste0(" <font size='1'> 1: n(%) <br> [Exact CI] </font>")
 
   if (!is.null(group)) {
     # Calculem resum estadístic n(%) IC
@@ -82,8 +82,8 @@ summary.quali <- function(x,
       colnames(res_all) <- levels(yy)
       rownames(res_all) <- levels(xx)
       res_all <- cbind(variable = c(paste0(varname_x, sub),rep("",nrow(res_all) - 1)),levels = levels(xx), res_all)
-      descriptive <- " <font size='1'> <br> 1: by col <br> n(%) <br> [Exact CI] </font>"
-      caption <- paste0("Summary of results by groups of ",varname_group ,descriptive)
+      txt_descriptive <- " <font size='1'> <br> 1: by col <br> n(%) <br> [Exact CI] </font>"
+      txt_caption <- paste0("Summary of results by groups of ",varname_group ,txt_descriptive)
       ## PER FILES
     } else{
       res_bi <-  apply(table(xx, yy), 1, function(x)  {
@@ -98,8 +98,8 @@ summary.quali <- function(x,
       rownames(res_all) <- levels(xx)
 
       res_all <- cbind(variable = c(paste0(varname_x, sub),rep("",nrow(res_all) - 1)),levels = levels(xx), res_all)
-      descriptive <- " <font size='1'> <br> 1: by row <br> n(%) <br> [Exact CI] </font>"
-      caption <- paste0("Summary of results by groups of ",varname_group ,descriptive)
+      txt_descriptive <- " <font size='1'> <br> 1: by row <br> n(%) <br> [Exact CI] </font>"
+      txt_caption <- paste0("Summary of results by groups of ",varname_group ,txt_descriptive)
     }
 
     ## Afegim columna ALL als resultats
@@ -119,7 +119,10 @@ summary.quali <- function(x,
 
 
       res_all$p.value <- c(ifelse(pval != "." & pval < 0.001, "<0.001", pval_round ), rep("", nrow(res_all) - 1))
-      caption <-  paste(caption,"<font size='1'> <br> p.value: ",test, "</font>")
+      txt_pval <- paste0("<font size='1'> <br> p.value: ",test, "</font>")
+      txt_descriptive <- paste(txt_descriptive, txt_pval)
+      txt_caption <-  paste(txt_caption,txt_descriptive,txt_descriptive )
+
 
     }
 
@@ -132,6 +135,6 @@ summary.quali <- function(x,
 
   ## RESULTATS
   ifelse(exists("res_all"),
-         return(list(rows = x, columns = group,test = test,pval = pval, caption = caption, methods = descriptive , summary = res_all )),
-         return(list(variable = x, methods = caption, caption = caption, summary = res_uni)))
+         return(list(rows = x, columns = group,test = test,pval = pval, txt_caption = txt_caption, methods = txt_descriptive , summary = res_all )),
+         return(list(variable = x, methods = txt_caption, txt_caption = txt_caption, summary = res_uni)))
 }
