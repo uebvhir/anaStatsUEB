@@ -110,7 +110,7 @@ summary.quali <- function(x,
     ## Es realitza test estadístic
     if (show.pval) {
       ## Decidim test que es realitza
-      if (is.null(test))    test <- ifelse( any(table(xx, yy)) < 5 , "Fisher's exact","Chi-squared")
+      if (is.null(test))    test <- ifelse( any(table(xx, yy) < 5) , "Fisher's exact","Chi-squared")
       ## Calculem test
       pval <- try(switch(test,
                          "Fisher's exact" = fisher.test(table(xx,yy))$p.va,
@@ -121,8 +121,7 @@ summary.quali <- function(x,
 
       res_all$p.value <- c(ifelse(pval != "." & pval < 0.001, "<0.001", pval_round ), rep("", nrow(res_all) - 1))
       txt_pval <- paste0("<font size='1'> <br> p.value: ",test, "</font>")
-      txt_descriptive <- paste(txt_descriptive, txt_pval)
-      txt_caption <-  paste(txt_caption,txt_descriptive,txt_descriptive )
+      txt_caption <-  paste(txt_caption,txt_descriptive,txt_descriptive,txt_pval )
 
 
     }
@@ -136,6 +135,6 @@ summary.quali <- function(x,
 
   ## RESULTATS
   ifelse(exists("res_all"),
-         return(list(rows = x, columns = group,test = test,pval = pval, txt_caption = txt_caption, methods = txt_descriptive , summary = res_all )),
+         return(list(rows = x, columns = group,test = txt_pval,pval = pval, txt_caption = txt_caption, methods = txt_descriptive , summary = res_all )),
          return(list(variable = x, methods = txt_caption, txt_caption = txt_caption, summary = res_uni)))
 }

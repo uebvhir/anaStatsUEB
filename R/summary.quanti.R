@@ -112,7 +112,7 @@ txt_caption = txt_descriptive
 
 
       res_all$p.value <- ifelse(pval != "." & pval < 0.001, "<0.001", pval_round  )
-      txt_descriptive = paste0(txt_descriptive, "<font size='1'> <br> p.value:  ", test, "</font>")
+      txt_pval = paste0("<font size='1'> <br> p.value:  ", test, "</font>")
 
     }
 
@@ -124,7 +124,13 @@ txt_caption = txt_descriptive
 
   ## RESULTATS
   ifelse(exists("res_all"),
-         return(list(rows = x, columns = group, pval = pval, txt_caption = txt_caption, methods = txt_descriptive, summary = res_all )),
+         return(list(rows = x,
+                     columns = group,
+                     txt_test = txt_pval,
+                     pval = pval,
+                     txt_caption = txt_caption,
+                     methods = txt_descriptive,
+                     summary = res_all )),
          return(list(variable = x,methods = txt_caption, txt_caption = txt_caption,  summary = res_uni)))
 
 }

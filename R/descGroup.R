@@ -50,6 +50,7 @@ descGroup <- function(covariates,
   }
   list_var_sum <- lapply(list_var, function(x)x[["summary"]])
   list_var_met <- lapply(list_var, function(x)x[["methods"]])
+  # list_var_test <- lapply(list_var, function(x)x[["test"]])
   pvalues <- unlist(lapply(list_var, function(x)x[["pval"]]))
   results <- do.call("rbind", list_var_sum)
   footnote <-  do.call("cbind", unique(list_var_met))
