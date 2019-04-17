@@ -58,7 +58,7 @@ summary.quali <- function(x,
 
   ## Resum univariat
   uni <- binom.confint(table(xx), sum(table(xx)), methods = "exact")
-  res_uni <- data.frame( ALL =  paste0(uni$x, " (", round(uni$mean*100,nround), "%)", new_line,
+  res_uni <- data.frame( ALL =  paste0(uni$x, " (", round(ifelse(is.null(uni$mean),uni$mean.Freq, uni$mean)*100,nround), "%)", new_line,
                                        "[",round(uni$lower*100, nround),"; ", round(uni$upper*100, nround), "]" ),row.names =  levels(xx) )
   res_uni <- cbind(variable = c(paste0(varname_x, sub),rep("",nrow(res_uni) - 1)),levels = levels(xx), res_uni)
   if (show.n) res_uni$n <-  c(sum(table(xx)),rep("",nrow(res_uni) - 1))
@@ -71,7 +71,7 @@ summary.quali <- function(x,
     if (!byrow) {
       res_bi <-  apply(table(xx, yy), 2, function(x)  {
         bb <- binom.confint(x,sum(x), methods = "exact")
-        data.frame(paste0(bb$x, " (", round(bb$mean*100,nround), "%)", new_line,
+        data.frame(paste0(bb$x, " (", round(ifelse(is.null(bb$mean),bb$mean.Freq, bb$mean)*100,nround), "%)", new_line,
                           "[",round(bb$lower*100, nround),"; ", round(bb$upper*100, nround), "]" ))
       })
       res_all <- do.call(cbind,res_bi)
@@ -84,7 +84,7 @@ summary.quali <- function(x,
     } else{
       res_bi <-  apply(table(xx, yy), 1, function(x)  {
         bb <- binom.confint(x,sum(x), methods = "exact")
-        data.frame(paste0(bb$x, " (", round(bb$mean*100,nround), "%)", new_line,
+        data.frame(paste0(bb$x, " (", round(ifelse(is.null(bb$mean),bb$mean.Freq, bb$mean)*100,nround), "%)", new_line,
                           "[",round(bb$lower*100, nround),"; ", round(bb$upper*100, nround), "]" ))
       })
       res_all <- data.frame(t(do.call(cbind,res_bi)))
@@ -106,8 +106,8 @@ summary.quali <- function(x,
       if (is.null(test))    test <- ifelse( any(table(xx, yy)) < 5 , "Fisher's exact","Chi-squared")
       ## Calculem test
       pval <- try(switch(test,
-                     "Fisher's exact" = fisher.test(table(xx,yy))$p.va,
-                     "Chi-squared" = chisq.test(xx,yy)$p.val), TRUE)
+                         "Fisher's exact" = fisher.test(table(xx,yy))$p.va,
+                         "Chi-squared" = chisq.test(xx,yy)$p.val), TRUE)
       pval <- ifelse(grepl("Error", pval), ".",pval)
       pval_round <- ifelse(grepl("Error", try(round(pval,3), TRUE)), ".", round(pval,3))
 

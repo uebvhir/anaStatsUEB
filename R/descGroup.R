@@ -66,7 +66,7 @@ descGroup <- function(covariates,
     column_spec(2, width_max = width_lev) %>%
     column_spec(1, bold = T)  %>%
     add_footnote(footnote, escape = F,
-                 threeparttable = T, notation = "symbol" ) #%>%
+                notation = "symbol" ) #%>%
   # pack_rows(groups_row ,hline_after = F, indent = F)
 
   return(list(group = group, covariates = covariates,pvalues = pvalues, results = results_ht))
