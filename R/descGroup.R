@@ -60,8 +60,8 @@ descGroup <- function(covariates,
   align[names(results) == "levels"] <- "l"
   # results <- results[,!names(results) %in% "variable"]
   # groups_row <- table(var)[unique(var)]
-
-  condition <- as.numeric(gsub("<","",results$p.value)) > pval_cut | is.na(as.numeric(results$p.value))
+  pval_trunc <- as.numeric(gsub("<","",results$p.value))
+  condition <- pval_trunc > pval_cut | is.na(pval_trunc)
   colorRow <- which(rownames(results) %in% grep(paste0(var[which(!condition)],collapse = "|"), rownames(results), value = T) )
   # groups_row <- cumsum(groups_row)
   results_ht <- results %>%
@@ -76,7 +76,7 @@ descGroup <- function(covariates,
     column_spec(which(names(results) == "ALL"), bold = T)   %>%
     add_footnote(footnote, escape = F,
                  notation = "symbol" )
-  if (!is.null(group) & (sum(as.numeric(gsub("<","",results$p.value)) < 0.05, na.rm = T) != 0)) {
+  if (!is.null(group) & (sum(pval_trunc < 0.05, na.rm = T) != 0)) {
     results_ht <- results_ht %>% row_spec(colorRow, bold = F, color = "black",background = "#ebe0e9") }#%>%
   # pack_rows(groups_row ,hline_after = F, indent = F)
 
