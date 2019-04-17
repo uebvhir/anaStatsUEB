@@ -22,7 +22,7 @@
 #'
 #'  # summary.quanti(x = "var", data = df)
 #'  # tab <- summary.quanti(x = "var",group = "MUT",data = df)
-#'  # kable(tab$summary,escape = F, row.names = F,align = "c", caption = tab$caption) %>%
+#'  # kable(tab$summary,escape = F, row.names = F,align = "c", txt_caption = tab$txt_caption) %>%
 #'  #   kable_styling(latex_options = c("striped","hold_position", "repeat_header"), full_width = F, font_size = 14) %>%
 #'  #   row_spec(0,background = "#993489", color = "white")
 
@@ -52,8 +52,8 @@ summary.quanti <- function(x,
   }
 
   if (sub.ht) sub <- "<sub>2</sub>"
-descriptive <-  "<br> <font size='1'> 2: N <br> mean(sd) <br> [IC95% mean] <br> median[IQR] </font>"
-caption = descriptive
+txt_descriptive <-  "<br> <font size='1'> 2: N <br> mean(sd) <br> [IC95% mean] <br> median[IQR] </font>"
+txt_caption = txt_descriptive
   ## Resum univariat mean(sd) \\ IC mean \\ median[IQR]
   ci_uni <- ci.mean(xx)
   mn_sd <- paste0(round(mean(xx,na.rm = T),nround), " (", round(sd(xx,na.rm = T),nround), ")")
@@ -94,8 +94,7 @@ caption = descriptive
 
     ### Es mostra columna ALL
     if (show.all)    res_all$ALL  <- res_uni$ALL
-    title = paste0("Summary of results by groups of ",varname_group)
-    caption = paste0(title,descriptive)
+
     ### Test
     if (show.pval) {
       ## Decidim test que es realitza
@@ -113,19 +112,20 @@ caption = descriptive
 
 
       res_all$p.value <- ifelse(pval != "." & pval < 0.001, "<0.001", pval_round  )
-      caption = paste0(caption, "<font size='1'> <br> p.value:  ", test, "</font>")
+      txt_descriptive = paste0(txt_descriptive, "<font size='1'> <br> p.value:  ", test, "</font>")
 
     }
 
     if (show.n) res_all$n <- length(xx[complete.cases(yy)])
 
+    txt_caption = paste0("Summary of results by groups of ",varname_group,txt_descriptive)
   }
 
 
   ## RESULTATS
   ifelse(exists("res_all"),
-         return(list(rows = x, columns = group, pval = pval, caption = caption, methods = descriptive, summary = res_all )),
-         return(list(variable = x,methods = caption, caption = caption,  summary = res_uni)))
+         return(list(rows = x, columns = group, pval = pval, txt_caption = txt_caption, methods = txt_descriptive, summary = res_all )),
+         return(list(variable = x,methods = txt_caption, txt_caption = txt_caption,  summary = res_uni)))
 
 }
 
