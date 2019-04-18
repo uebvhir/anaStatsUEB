@@ -56,9 +56,10 @@ descGroup <- function(covariates,
 
   ## Caption de la taula final
   footnote <- NULL
-  for (i in seq_along(unique(class_data))) {
-    desc <- unique(lapply(list_var[class_data == unique(class_data)[i]], function(x)x[["methods"]]))
-    tst <- paste0(unique(lapply(list_var[class_data == unique(class_data)[i]], function(x)x[["txt_test"]])), collapse = "")
+  typevar <- c("factor", "numeric")
+  for (i in seq_along(typevar)) {
+    desc <- unique(lapply(list_var[names(list_var) %in% names(class_data)[class_data == typevar[i]] ], function(x)x[["methods"]]))
+    tst <- paste0(unique(lapply(list_var[names(list_var) %in% names(class_data)[class_data == typevar[i]]], function(x)x[["txt_test"]])), collapse = "")
     footnote <- unique(gsub("NULL","",c(footnote, paste0(desc, tst))))
   }
 
