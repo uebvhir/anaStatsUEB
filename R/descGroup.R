@@ -56,10 +56,10 @@ descGroup <- function(covariates,
 
   ## Caption de la taula final
   footnote <- NULL
-  for(i in seq_along(unique(class_data))){
+  for (i in seq_along(unique(class_data))){
     desc <- unique(lapply(list_var[class_data == unique(class_data)[i]], function(x)x[["methods"]]))
     tst <- paste0(unique(lapply(list_var[class_data == unique(class_data)[i]], function(x)x[["txt_test"]])), collapse = "")
-    footnote <- c(footnote, paste0(desc, tst))
+    footnote <- gsub("NULL","",c(footnote, paste0(desc, tst)))
   }
 
 
