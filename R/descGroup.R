@@ -56,7 +56,7 @@ descGroup <- function(covariates,
 
   ## Caption de la taula final
   footnote <- NULL
-  for (i in seq_along(unique(class_data))){
+  for (i in seq_along(unique(class_data))) {
     desc <- unique(lapply(list_var[class_data == unique(class_data)[i]], function(x)x[["methods"]]))
     tst <- paste0(unique(lapply(list_var[class_data == unique(class_data)[i]], function(x)x[["txt_test"]])), collapse = "")
     footnote <- unique(gsub("NULL","",c(footnote, paste0(desc, tst))))
@@ -65,7 +65,7 @@ descGroup <- function(covariates,
 
   # footnote <-  do.call("cbind", unique(list_var_met))
   caption <- ifelse(is.null(group),
-                    "Summary descriptives table",
+                    "Summary statistics table",
                     paste0("Summary of results by groups of ", varname_group))
 
   ## CREACIO DE LA TAULA FINAL
