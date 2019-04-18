@@ -115,6 +115,7 @@ summary.quali <- function(x,
       pval <- try(switch(test,
                          "Fisher's exact" = fisher.test(table(xx,yy))$p.va,
                          "Chi-squared" = chisq.test(xx,yy)$p.val), TRUE)
+      ## arreglem p.val final
       pval <- ifelse(grepl("Error", pval), ".",pval)
       pval_round <- ifelse(grepl("Error", try(round(pval,3), TRUE)), "-", round(pval,3))
       pval_round <- switch(test,
