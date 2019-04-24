@@ -52,7 +52,7 @@ summary.quanti <- function(x,
   }
 
   if (sub.ht) sub <- "<sub>2</sub>"
-txt_descriptive <-  "<br> <font size='1'> 2: N <br> mean(sd) <br> [IC95% mean] <br> median[IQR] </font>"
+txt_descriptive <-  "<br> <font size='1'> 2: N <br> mean(sd) <br> [CI95% mean] <br> median[IQR] </font>"
 txt_caption = txt_descriptive
   ## Resum univariat mean(sd) \\ IC mean \\ median[IQR]
   ci_uni <- ci.mean(xx)
@@ -82,7 +82,7 @@ txt_caption = txt_descriptive
     ci_bi <- ci.mean(xx ~ yy, data = data)
     res_all <- data.frame(t(paste0(paste0(sum_bi$xx[,"n"]), new_line,
                                    paste0( sum_bi$xx[,"mean"]," (", sum_bi$xx[,"sd"], ")" ), new_line,
-                                   paste0("IC[",round(ci_bi$lower,nround), "; ", round(ci_bi$upper,nround),"]" ), new_line,
+                                   paste0("CI[",round(ci_bi$lower,nround), "; ", round(ci_bi$upper,nround),"]" ), new_line,
                                    paste0( sum_bi$xx[,"median"]," [", sum_bi$xx[,"q25.25%"],", ", sum_bi$xx[,"q75.75%"], "]" ))))
     colnames(res_all) <- levels(yy)
     rownames(res_all) <- paste0(varname_x,sub)

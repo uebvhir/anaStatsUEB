@@ -77,7 +77,7 @@ summary.quali <- function(x,
         if (is.null(bb$x)) bb$x <- bb$x.Freq
         if (is.null(bb$mean)) bb$mean <- bb$mean.Freq
         data.frame(paste0(bb$x, " (", round(bb$mean*100,nround), "%)", new_line,
-                          "[",round(bb$lower*100, nround),"; ", round(bb$upper*100, nround), "]" ))
+                          "CI[",round(bb$lower*100, nround),"; ", round(bb$upper*100, nround), "]" ))
       })
       res_all <- do.call(cbind,res_bi)
       colnames(res_all) <- levels(yy)
@@ -92,7 +92,7 @@ summary.quali <- function(x,
         if (is.null(bb$x)) bb$x <- bb$x.Freq
         if (is.null(bb$mean)) bb$mean <- bb$mean.Freq
         data.frame(paste0(bb$x, " (", round(bb$mean*100,nround), "%)", new_line,
-                          "[",round(bb$lower*100, nround),"; ", round(bb$upper*100, nround), "]" ))
+                          "CI[",round(bb$lower*100, nround),"; ", round(bb$upper*100, nround), "]" ))
       })
       res_all <- data.frame(t(do.call(cbind,res_bi)))
       colnames(res_all) <- levels(yy)
