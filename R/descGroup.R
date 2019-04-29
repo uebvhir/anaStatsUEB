@@ -33,7 +33,10 @@ descGroup <- function(covariates,
 
   ## Seleccionem variables i etiquetes
   data <- data[,names(data) %in% c(covariates,group)]
-  if (!is.null(group)) varname_group <- ifelse( Hmisc::label(data[,group]) != "", Hmisc::label(data[,group]), group)
+  if (!is.null(group)) {
+    data[,group] <- factor(data[,group])
+    varname_group <- ifelse( Hmisc::label(data[,group]) != "", Hmisc::label(data[,group]), group)
+  }
 
   ## guardem class de cada variable
   class_data <- unlist(lapply(data, function(x) class(x)[length(class(x))]))
