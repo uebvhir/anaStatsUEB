@@ -11,6 +11,7 @@
 #' @param pval_cut cut p.value colored
 #' @keywords summary ci qualitative descriptive exploratory
 #' @export desc_group
+#' @export descGroup
 #' @import kableExtra
 #' @examples
 #'  # set.seed(1)
@@ -23,7 +24,7 @@
 
 
 descGroup <- function(...) {
-  .Deprecated("descGroup") #include a package argument, too
+  .Deprecated("desc_group") #include a package argument, too
   desc_group(...)
 }
 
