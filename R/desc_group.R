@@ -1,4 +1,4 @@
-#' A descGroup Function
+#' A desc_group Function
 #'
 #' DESCRIPCIO DE LA FUNCIO
 #' @param covariates a character string with names of variables.
@@ -10,7 +10,7 @@
 #' @param width_lev defines the maximum width of table columns. Default value is 8em
 #' @param pval_cut cut p.value colored
 #' @keywords summary ci qualitative descriptive exploratory
-#' @export descGroup
+#' @export desc_group
 #' @import kableExtra
 #' @examples
 #'  # set.seed(1)
@@ -19,10 +19,15 @@
 #'  #                          size = rnorm(25),
 #'  #                          id = paste0("a",1:25))
 #'  # data$id <- as.character(data$id)
-#'  # descGroup(group  = "MUT",covariates = c("var","size","id"), data = data)
+#'  # desc_group(group  = "MUT",covariates = c("var","size","id"), data = data)
 
 
-descGroup <- function(covariates,
+desc_group <- function(...) {
+  .Deprecated("descGroup") #include a package argument, too
+  descGroup(...)
+}
+
+desc_group <- function(covariates,
                       group = NULL,
                       data,
                       method = "non-param",

@@ -41,7 +41,7 @@ DESCRIPCIO DE LA FUNCIO
 
  # summary.quanti(x = "var", data = df)
  # tab <- summary.quanti(x = "var",group = "MUT",data = df)
- # kable(tab$summary,escape = F, row.names = F,align = "c", caption = tab$caption) \%>\%
+ # kable(tab$summary,escape = F, row.names = F,align = "c", txt_caption = tab$txt_caption) \%>\%
  #   kable_styling(latex_options = c("striped","hold_position", "repeat_header"), full_width = F, font_size = 14) \%>\%
  #   row_spec(0,background = "#993489", color = "white")
 }

@@ -39,12 +39,12 @@ DESCRIPCIO DE LA FUNCIO
  # tab <- summary.quali(x = "var", data = df)
  # summary.quali(group = "MUT",x = "var", data = df, show.all = F)
  # tab <- summary.quali(group = "MUT",x = "var", data = df, byrow = T)
- # kable(tab$summary,escape = F, row.names = F,align = "c", caption = tab$caption)  \%>\%
+ # kable(tab$summary,escape = F, row.names = F,align = "c", txt_caption = tab$txt_caption)  \%>\%
  # kable_styling(latex_options = c("striped","hold_position", "repeat_header"), font_size = 14) \%>\%
  # row_spec(0,background = "#993489", color = "white")
 }
 \keyword{ci}
-\keyword{descriptive}
 \keyword{exploratory}
 \keyword{qualitative}
 \keyword{summary}
+\keyword{txt_descriptive}
