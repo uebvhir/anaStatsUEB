@@ -22,9 +22,9 @@
 #'  # desc_group(group  = "MUT",covariates = c("var","size","id"), data = data)
 
 
-desc_group <- function(...) {
+descGroup <- function(...) {
   .Deprecated("descGroup") #include a package argument, too
-  descGroup(...)
+  desc_group(...)
 }
 
 desc_group <- function(covariates,
