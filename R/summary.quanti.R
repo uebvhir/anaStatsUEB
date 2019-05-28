@@ -62,13 +62,15 @@ summary.quanti <- function(x,
                    round(quantile(xx,na.rm = T, probs = 0.75),nround),"]")
 
   ci_uni <- paste0("CI[",round(ci_uni$lower, nround), ";", round(ci_uni$upper, nround), "]")
-  res_uni <- data.frame( ALL = paste0(sum(complete.cases(xx)),new_line,mn_sd, new_line, ci_uni, new_line, md_iqr))
+
+  n <-  sum(complete.cases(xx) & complete.cases(yy))
+  res_uni <- data.frame( ALL = paste0(n,new_line,mn_sd, new_line, ci_uni, new_line, md_iqr))
 
   if (!prep2sum) {
     res_uni <- cbind(variable = paste0(varname_x,sub), res_uni)
   }else{
     res_uni <- cbind(variable = paste0(varname_x,sub), levels = "" , res_uni)}
-  if (show.n) res_uni$n <- sum(complete.cases(xx) & complete.cases(yy))
+  if (show.n) res_uni$n <- n
 
 
   ### Análisis per grup
