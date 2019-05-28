@@ -52,8 +52,8 @@ summary.quanti <- function(x,
   }
 
   if (sub.ht) sub <- "<sub>2</sub>"
-txt_descriptive <-  "<br> <font size='1'> 2: N <br> mean(sd) <br> [CI95% mean] <br> median[IQR] </font>"
-txt_caption = txt_descriptive
+  txt_descriptive <-  "<br> <font size='1'> 2: N <br> mean(sd) <br> [CI95% mean] <br> median[IQR] </font>"
+  txt_caption = txt_descriptive
   ## Resum univariat mean(sd) \\ IC mean \\ median[IQR]
   ci_uni <- ci.mean(xx)
   mn_sd <- paste0(round(mean(xx,na.rm = T),nround), " (", round(sd(xx,na.rm = T),nround), ")")
@@ -68,7 +68,7 @@ txt_caption = txt_descriptive
     res_uni <- cbind(variable = paste0(varname_x,sub), res_uni)
   }else{
     res_uni <- cbind(variable = paste0(varname_x,sub), levels = "" , res_uni)}
-  if (show.n) res_uni$n <- length(xx[complete.cases(xx)])
+  if (show.n) res_uni$n <- sum(complete.cases(xx) & complete.cases(yy))
 
 
   ### Análisis per grup
@@ -103,10 +103,10 @@ txt_caption = txt_descriptive
                                            "non-param" = ifelse(length(levels(yy)) > 2, "Kruska-Wallis","Mann–Whitney U"))
       ## Calculem test
       pval <- try(switch(test,
-                     "Student's T" = t.test(xx~yy)$p.va,
-                     "Mann–Whitney U" = wilcox.test(xx~yy)$p.va,
-                     "Anova" = summary(aov(xx~yy))[[1]][["Pr(>F)"]][1],
-                     "Kruska-Wallis" = kruskal.test(xx~yy)$p.va), TRUE)
+                         "Student's T" = t.test(xx~yy)$p.va,
+                         "Mann–Whitney U" = wilcox.test(xx~yy)$p.va,
+                         "Anova" = summary(aov(xx~yy))[[1]][["Pr(>F)"]][1],
+                         "Kruska-Wallis" = kruskal.test(xx~yy)$p.va), TRUE)
       pval <- ifelse(grepl("Error", pval), ".",pval)
       pval_round <- ifelse(grepl("Error", try(round(pval,3), TRUE)), ".", round(pval,3))
 
@@ -116,7 +116,7 @@ txt_caption = txt_descriptive
 
     }
 
-    if (show.n) res_all$n <- length(xx[complete.cases(yy)])
+    if (show.n) res_all$n <- sum(complete.cases(xx) & complete.cases(yy))
 
     txt_caption = paste0("Summary of results by groups of ",varname_group,txt_descriptive)
   }
