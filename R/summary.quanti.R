@@ -63,7 +63,11 @@ summary.quanti <- function(x,
 
   ci_uni <- paste0("CI[",round(ci_uni$lower, nround), ";", round(ci_uni$upper, nround), "]")
 
-  n <-  sum(complete.cases(xx) & complete.cases(yy))
+  if (!is.null(group))  {
+    n <-  sum(complete.cases(xx) & complete.cases(yy))
+  }else{
+        n <- sum(complete.cases(xx))
+      }
   res_uni <- data.frame( ALL = paste0(n,new_line,mn_sd, new_line, ci_uni, new_line, md_iqr))
 
   if (!prep2sum) {
