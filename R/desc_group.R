@@ -9,6 +9,7 @@
 #' @param byrow logical or NA. Percentage of categorical variables must be reported by rows (TRUE), by columns (FALSE) or by columns and rows to sum up 1 (NA). Default value is FALSE, which means that percentages are reported by columns (withing groups).
 #' @param width_lev defines the maximum width of table columns. Default value is 8em
 #' @param pval_cut cut p.value colored
+#' @param caption Character vector containing the table's caption or title.
 #' @keywords summary ci qualitative descriptive exploratory
 #' @export desc_group
 #' @export descGroup
@@ -32,6 +33,7 @@ desc_group <- function(covariates,
                       group = NULL,
                       data,
                       method = "non-param",
+                      caption = NULL,
                       font_size = 11,
                       width_lev = "8em",
                       byrow = FALSE,
@@ -74,10 +76,11 @@ desc_group <- function(covariates,
 
 
   # footnote <-  do.call("cbind", unique(list_var_met))
+  if (is.null(caption)) {
   caption <- ifelse(is.null(group),
                     "Summary statistics table",
                     paste0("Summary of results by groups of ", varname_group))
-
+}
   ## CREACIO DE LA TAULA FINAL
   # variables per files
   var <- sapply(strsplit(rownames(results), ".", fixed = T),"[[", 1)

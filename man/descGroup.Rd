@@ -22,6 +22,8 @@ descGroup(...)
 \item{width_lev}{defines the maximum width of table columns. Default value is 8em}
 
 \item{pval_cut}{cut p.value colored}
+
+\item{caption}{Character vector containing the table's caption or title.}
 }
 \description{
 DESCRIPCIO DE LA FUNCIO
