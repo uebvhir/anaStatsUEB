@@ -50,7 +50,7 @@ quickCor <- function(x, y, dat,
                      xtab.type = "latex",
                      sub = NULL,
                      lm.fit = TRUE,
-                     res = TRUE) {
+                     show.res = TRUE) {
 
   if (!is.numeric(dat[, x])) stop("La variable x debe ser numérica")
   if (!is.numeric(dat[, y])) stop("La variable y debe ser numérica")
@@ -106,9 +106,7 @@ quickCor <- function(x, y, dat,
           type = xtab.type,
           size = sz.xtab)
   }else{
-    if(res) {
-      list(coeff = summary(fit), result = result)
-    }
+    if (show.res) return( list(coeff = summary(fit), result = result) )
   }
 
 }
