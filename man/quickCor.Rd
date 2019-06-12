@@ -33,6 +33,8 @@
 
 \item{lm.fit}{A logical value indicating if show a linear regression line. Default value is TRUE.}
 
+\item{pos.text}{on which MARgin line, starting at 0 counting outwards.}
+
 \item{A}{character vector that is inserted just before the tabular environment starts. This can be used to set the font size and a variety of other table settings. Initial backslashes are automatically prefixed, if not supplied by user. Default value is "small".}
 }
 \value{

@@ -15,6 +15,7 @@
 #' @param xtab.type Type of table to produce. Possible values for type are "latex" or "html". Default value is "latex".
 #' @param sub a sub title for the plot.
 #' @param lm.fit A logical value indicating if show a linear regression line. Default value is TRUE.
+#' @param pos.text on which MARgin line, starting at 0 counting outwards.
 #' @export quickCor
 #' @usage #' @usage \\method{names}{mtc_bis}(x) <- value
 #' @import xtable mada
@@ -50,7 +51,8 @@ quickCor <- function(x, y, dat,
                      xtab.type = "latex",
                      sub = NULL,
                      lm.fit = TRUE,
-                     show.res = TRUE) {
+                     show.res = TRUE,
+                     pos.text = -1.8) {
 
   if (!is.numeric(dat[, x])) stop("La variable x debe ser numérica")
   if (!is.numeric(dat[, y])) stop("La variable y debe ser numérica")
@@ -97,7 +99,7 @@ quickCor <- function(x, y, dat,
              lty = -1, pch = 19,
              lwd = 1, col = "purple",bg = "transparent")
     }
-    mtext(txt.plot, cex = cex.txt, line = -1.8 )
+    mtext(txt.plot, cex = cex.txt, line = pos.text )
 
   }
   if (xtab) {
