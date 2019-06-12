@@ -13,6 +13,7 @@
 #' @param sz.xtab A character vector that is inserted just before the tabular environment starts. This can be used to set the font size and a variety of other table settings. Initial backslashes are automatically prefixed, if not supplied by user. Default value is NULL.
 #' @param cex.main settings for main- and sub-title and axis annotation, see \code{\link{title}} and \code{\link{par}}.
 #' @param xtab.type Type of table to produce. Possible values for type are "latex" or "html". Default value is "latex".
+#' @param main an overall title for the plot.
 #' @param sub a sub title for the plot.
 #' @param lm.fit A logical value indicating if show a linear regression line. Default value is TRUE.
 #' @param pos.text on which MARgin line, starting at 0 counting outwards.
@@ -41,6 +42,7 @@
 
 quickCor <- function(x, y, dat,
                      nround = 3,
+                     main = NULL,
                      xtab = TRUE,
                      pos = "bottomleft",
                      sz.xtab = NULL,
@@ -73,11 +75,12 @@ quickCor <- function(x, y, dat,
   fit <- lm(dat[, y] ~ dat[, x])
 
   if (corplot) {
+    if (is.null(main)) main <- paste(x, "with", y)
     plot(dat[, x], dat[, y],
          xlab = x, ylab = y,
          col = "purple",
          pch = 19,
-         main =  paste(x, "with", y), cex.main = cex.main )
+         main =  main, cex.main = cex.main )
     mtext(sub, 3, line = .8)
 
     txt.plot <- ifelse(pearson,
