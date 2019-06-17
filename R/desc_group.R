@@ -31,15 +31,15 @@ descGroup <- function(...) {
 }
 
 desc_group <- function(covariates,
-                      group = NULL,
-                      data,
-                      method = "non-param",
-                      caption = NULL,
-                      font_size = 11,
-                      width_lev = "8em",
-                      byrow = FALSE,
-                      show.pval.adj = FALSE,
-                      pval_cut = 0.05, ...){
+                       group = NULL,
+                       data,
+                       method = "non-param",
+                       caption = NULL,
+                       font_size = 11,
+                       width_lev = "8em",
+                       byrow = FALSE,
+                       show.pval.adj = FALSE,
+                       pval_cut = 0.05, ...){
 
   ## Seleccionem variables i etiquetes
   data <- data[,names(data) %in% c(covariates,group)]
@@ -68,6 +68,7 @@ desc_group <- function(covariates,
   pvalues <- unlist(lapply(list_var, function(x)x[["pval"]]))
 
   if (show.pval.adj) {
+    if(anyNA(results$p.value)) stop("P.value NA")
     results$p.val.adj[which(results$p.value != "")] <- round(p.adjust(pvalues, method = "BH"),2)
     results$p.val.adj[which(results$p.value == "")] <- ""
   }
@@ -83,10 +84,10 @@ desc_group <- function(covariates,
 
   # footnote <-  do.call("cbind", unique(list_var_met))
   if (is.null(caption)) {
-  caption <- ifelse(is.null(group),
-                    "Summary statistics table",
-                    paste0("Summary of results by groups of ", varname_group))
-}
+    caption <- ifelse(is.null(group),
+                      "Summary statistics table",
+                      paste0("Summary of results by groups of ", varname_group))
+  }
   ## CREACIO DE LA TAULA FINAL
   # variables per files
   var <- sapply(strsplit(rownames(results), ".", fixed = T),"[[", 1)
@@ -100,7 +101,8 @@ desc_group <- function(covariates,
   ## parametres per donar color a les variables amb p.value inferior a punt de tall
   pval_trunc <- as.numeric(sub("su.*", "",gsub("<","",results$p.value, fixed = T)))
   condition <- pval_trunc > pval_cut | is.na(pval_trunc)
-  colorRow <- which(rownames(results) %in% grep(paste0(var[which(!condition)],collapse = "|"), rownames(results), value = T) )
+  # colorRow <- which(rownames(results) %in% grep(paste0(var[which(!condition)],collapse = "|"), rownames(results), value = T) )
+  colorRow <- which(!condition)
   # groups_row <- cumsum(groups_row)
 
   ## Taula HTML
@@ -118,7 +120,8 @@ desc_group <- function(covariates,
                  notation = "symbol" )
 
   if (!is.null(group) & (sum(pval_trunc < 0.05, na.rm = T) != 0)) {
-    results_ht <- results_ht %>% row_spec(colorRow, bold = F, color = "black",background = "#ebe0e9") }#%>%
+    results_ht <- results_ht %>%
+      row_spec(colorRow, bold = F, color = "black",background = "#ebe0e9") }#%>%
   # pack_rows(groups_row ,hline_after = F, indent = F)
 
 
