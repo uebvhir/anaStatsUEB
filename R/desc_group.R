@@ -9,6 +9,7 @@
 #' @param byrow logical or NA. Percentage of categorical variables must be reported by rows (TRUE), by columns (FALSE) or by columns and rows to sum up 1 (NA). Default value is FALSE, which means that percentages are reported by columns (withing groups).
 #' @param width_lev defines the maximum width of table columns. Default value is 8em
 #' @param pval_cut cut p.value colored
+#' @param show.pval.adj ogical indicating whether adjust p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is FALSE.
 #' @param caption Character vector containing the table's caption or title.
 #' @keywords summary ci qualitative descriptive exploratory
 #' @export desc_group
@@ -37,6 +38,7 @@ desc_group <- function(covariates,
                       font_size = 11,
                       width_lev = "8em",
                       byrow = FALSE,
+                      show.pval.adj = FALSE,
                       pval_cut = 0.05, ...){
 
   ## Seleccionem variables i etiquetes
@@ -65,6 +67,10 @@ desc_group <- function(covariates,
 
   pvalues <- unlist(lapply(list_var, function(x)x[["pval"]]))
 
+  if (show.pval.adj) {
+    results$p.val.adj[which(results$p.value != "")] <- round(p.adjust(pvalues, method = "BH"),2)
+    results$p.val.adj[which(results$p.value == "")] <- ""
+  }
   ## Caption de la taula final
   footnote <- NULL
   typevar <- c("factor", "numeric")

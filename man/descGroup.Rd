@@ -23,6 +23,8 @@ descGroup(...)
 
 \item{pval_cut}{cut p.value colored}
 
+\item{show.pval.adj}{ogical indicating whether adjust p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is FALSE.}
+
 \item{caption}{Character vector containing the table's caption or title.}
 }
 \description{

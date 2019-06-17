@@ -13,6 +13,8 @@
 
 \item{nround}{integer indicating the number of decimal places (round).}
 
+\item{main}{an overall title for the plot.}
+
 \item{xtab}{A logical value indicating whether the output is a xtable}
 
 \item{pos}{a character string indicating the legend location. Options: "bottomright",  "bottom", "bottomleft", "left", "topleft", "top", "topright", "right" and "center".}
