@@ -101,8 +101,8 @@ desc_group <- function(covariates,
   ## parametres per donar color a les variables amb p.value inferior a punt de tall
   pval_trunc <- as.numeric(sub("su.*", "",gsub("<","",results$p.value, fixed = T)))
   condition <- pval_trunc > pval_cut | is.na(pval_trunc)
-  # colorRow <- which(rownames(results) %in% grep(paste0(var[which(!condition)],collapse = "|"), rownames(results), value = T) )
-  colorRow <- which(!condition)
+  colorRow <- which(rownames(results) %in% grep(paste0(var[which(!condition)],collapse = "|"), rownames(results), value = T) )
+  # colorRow <- which(!condition)
   # groups_row <- cumsum(groups_row)
 
   ## Taula HTML
