@@ -116,3 +116,6 @@ quickCor <- function(x, y, dat,
 
 }
 
+## corrplot color by group
+# ggplot(cansue_cantum_wide_clin, aes(x=miR_106b.CANsue, y=miR_106b.CANtum, color = TN_HER2)) +
+#   geom_point() + geom_rug()
