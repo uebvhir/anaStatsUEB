@@ -68,7 +68,7 @@ desc_group <- function(covariates,
   pvalues <- unlist(lapply(list_var, function(x)x[["pval"]]))
 
   if (show.pval.adj) {
-    if(anyNA(results$p.value)) stop("P.value NA")
+    if (anyNA(results$p.value)) stop("P.value NA")
     results$p.val.adj[which(results$p.value != "")] <- round(p.adjust(pvalues, method = "BH"),2)
     results$p.val.adj[which(results$p.value == "")] <- ""
   }
@@ -101,7 +101,9 @@ desc_group <- function(covariates,
   ## parametres per donar color a les variables amb p.value inferior a punt de tall
   pval_trunc <- as.numeric(sub("su.*", "",gsub("<","",results$p.value, fixed = T)))
   condition <- pval_trunc > pval_cut | is.na(pval_trunc)
-  colorRow <- which(rownames(results) %in% grep(paste0(var[which(!condition)],collapse = "|"), rownames(results), value = T) )
+  if(!all(condition))   {
+    colorRow <- which(rownames(results) %in% grep(paste0(var[which(!condition)],collapse = "|"), rownames(results), value = T) )
+  }
   # colorRow <- which(!condition)
   # groups_row <- cumsum(groups_row)
 
@@ -119,11 +121,13 @@ desc_group <- function(covariates,
     add_footnote(footnote, escape = F,
                  notation = "symbol" )
 
-  if (!is.null(group) & (sum(pval_trunc < 0.05, na.rm = T) != 0)) {
+  if (!is.null(group) & (sum(pval_trunc < pval_cut, na.rm = T) != 0)) {
     results_ht <- results_ht %>%
       row_spec(colorRow, bold = F, color = "black",background = "#ebe0e9") }#%>%
   # pack_rows(groups_row ,hline_after = F, indent = F)
 
 
-  return(list(group = group, covariates = covariates, selVar = unique(var[colorRow]), pvalues = pvalues, results = results_ht))
+  return(list(group = group, covariates = covariates,
+              selVar = ifelse(exists("colorRow"), unique(var[colorRow]), "None"),
+              pvalues = pvalues, results = results_ht))
 }
