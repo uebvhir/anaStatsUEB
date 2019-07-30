@@ -67,7 +67,10 @@ desc_data <- function(data,
 
 
   # Eliminació de columna en cas de que no hi hagi labels
-  if (length(table(df_res$lbl)) == 1) df_res <- df_res[,-which(names(df_res) %in% "lbl")]
+  if (length(table(df_res$lbl)) == 1) {
+    df_res <- df_res[,-which(names(df_res) %in% "lbl")]
+    colnames <- colnames[!colnames %in% "Description"]
+  }
 
   # Informació Final
   df_res  %>%
