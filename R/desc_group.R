@@ -128,6 +128,6 @@ desc_group <- function(covariates,
 
 
   return(list(group = group, covariates = covariates,
-              selVar = ifelse(exists("colorRow"), names(pvalues < 0.05), "None"),
+              selVar = names(pvalues < 0.05),
               pvalues = pvalues, results = results_ht))
 }
