@@ -96,7 +96,7 @@ desc_group <- function(covariates,
   align = rep("c",ncol(results))
   align[names(results) == "levels"] <- "l"
   # results <- results[,!names(results) %in% "variable"]
-  # groups_row <- table(var)[unique(var)]
+  # groups_row <- table(var)[unique(v ar)]
 
   ## parametres per donar color a les variables amb p.value inferior a punt de tall
   pval_trunc <- as.numeric(sub("su.*", "",gsub("<","",results$p.value, fixed = T)))
@@ -128,6 +128,6 @@ desc_group <- function(covariates,
 
 
   return(list(group = group, covariates = covariates,
-              selVar = ifelse(exists("colorRow"), unique(var[colorRow]), "None"),
+              selVar = ifelse(exists("colorRow"), names(pvalues < 0.05), "None"),
               pvalues = pvalues, results = results_ht))
 }
