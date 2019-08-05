@@ -4,8 +4,8 @@
 #' @param tab table to kable
 #' @param font_size A numeric input for table font size
 #' @param full_width A TRUE or FALSE variable controlling whether the HTML table should have 100% width. Since HTML and pdf have different flavors on the preferable format for full_width. If not specified, a HTML table will have full width by default but this option will be set to FALSE for a LaTeX table
-#' @keywords kable html ueb
 #' @export kable_ueb
+#' @keywords kable html ueb
 #' @import kableExtra
 #' @examples
 #' aa <- factor(rep(c("A","B","C"), 10))
