@@ -21,7 +21,8 @@
 
 
 coxPretty <- function(frml, data,
-                      summary.cox = getOption(c("ht","r", "no"), "ht"),
+                      summary.cox = "ht",
+                      # summary.cox = getOption(c("ht","r", "no"), "ht"),
                       mod_original= FALSE,
                       title = NULL,
                       namevar = NULL, ...) {
