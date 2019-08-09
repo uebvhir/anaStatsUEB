@@ -2,6 +2,7 @@
 #'
 #' DESCRIPCIO DE LA FUNCIO
 #' @param tab table to kable
+#' @param caption Character vector containing the table's caption or title. Set to NULL to suppress the caption. Default value is NULL.
 #' @param font_size A numeric input for table font size
 #' @param full_width A TRUE or FALSE variable controlling whether the HTML table should have 100% width. Since HTML and pdf have different flavors on the preferable format for full_width. If not specified, a HTML table will have full width by default but this option will be set to FALSE for a LaTeX table
 #' @export kable_ueb

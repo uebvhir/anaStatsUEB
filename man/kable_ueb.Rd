@@ -4,10 +4,13 @@
 \alias{kable_ueb}
 \title{A kable_ueb Function}
 \usage{
-kable_ueb(tab, font_size = 13, full_width = FALSE, ...)
+kable_ueb(tab, caption = NULL, font_size = 13, full_width = FALSE,
+  ...)
 }
 \arguments{
 \item{tab}{table to kable}
+
+\item{caption}{Character vector containing the table's caption or title. Set to NULL to suppress the caption. Default value is NULL.}
 
 \item{font_size}{A numeric input for table font size}
 
