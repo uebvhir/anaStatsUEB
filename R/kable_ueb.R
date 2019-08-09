@@ -15,10 +15,12 @@
 
 
 kable_ueb <- function(tab,
+                      caption = NULL,
                       font_size = 13,
                       full_width = FALSE, ...){
-  kable(tab,...) %>%
+  kable(tab, caption = caption, ...) %>%
     kable_styling(latex_options = c("striped","hold_position", "repeat_header"),
                   font_size = font_size, full_width = full_width,...) %>%
     row_spec(0,background = "#993489", color = "white")
 }
+
