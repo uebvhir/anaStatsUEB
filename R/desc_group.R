@@ -42,11 +42,21 @@ desc_group <- function(covariates,
                        pval_cut = 0.05, ...){
 
   ## Seleccionem variables i etiquetes
+  covariates <- covariates[!covariates %in% group]
   data <- data[,names(data) %in% c(covariates,group)]
   if (!is.null(group)) {
     data[,group] <- factor(data[,group])
     varname_group <- ifelse( Hmisc::label(data[,group]) != "", Hmisc::label(data[,group]), group)
   }
+
+  ## eliminem variables buides
+  emptyvar <- colSums(is.na(data)) != nrow(data)
+  var2del <- names(emptyvar[which(emptyvar == FALSE)])
+  if(length(var2del) > 0 ) {
+    warning(paste0("Las variable ",var2del, " ha sido eliminada. Todos sus valores son NA. \n" ))
+    data <- data[,!names(data) %in% var2del]
+  }
+
 
   ## guardem class de cada variable
   class_data <- unlist(lapply(data, function(x) class(x)[length(class(x))]))
