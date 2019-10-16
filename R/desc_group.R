@@ -42,7 +42,7 @@ desc_group <- function(covariates,
                        pval_cut = 0.05, ...){
 
   ## Seleccionem variables i etiquetes
-  covariates <- covariates[!covariates %in% group]
+  # covariates <- covariates[!covariates %in% group]
   data <- data[,names(data) %in% c(covariates,group)]
   if (!is.null(group)) {
     data[,group] <- factor(data[,group])
