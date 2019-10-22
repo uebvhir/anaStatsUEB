@@ -5,7 +5,7 @@
 \title{A kable_ueb Function}
 \usage{
 kable_ueb(tab, caption = NULL, font_size = 13, full_width = FALSE,
-  ...)
+  escape = FALSE, ...)
 }
 \arguments{
 \item{tab}{table to kable}

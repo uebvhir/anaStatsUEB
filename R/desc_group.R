@@ -112,7 +112,8 @@ desc_group <- function(covariates,
   pval_trunc <- as.numeric(sub("su.*", "",gsub("<","",results$p.value, fixed = T)))
   condition <- pval_trunc > pval_cut | is.na(pval_trunc)
   if (!all(condition)) {
-    colorRow <- which(rownames(results) %in% grep(paste0(var[which(!condition)],collapse = "|"), rownames(results), value = T) )
+    var_pval_cut <- var[which(!condition)]
+    colorRow <- which(var%in%var_pval_cut )
   }
   # colorRow <- which(!condition)
   # groups_row <- cumsum(groups_row)
