@@ -141,6 +141,6 @@ desc_group <- function(covariates,
 
 
   return(list(group = group, covariates = covariates,
-              selVar = ifelse(!is.null(group), var_pval_cut, "NA"),
+              selVar = var_pval_cut,
               pvalues = pvalues, results = results_ht))
 }
