@@ -52,7 +52,7 @@ desc_group <- function(covariates,
   ## eliminem variables buides
   emptyvar <- colSums(is.na(data)) != nrow(data)
   var2del <- names(emptyvar[which(emptyvar == FALSE)])
-  if(length(var2del) > 0 ) {
+  if (length(var2del) > 0 ) {
     warning(paste0("Las variable ",var2del, " ha sido eliminada. Todos sus valores son NA. \n" ))
     data <- data[,!names(data) %in% var2del]
   }
@@ -113,7 +113,7 @@ desc_group <- function(covariates,
   condition <- pval_trunc > pval_cut | is.na(pval_trunc)
   if (!all(condition)) {
     var_pval_cut <- var[which(!condition)]
-    colorRow <- which(var%in%var_pval_cut )
+    colorRow <- which(var %in% var_pval_cut )
   }
   # colorRow <- which(!condition)
   # groups_row <- cumsum(groups_row)
@@ -139,6 +139,6 @@ desc_group <- function(covariates,
 
 
   return(list(group = group, covariates = covariates,
-              selVar = names(pvalues [pvalues < pval_cut]),
+              selVar = var_pval_cut,
               pvalues = pvalues, results = results_ht))
 }
