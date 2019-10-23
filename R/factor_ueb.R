@@ -1,9 +1,9 @@
 #' factor_ueb Function
 #'
-#' The function factor is used to encode a vector as a factor (the terms ‘category’ and ‘enumerated type’ are also used for factors).
+#' The function factor is used to encode a vector as a factor (the terms ‘category’ and ‘enumerated type’ are also used for factors). Return original label.
 #' @param x   a vector of data, usually taking a small number of distinct values.
-#' @param levels an optional vector of the values (as character strings) that x might have taken. The default is the unique set of values taken by as.character(x), sorted into increasing order of x. Note that this set can be specified as smaller than sort(unique(x))
-#' @param labels either an optional character vector of (unique) labels for the levels (in the same order as levels after removing those in exclude), or a character string of length 1.
+#' @param lev a vector of the values (as character strings) that x might have taken. The default is the unique set of values taken by as.character(x), sorted into increasing order of x. Note that this set can be specified as smaller than sort(unique(x))
+#' @param lab a character vector of labels for the levels (in the same order as levels after removing those in exclude).
 #' @param del.empty.val elimina los niveles que tienen 0 casos
 #' @param name.var nom de la variable. Per defecte agafa la part dreta del "$" (exemple: mtcars$mpg, utilitza "mpg")
 #' @export factor_ueb
@@ -21,19 +21,19 @@
 
 #' @keywords factor variable class levels labels
 
+factor_ueb <- function(x, lev, lab, del.empty.val = TRUE, name.var = NULL){
 
-factor_ueb <- function(x, levels, labels, del.empty.val = TRUE, name.var = NULL){
-
+  lab_var <- Hmisc::label(x)
   name_sep <- strsplit(deparse(substitute(x)), "$",fixed = T)[[1]]
   name.var <- ifelse(is.null(name.var), name_sep[length(name_sep)], name.var)
   unique_noNA <- unique(x)[!unique(x) %in% NA]
-  levels_dif <- unique_noNA  %in% levels
+  levels_dif <- unique_noNA  %in% lev
   # paste0 ( unique_noNA[!levels_dif], which(x == unique_noNA[!levels_dif])   )
   if (!all(levels_dif)) { warning("Los individuos con valor '", paste(unique_noNA[!levels_dif], collapse = "', '"),
                                   "' para la variable ",name.var," han sido considerados NA \n", call. = FALSE) }
-  var_factor <- factor(x, levels = levels, labels = labels )
+  var_factor <- factor(x, levels = lev, labels = lab )
   if (del.empty.val) var_factor <- factor(var_factor)
-
+  Hmisc::label(var_factor) <- lab_var
   return(var_factor)
 }
 
