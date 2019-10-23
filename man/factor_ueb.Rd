@@ -4,14 +4,15 @@
 \alias{factor_ueb}
 \title{factor_ueb Function}
 \usage{
-factor_ueb(x, levels, labels, del.empty.val = TRUE, name.var = NULL)
+factor_ueb(x, levs = NULL, labs = NULL, del.empty.val = TRUE,
+  name.var = NULL)
 }
 \arguments{
 \item{x}{a vector of data, usually taking a small number of distinct values.}
 
-\item{levels}{an optional vector of the values (as character strings) that x might have taken. The default is the unique set of values taken by as.character(x), sorted into increasing order of x. Note that this set can be specified as smaller than sort(unique(x))}
+\item{levs}{a vector of the values (as character strings) that x might have taken. The default is the unique set of values taken by as.character(x), sorted into increasing order of x. Note that this set can be specified as smaller than sort(unique(x))}
 
-\item{labels}{either an optional character vector of (unique) labels for the levels (in the same order as levels after removing those in exclude), or a character string of length 1.}
+\item{labs}{a character vector of labels for the levels (in the same order as levels after removing those in exclude).}
 
 \item{del.empty.val}{elimina los niveles que tienen 0 casos}
 
@@ -21,17 +22,30 @@ factor_ueb(x, levels, labels, del.empty.val = TRUE, name.var = NULL)
 factor returns an object of class "factor" which has a set of integer codes the length of x with a "levels" attribute of mode character and unique (!anyDuplicated(.)) entries. If argument ordered is true (or ordered() is used) the result has class c("ordered", "factor"). Undocumentedly for a long time, factor(x) loses all attributes(x) but "names", and resets "levels" and "class".
 }
 \description{
-The function factor is used to encode a vector as a factor (the terms ‘category’ and ‘enumerated type’ are also used for factors).
+The function factor is used to encode a vector as a factor (the terms ‘category’ and ‘enumerated type’ are also used for factors). Return original label.
 }
 \examples{
+#create variable
 variable <- c(0,0,0,1,1,1,0,"a",1,0, "B")
-factor_ueb(variable, levels = c(0,1), labels = c("No", "Si"))
+# automatic factor
+factor_ueb(x = variable)
+# assign levels and label factor
+(var_factor <- factor_ueb(variable, levs = c(0,1,2), labs = c("No", "Si","NSNC")))
+#reorder factor
+factor_ueb(x = var_factor, labs = c("Si","No"))
 
+var_factor2 <- factor(variable)
+var_factor2[var_factor2 =="B"] <- NA
+factor_ueb(var_factor2, labs = c("1", "a","B","0") )
+
+## Other examples
 variable <- c(0,0,0,1,1,1,0,10,1,0)
-factor_ueb(variable, levels = c(0,1), labels = c("No", "Si"))
+factor_ueb(variable)
+factor_ueb(variable, levs = c(0,1), labs = c("No", "Si"))
 
 variable <- c(0,0,0,1,1,1,0,1,1,0, NA)
-factor_ueb(variable, levels = c(0,1), labels = c("No", "Si"))
+factor_ueb(variable)
+factor_ueb(variable, levs = c(0,1), labs = c("No", "Si"))
 }
 \author{
 Miriam Mota  \email{miriam.mota@vhir.org}
