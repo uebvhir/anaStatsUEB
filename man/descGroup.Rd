@@ -32,12 +32,12 @@ DESCRIPCIO DE LA FUNCIO
 }
 \examples{
  # set.seed(1)
- # data <- df <- data.frame(MUT = factor(c(rep("A", 12),rep("B",13))),
- #                          var = factor(sample(c("Yes", "no"), 25, replace = T)),
- #                          size = rnorm(25),
- #                          id = paste0("a",1:25))
- # data$id <- as.character(data$id)
- # desc_group(group  = "MUT",covariates = c("var","size","id"), data = data)
+  dat <- df <- data.frame(MUT = factor(c(rep("A", 12),rep("B",13))),
+                           var = factor(sample(c("Yes", "no"), 25, replace = TRUE)),
+                           size = rnorm(25),
+                           id = paste0("a",1:25))
+  dat$id <- as.character(dat$id)
+  desc_group(group  = "MUT",covariates = c("var","size","id"), data = dat)
 }
 \keyword{ci}
 \keyword{descriptive}
