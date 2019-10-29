@@ -5,7 +5,7 @@
 \title{A desc_data Function}
 \usage{
 desc_data(data, format = "html", maxlev = 7, maxNA = 80, size = 13,
-  caption = NULL)
+  caption = NULL, remove_cols = TRUE)
 }
 \arguments{
 \item{data}{data frame, list or environment (or object coercible by 'as.data.frame' to a data frame) containing the variables in the model. If they are not found in 'data', the variables are taken from 'environment(formula)'.}
@@ -19,12 +19,14 @@ desc_data(data, format = "html", maxlev = 7, maxNA = 80, size = 13,
 \item{size}{A numeric input for table font size}
 
 \item{caption}{Character vector containing the table's caption or title. Default value is a summary.}
+
+\item{remove_cols}{logical value. Removes all columns from a data that are composed entirely of NA values.}
 }
 \description{
 DESCRIPCIO DE LA FUNCIO
 }
 \examples{
-# desc_data(iris, format = "html")
+# desc_data(data = iris, format = "html")
 # desc_data(airquality, format = "html", maxNA = 20)
 }
 \keyword{clean}

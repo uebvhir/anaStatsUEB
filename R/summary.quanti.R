@@ -66,8 +66,8 @@ summary.quanti <- function(x,
   if (!is.null(group))  {
     n <-  sum(complete.cases(xx) & complete.cases(yy))
   }else{
-        n <- sum(complete.cases(xx))
-      }
+    n <- sum(complete.cases(xx))
+  }
   res_uni <- data.frame( ALL = paste0(n,new_line,mn_sd, new_line, ci_uni, new_line, md_iqr))
 
   if (!prep2sum) {
@@ -140,14 +140,3 @@ summary.quanti <- function(x,
          return(list(variable = x,methods = txt_caption, txt_caption = txt_caption,  summary = res_uni)))
 
 }
-
-
-
-
-
-
-
-
-
-
-

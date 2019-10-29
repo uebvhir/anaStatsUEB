@@ -7,11 +7,12 @@
 #' @param maxlev an integer indicating the maximum number of levels of variable. Default value is 7.
 #' @param maxNA an integer indicating the maximum number of missing data.
 #' @param caption Character vector containing the table's caption or title. Default value is a summary.
+#' @param remove_cols logical value. Removes all columns from a data that are composed entirely of NA values.
 #' @keywords read clean data summary depurate
 #' @export desc_data
-#' @import kableExtra Hmisc dplyr
+#' @import kableExtra Hmisc dplyr janitor
 #' @examples
-#' # desc_data(iris, format = "html")
+#' # desc_data(data = iris, format = "html")
 #' # desc_data(airquality, format = "html", maxNA = 20)
 
 
@@ -23,13 +24,16 @@ desc_data <- function(data,
                 maxlev = 7,
                 maxNA = 80,
                 size = 13,
-                caption = NULL) {
+                caption = NULL,
+                remove_cols = TRUE) {
 
   new_line <- switch(format, "html" = " <br> ", "latex" = " \\\\ " ) #, "R" = " \n ")
   caption <- paste0("Summary Data.", new_line,
                     "N variables: ", ncol(data), ".  N observaciones: ", nrow(data), new_line,
                     "Max level: ", maxlev, ".  Max NA: ", maxNA, "%")
 
+  ## eliminem columnes buides
+  data <- remove_empty(data, which = "cols")
 
   ## creacio de les diferents columnes
   nms <- names(data)
@@ -41,6 +45,7 @@ desc_data <- function(data,
   mm_lev <- unlist(lapply(data, function(x) {
     class_x <- class(x)[length(class(x))]
     switch(class_x ,
+           "logical" = unique(x),
            "factor" = paste("N LEVELS =", length(levels(x)), new_line,
                             paste(1:min(maxlev, length(levels(x))),":",levels(x)[1:min(maxlev, length(levels(x)))], collapse = new_line)),
            "numeric" = paste0( "[", min(x, na.rm = T), ", ", max(x, na.rm = T), "]"),
