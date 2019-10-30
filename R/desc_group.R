@@ -39,7 +39,8 @@ desc_group <- function(covariates,
                        width_lev = "8em",
                        byrow = FALSE,
                        show.pval.adj = FALSE,
-                       pval_cut = 0.05, ...){
+                       pval_cut = 0.05,
+                       col.background = "#ebe0e9", ...){
 
   ## Seleccionem variables i etiquetes
   # covariates <- covariates[!covariates %in% group]
@@ -136,7 +137,7 @@ desc_group <- function(covariates,
 
   if (!is.null(group) & (sum(pval_trunc < pval_cut, na.rm = T) != 0)) {
     results_ht <- results_ht %>%
-      row_spec(colorRow, bold = F, color = "black",background = "#ebe0e9") }#%>%
+      row_spec(colorRow, bold = F, color = "black",background = col.background) }#%>%
   # pack_rows(groups_row ,hline_after = F, indent = F)
 
 
