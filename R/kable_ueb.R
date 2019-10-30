@@ -19,8 +19,9 @@ kable_ueb <- function(tab,
                       caption = NULL,
                       font_size = 13,
                       full_width = FALSE,
-                      escape = FALSE, ...){
-  kable(tab, caption = caption, escape = escape, ...) %>%
+                      escape = FALSE,
+                      row.names = TRUE,...){
+  kable(tab, caption = caption, escape = escape, row.names = row.names, ...) %>%
     kable_styling(latex_options = c("striped","hold_position", "repeat_header"),
                   font_size = font_size, full_width = full_width,...) %>%
     row_spec(0,background = "#993489", color = "white")
