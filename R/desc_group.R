@@ -40,7 +40,7 @@ desc_group <- function(covariates,
                        byrow = FALSE,
                        show.pval.adj = FALSE,
                        pval_cut = 0.05,
-                       col.background = "#ebe0e9", ...){
+                       col.background = "#993489", ...){
 
   ## Seleccionem variables i etiquetes
   # covariates <- covariates[!covariates %in% group]
@@ -128,7 +128,7 @@ desc_group <- function(covariates,
     kable(escape = F, row.names = F,align = align, caption = caption)  %>%
     kable_styling(latex_options = c("striped","hold_position", "repeat_header"),
                   font_size = font_size, full_width = F) %>%
-    row_spec(0,background = "#993489", color = "white") %>%
+    row_spec(0,background = col.background, color = "white") %>%
     column_spec(which(names(results) == "levels"), width_max = width_lev) %>%
     column_spec(which(names(results) == "variable"), bold = T)   %>%
     column_spec(which(names(results) == "ALL"), bold = T)   %>%
@@ -137,7 +137,7 @@ desc_group <- function(covariates,
 
   if (!is.null(group) & (sum(pval_trunc < pval_cut, na.rm = T) != 0)) {
     results_ht <- results_ht %>%
-      row_spec(colorRow, bold = F, color = "black",background = col.background) }#%>%
+      row_spec(colorRow, bold = F, color = "black",background = "#ebe0e9" ) }#%>%
   # pack_rows(groups_row ,hline_after = F, indent = F)
 
 
