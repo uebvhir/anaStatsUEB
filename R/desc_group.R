@@ -81,7 +81,8 @@ desc_group <- function(covariates,
 
   if (show.pval.adj) {
     if (anyNA(results$p.value)) stop("P.value NA")
-    results$p.val.adj[which(results$p.value != "")] <- round(p.adjust(pvalues, method = "BH"),2)
+    results$p.val.adj <- NA
+    results$p.val.adj[which(results$p.value != "")] <- round(p.adjust(as.numeric(as.character(pvalues)), method = "BH"),2)
     results$p.val.adj[which(results$p.value == "")] <- ""
   }
   ## Caption de la taula final
