@@ -5,7 +5,7 @@
 \title{A kable_ueb Function}
 \usage{
 kable_ueb(tab, caption = NULL, font_size = 13, full_width = FALSE,
-  escape = FALSE, ...)
+  escape = FALSE, col.background = "#993489", ...)
 }
 \arguments{
 \item{tab}{table to kable}
@@ -15,14 +15,18 @@ kable_ueb(tab, caption = NULL, font_size = 13, full_width = FALSE,
 \item{font_size}{A numeric input for table font size}
 
 \item{full_width}{A TRUE or FALSE variable controlling whether the HTML table should have 100% width. Since HTML and pdf have different flavors on the preferable format for full_width. If not specified, a HTML table will have full width by default but this option will be set to FALSE for a LaTeX table}
+
+\item{escape}{Boolean; whether to escape special characters when producing HTML or LaTeX tables. When escape = FALSE, you have to make sure that special characters will not trigger syntax errors in LaTeX or HTML.}
+
+\item{col.background}{A character string for row background color. Here please pay attention to the differences in color codes between HTML and LaTeX.}
 }
 \description{
 DESCRIPCIO DE LA FUNCIO
 }
 \examples{
-aa <- factor(rep(c("A","B","C"), 10))
-kable_ueb(table(aa))
-kable_ueb(table(aa,aa))
+aa <- data.frame(num = rnorm(10), fact= factor(rep(c("A","B","C"), 10)))
+kable_ueb(aa)
+kable_ueb(aa, digits = 2, row.names = TRUE)
 }
 \keyword{html}
 \keyword{kable}
