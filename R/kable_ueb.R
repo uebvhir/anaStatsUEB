@@ -9,9 +9,10 @@
 #' @keywords kable html ueb
 #' @import kableExtra
 #' @examples
-#' aa <- factor(rep(c("A","B","C"), 10))
-#' kable_ueb(table(aa))
-#' kable_ueb(table(aa,aa))
+#' aa <- data.frame(num = rnorm(10), fact= factor(rep(c("A","B","C"), 10)))
+#' kable_ueb(aa)
+#' kable_ueb(aa, digits = 2, row.names = TRUE)
+
 
 
 
@@ -20,10 +21,11 @@ kable_ueb <- function(tab,
                       font_size = 13,
                       full_width = FALSE,
                       escape = FALSE,
-                      row.names = TRUE,...){
-  kable(tab, caption = caption, escape = escape, row.names = row.names, ...) %>%
+                      ...){
+
+  kable(tab, caption = caption, escape = escape, ...) %>%
     kable_styling(latex_options = c("striped","hold_position", "repeat_header"),
-                  font_size = font_size, full_width = full_width,...) %>%
+                  font_size = font_size, full_width = full_width) %>%
     row_spec(0,background = "#993489", color = "white")
 }
 
