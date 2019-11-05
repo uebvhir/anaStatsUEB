@@ -45,10 +45,12 @@ summary.quanti <- function(x,
 
 
   ## Comprovacions, stops i warnings
-  if(all(is.na(data[,x]))) stop(paste("The variable",x,"is empty"))
+  if(all(is.na(data[,x]))) stop(paste0("The variable '",x,"' is empty"))
+  if(is.factor(data[,x])) stop(paste0("La variable '",x,"' debe ser numérica"))
+
   if(!is.factor(data[,group])) {
     data[,group] <- factor(data[,group])
-    warning( paste("La variable", group, "ha sido transformada a factor" ))
+    warning( paste0("La variable '", group, "' ha sido transformada a factor" ))
   }
 
 
@@ -96,6 +98,8 @@ summary.quanti <- function(x,
                                                                   median = round(median(x,na.rm = T),nround),
                                                                   q25 = round(quantile(x,na.rm = T, probs = 0.25),nround),
                                                                   q75 = round(quantile(x,na.rm = T, probs = 0.75),nround)))
+
+    ci_bi <- as.data.frame(ci.mean(xx ~ yy, data = data))[c("yy","lower", "upper")]
 
     ### En el cas que alguna de les categories no tingui recollit cap valor (p.e. homes no test embaràs), crear les celes buides
     if(nrow(sum_bi) != length(levels(yy)))  {
