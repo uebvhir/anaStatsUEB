@@ -42,6 +42,17 @@ summary.quanti <- function(x,
                            sub.ht = TRUE){
 
 
+
+
+  ## Comprovacions, stops i warnings
+  if(all(is.na(data[,x]))) stop(paste("The variable",x,"is empty"))
+  if(!is.factor(data[,group])) {
+    data[,group] <- factor(data[,group])
+    warning( paste("La variable", group, "ha sido transformada a factor" ))
+  }
+
+
+
   ## Definicio de parametres
   new_line <- switch(format, "html" = " <br> ", "latex" = " \\\\ " , "R" = " \n ")
   xx <- data[,x]
@@ -85,7 +96,22 @@ summary.quanti <- function(x,
                                                                   median = round(median(x,na.rm = T),nround),
                                                                   q25 = round(quantile(x,na.rm = T, probs = 0.25),nround),
                                                                   q75 = round(quantile(x,na.rm = T, probs = 0.75),nround)))
-    ci_bi <- ci.mean(xx ~ yy, data = data)
+
+    ### En el cas que alguna de les categories no tingui recollit cap valor (p.e. homes no test embaràs), crear les celes buides
+    if(nrow(sum_bi) != length(levels(yy)))  {
+      sum_bi <- rbind(sum_bi, data.frame(yy = levels(yy)[!levels(yy) %in% sum_bi$yy], xx = rep(NA, length(levels(yy))-nrow(sum_bi)) ) )
+      rownames(sum_bi) <- sum_bi$yy
+      sum_bi <- sum_bi[levels(yy),]
+
+      ## IC
+      ci_bi <- as.data.frame(ci.mean(xx ~ yy, data = data))[c("yy","lower", "upper")]
+      ci_bi <- rbind(ci_bi, data.frame(yy = levels(yy)[!levels(yy) %in% ci_bi$yy],
+                                         lower = rep(NA, length(levels(yy))-nrow(ci_bi)),
+                                         upper = rep(NA, length(levels(yy))-nrow(ci_bi))) )
+      rownames(ci_bi) <- ci_bi$yy
+      ci_bi <- ci_bi[levels(yy),]
+    }
+
     res_all <- data.frame(t(paste0(paste0(sum_bi$xx[,"n"]), new_line,
                                    paste0( sum_bi$xx[,"mean"]," (", sum_bi$xx[,"sd"], ")" ), new_line,
                                    paste0("CI[",round(ci_bi$lower,nround), "; ", round(ci_bi$upper,nround),"]" ), new_line,
