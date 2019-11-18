@@ -47,7 +47,7 @@ desc_group <- function(covariates,
   # covariates <- covariates[!covariates %in% group]
   data <- data[,names(data) %in% c(covariates,group)]
   if (!is.null(group)) {
-    data[,group] <- factor(data[,group])
+    data[,group] <- factor_ueb(data[,group])
     varname_group <- ifelse( Hmisc::label(data[,group]) != "", Hmisc::label(data[,group]), group)
   }
 
