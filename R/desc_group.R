@@ -113,11 +113,13 @@ desc_group <- function(covariates,
   # groups_row <- table(var)[unique(var)]
 
   ## parametres per donar color a les variables amb p.value inferior a punt de tall
+  if(show.pval.adj){
+    pval_valid <- results$p.val.adj
+  }else{
+    pval_valid <- results$p.value
+  }
 
-
-  pval_trunc <- as.numeric(sub("su.*", "",gsub("<","",
-                                               ifelse(show.pval.adj, results$p.val.adj,
-                                                      results$p.value),
+  pval_trunc <- as.numeric(sub("su.*", "",gsub("<","",pval_valid,
                                                fixed = T)))
   condition <- pval_trunc > pval_cut | is.na(pval_trunc)
   if (!all(condition)) {
