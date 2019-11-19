@@ -84,6 +84,7 @@ desc_group <- function(covariates,
     results$p.val.adj <- NA
     results$p.val.adj[which(results$p.value != "")] <- round(p.adjust(as.numeric(as.character(pvalues)), method = "BH"),2)
     results$p.val.adj[which(results$p.value == "")] <- ""
+    results <- results[,c(names(results)[1:which(names(results) == "p.value")], "p.val.adj", "n") ]
   }
   ## Caption de la taula final
   footnote <- NULL
