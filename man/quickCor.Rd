@@ -60,7 +60,7 @@ quickCor(x = "mpg", y = "hp", dat = mtc_bis,
 nround = 3, xtab = FALSE, pearson = TRUE, corplot = TRUE, sub = "subtitle", lm.fit =FALSE)
 # canviem la posicio de la llegenda
 quickCor(x = "mpg", y = "hp", dat = mtc_bis,
-nround = 3, xtab = FALSE, pearson = TRUE, corplot = TRUE, sub = "subtitle",
+nround = 3, xtab = TRUE, pearson = TRUE, corplot = TRUE, sub = "subtitle",
 pos = "bottomright")
 }
 \author{

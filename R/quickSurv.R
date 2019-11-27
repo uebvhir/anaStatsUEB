@@ -101,10 +101,7 @@ quickSurv <- function(time, event, tag.event,
       sum_km <- summary(fits)$table[,c("records", "events", "median", "0.95LCL", "0.95UCL")]
       switch(summary.km,
              "r" = results$sum_km,
-             "ht" = (results$sum_km_ht <- kable(sum_km) %>%
-                       kable_styling(latex_options = c("striped","hold_position", "repeat_header"),
-                                     font_size = 12) %>%
-                       row_spec(0,background = "#993489", color = "white")),
+             "ht" = (results$sum_km_ht <- kable_ueb(sum_km)),
              "no" = cat("")  )
 
     }

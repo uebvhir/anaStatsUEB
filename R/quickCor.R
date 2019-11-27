@@ -32,7 +32,7 @@
 #' nround = 3, xtab = FALSE, pearson = TRUE, corplot = TRUE, sub = "subtitle", lm.fit =FALSE)
 #' # canviem la posicio de la llegenda
 #' quickCor(x = "mpg", y = "hp", dat = mtc_bis,
-#' nround = 3, xtab = FALSE, pearson = TRUE, corplot = TRUE, sub = "subtitle",
+#' nround = 3, xtab = TRUE, pearson = TRUE, corplot = TRUE, sub = "subtitle",
 #' pos = "bottomright")
 #' @return results:
 #' @return coeff:
@@ -106,10 +106,8 @@ quickCor <- function(x, y, dat,
 
   }
   if (xtab) {
-    print(xtable(result,
-                 caption = paste("Correlation", x, "whit", y,".", sub)),
-          type = xtab.type,
-          size = sz.xtab)
+
+    print(kable_ueb(result, caption = paste("Correlation", x, "whit", y,".", sub)))
   }else{
     if (show.res) return( list(coeff = summary(fit), result = result) )
   }

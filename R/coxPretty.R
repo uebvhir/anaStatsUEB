@@ -34,11 +34,8 @@ coxPretty <- function(frml, data,
 
   switch(summary.cox,
          "r" = results$sum_mod <- sum_mod,
-         "ht" = (results$sum_mod_ht <- kable(sum_mod, booktabs = T,
-                                             caption = paste0( "Hazard Ratio Cox ", namevar ,""),
-                                             longtable = TRUE, escape = F, ...) %>%
-                   kable_styling(latex_options = c("striped","hold_position", "repeat_header"), font_size = 12,...) %>%
-                   row_spec(0,background = "#993489", color = "white")),
+         "ht" = (results$sum_mod_ht <- kable_ueb(sum_mod, booktabs = T,
+                                                 caption = paste0( "Hazard Ratio Cox ", namevar ,""))),
          "no" = cat("")  )
 
   return(results)

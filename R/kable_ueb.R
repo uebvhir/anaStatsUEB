@@ -17,7 +17,6 @@
 
 
 
-
 kable_ueb <- function(tab,
                       caption = NULL,
                       font_size = 13,
@@ -25,10 +24,9 @@ kable_ueb <- function(tab,
                       escape = FALSE,
                       col.background = "#993489",
                       ...){
-
+  options(knitr.kable.NA = '')
   kable(tab, caption = caption, escape = escape, ...) %>%
     kable_styling(latex_options = c("striped","hold_position", "repeat_header"),
                   font_size = font_size, full_width = full_width) %>%
     row_spec(0,background = col.background, color = "white")
 }
-

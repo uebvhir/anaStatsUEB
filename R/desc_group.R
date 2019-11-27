@@ -130,7 +130,7 @@ desc_group <- function(covariates,
   }
   # colorRow <- which(!condition)
   # groups_row <- cumsum(groups_row)
-
+  options(knitr.kable.NA = '')
   ## Taula HTML
   results_ht <- results %>%
     # mutate(p.value = cell_spec(p.value, "html", color = ifelse(condition,"black", "white"),
