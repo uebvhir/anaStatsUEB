@@ -13,7 +13,8 @@
 #' @examples
 #' aa <- data.frame(num = rnorm(10), fact= factor(rep(c("A","B","C"), 10)))
 #' kable_ueb(aa)
-#' kable_ueb(aa, digits = 2, row.names = TRUE)
+#' kable_ueb(aa, digits = 2, row.names = TRUE, position = "left")
+#' kable_ueb(aa, digits = 2, row.names = TRUE, format = "latex")
 
 
 
@@ -23,10 +24,13 @@ kable_ueb <- function(tab,
                       full_width = FALSE,
                       escape = FALSE,
                       col.background = "#993489",
+                      position = "center",
                       ...){
   options(knitr.kable.NA = '')
   kable(tab, caption = caption, escape = escape, ...) %>%
-    kable_styling(latex_options = c("striped","hold_position", "repeat_header"),
+    kable_styling(latex_options = c("striped","hold_position",
+                                    "repeat_header"),
+                  position = position,
                   font_size = font_size, full_width = full_width) %>%
     row_spec(0,background = col.background, color = "white")
 }
