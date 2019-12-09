@@ -52,12 +52,12 @@ summary.quali <- function(x,
     message("Some levels of ", x, " are removed since no observation in that/those levels")
     Hmisc::label(data[,x]) <- lb
   }
-  if(any(table(data[,group]) == 0 ) ) {
-    lbg <- Hmisc::label(data[,group])
-    data[,group] <- droplevels(data[,group])
-    message("Some levels of ", group, " are removed since no observation in that/those levels")
-    Hmisc::label(data[,group]) <- lbg
-  }
+  # if(any(table(data[,group]) == 0 ) ) {
+  #   lbg <- Hmisc::label(data[,group])
+  #   data[,group] <- droplevels(data[,group])
+  #   message("Some levels of ", group, " are removed since no observation in that/those levels")
+  #   Hmisc::label(data[,group]) <- lbg
+  # }
 
 
 
