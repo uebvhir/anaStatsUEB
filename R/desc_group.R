@@ -48,7 +48,7 @@ desc_group <- function(frml = NULL,
   ## en el cas de que hi hagi formula seleccionem el grup i les covariates
   if(!is.null(frml)){
     covariates <- rhs.vars(frml)
-    if(!is.null(lhs.vars(frml))) grup <- lhs.vars(frml)
+    if(!is.null(lhs.vars(frml))) group <- lhs.vars(frml)
   }
 
   ## Seleccionem variables i etiquetes
