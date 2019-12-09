@@ -1,6 +1,7 @@
 #' A desc_group Function
 #'
 #' DESCRIPCIO DE LA FUNCIO
+#' @param frml Right side of ~ must have the terms in an additive way, and left side of ~ must contain the name of the grouping variable or can be left in blank (in this latter case descriptives for whole sample are calculated and no test is performed).
 #' @param covariates a character string with names of variables.
 #' @param group factor variable. Outcome. Default value is NULL
 #' @param data data frame, list or environment (or object coercible by 'as.data.frame' to a data frame) containing the variables in the model. If they are not found in 'data', the variables are taken from 'environment(formula)'.
@@ -30,7 +31,8 @@ descGroup <- function(...) {
   desc_group(...)
 }
 
-desc_group <- function(covariates,
+desc_group <- function(frml = NULL,
+                       covariates,
                        group = NULL,
                        data,
                        method = "non-param",
@@ -42,6 +44,12 @@ desc_group <- function(covariates,
                        pval_cut = 0.05,
                        col.background = "#993489",
                        col.varsel = "#ebe0e9", ...){
+
+  ## en el cas de que hi hagi formula seleccionem el grup i les covariates
+  if(!is.null(frml)){
+    covariates <- rhs.vars(frml)
+    if(!is.null(lhs.vars(frml))) grup <- lhs.vars(frml)
+  }
 
   ## Seleccionem variables i etiquetes
   # covariates <- covariates[!covariates %in% group]

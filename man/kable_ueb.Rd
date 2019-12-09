@@ -5,7 +5,8 @@
 \title{A kable_ueb Function}
 \usage{
 kable_ueb(tab, caption = NULL, font_size = 13, full_width = FALSE,
-  escape = FALSE, col.background = "#993489", ...)
+  escape = FALSE, col.background = "#993489", position = "center",
+  ...)
 }
 \arguments{
 \item{tab}{table to kable}
@@ -26,7 +27,8 @@ DESCRIPCIO DE LA FUNCIO
 \examples{
 aa <- data.frame(num = rnorm(10), fact= factor(rep(c("A","B","C"), 10)))
 kable_ueb(aa)
-kable_ueb(aa, digits = 2, row.names = TRUE)
+kable_ueb(aa, digits = 2, row.names = TRUE, position = "left")
+kable_ueb(aa, digits = 2, row.names = TRUE, format = "latex")
 }
 \keyword{html}
 \keyword{kable}

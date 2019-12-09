@@ -7,6 +7,8 @@
 descGroup(...)
 }
 \arguments{
+\item{frml}{Right side of ~ must have the terms in an additive way, and left side of ~ must contain the name of the grouping variable or can be left in blank (in this latter case descriptives for whole sample are calculated and no test is performed).}
+
 \item{covariates}{a character string with names of variables.}
 
 \item{group}{factor variable. Outcome. Default value is NULL}
