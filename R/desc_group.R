@@ -15,7 +15,7 @@
 #' @keywords summary ci qualitative descriptive exploratory
 #' @export desc_group
 #' @export descGroup
-#' @import kableExtra
+#' @import kableExtra formula.tools
 #' @examples
 #'  # set.seed(1)
 #'   dat <- df <- data.frame(MUT = factor(c(rep("A", 12),rep("B",13))),
