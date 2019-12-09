@@ -44,9 +44,18 @@ summary.quali <- function(x,
     if (length(length(table(data[,group]))) > 10) warning("La variable group tiene mas de 10 niveles")
     if (class(data[,group])[length(class(data[,group]))] != "factor") stop("La variable group debe ser factor")}
   if (class(data[,x])[length(class(data[,x]))] != "factor") stop("La variable x debe ser factor")
-
-  ## només dades completes
+  ### només dades completes
   data <- na.omit(data[,c(x,group)])
+  if(any(table(data[,x]) == 0 ) ) {
+    data[,x] <- droplevels(data[,x])
+    message("Some levels of ", x, " are removed since no observation in that/those levels")
+  }
+  if(any(table(data[,group]) == 0 ) ) {
+    data[,group] <- droplevels(data[,group])
+    message("Some levels of ", group, " are removed since no observation in that/those levels")
+  }
+
+
 
 
   ## Assignació paametres i variables
