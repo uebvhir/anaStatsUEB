@@ -47,12 +47,16 @@ summary.quali <- function(x,
   ### només dades completes
   data <- na.omit(data[,c(x,group)])
   if(any(table(data[,x]) == 0 ) ) {
+    lb <- Hmisc::label(data[,x])
     data[,x] <- droplevels(data[,x])
     message("Some levels of ", x, " are removed since no observation in that/those levels")
+    Hmisc::label(data[,x]) <- lb
   }
   if(any(table(data[,group]) == 0 ) ) {
+    lbg <- Hmisc::label(data[,group])
     data[,group] <- droplevels(data[,group])
     message("Some levels of ", group, " are removed since no observation in that/those levels")
+    Hmisc::label(data[,group]) <- lbg
   }
 
 
