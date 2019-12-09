@@ -45,6 +45,10 @@ summary.quali <- function(x,
     if (class(data[,group])[length(class(data[,group]))] != "factor") stop("La variable group debe ser factor")}
   if (class(data[,x])[length(class(data[,x]))] != "factor") stop("La variable x debe ser factor")
 
+  ## només dades completes
+  data <- na.omit(data[,c(x,group)])
+
+
   ## Assignació paametres i variables
   new_line <- switch(format, "html" = " <br> ", "latex" = " \\\\ " , "R" = " \n ")
   xx <- data[,x]

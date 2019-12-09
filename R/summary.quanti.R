@@ -53,6 +53,9 @@ summary.quanti <- function(x,
     warning( paste0("La variable '", group, "' ha sido transformada a factor" ))
   }
 
+  ## només dades completes
+  data <- na.omit(data[,c(x,group)])
+
 
 
   ## Definicio de parametres
@@ -67,6 +70,8 @@ summary.quanti <- function(x,
   if (sub.ht) sub <- "<sub>2</sub>"
   txt_descriptive <-  "<br> <font size='1'> 2: N <br> mean(sd) <br> [CI95% mean] <br> median[IQR] </font>"
   txt_caption = txt_descriptive
+
+
   ## Resum univariat mean(sd) \\ IC mean \\ median[IQR]
   ci_uni <- ci.mean(xx)
   mn_sd <- paste0(round(mean(xx,na.rm = T),nround), " (", round(sd(xx,na.rm = T),nround), ")")
