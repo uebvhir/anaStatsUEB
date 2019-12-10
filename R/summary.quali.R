@@ -42,10 +42,13 @@ summary.quali <- function(x,
   ## Comprovacions variades
   if (!is.null(group)) {
     if (length(length(table(data[,group]))) > 10) warning("La variable group tiene mas de 10 niveles")
-    if (class(data[,group])[length(class(data[,group]))] != "factor") stop("La variable group debe ser factor")}
+    if (class(data[,group])[length(class(data[,group]))] != "factor") stop("La variable group debe ser factor")
+    ### només dades completes
+    data <- na.omit(data[,c(x,group)])
+    }
   if (class(data[,x])[length(class(data[,x]))] != "factor") stop("La variable x debe ser factor")
-  ### només dades completes
-  data <- na.omit(data[,c(x,group)])
+
+
   if(any(table(data[,x]) == 0 ) ) {
     lb <- Hmisc::label(data[,x])
     data[,x] <- droplevels(data[,x])
