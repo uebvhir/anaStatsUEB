@@ -54,7 +54,8 @@ summary.quanti <- function(x,
   }
 
   ## només dades completes
-  data <- na.omit(data[,c(x,group)])
+  if(!is.null(group))   data <- na.omit(data[,c(x,group)])
+
 
 
 
