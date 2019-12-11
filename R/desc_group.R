@@ -23,7 +23,8 @@
 #'                            size = rnorm(25),
 #'                            id = paste0("a",1:25))
 #'   dat$id <- as.character(dat$id)
-#'   desc_group(group  = "MUT",covariates = c("var","size","id"), data = dat)
+#'   res <- desc_group(group  = "MUT",covariates = names(dat), data = dat)
+#'   res$res
 
 
 descGroup <- function(...) {
@@ -45,6 +46,14 @@ desc_group <- function(frml = NULL,
                        col.background = "#993489",
                        col.varsel = "#ebe0e9", ...){
 
+  ## comprobacions
+  if(is.null(frml) & !group %in% names(data)) {stop("The variable/s '", group, "' do not exist.")}
+  if(is.null(frml) & any(!covariates %in% names(data))) {stop("The variable/s '",
+                                                              paste0(covariates[!covariates %in% names(data)], collapse = "' , '"),
+                                                              "' do not exist.")}
+  if(all(is.na(data[,group]))) {stop("Variable '", group, "' is empty")}
+
+
   ## en el cas de que hi hagi formula seleccionem el grup i les covariates
   if(!is.null(frml)){
     covariates <- rhs.vars(frml)
@@ -52,7 +61,6 @@ desc_group <- function(frml = NULL,
   }
 
   ## Seleccionem variables i etiquetes
-  # covariates <- covariates[!covariates %in% group]
   data <- data[,names(data) %in% c(covariates,group)]
   if (!is.null(group)) {
     data[,group] <- factor_ueb(data[,group])
@@ -72,6 +80,10 @@ desc_group <- function(frml = NULL,
   class_data <- unlist(lapply(data, function(x) class(x)[length(class(x))]))
   class_data[which(class_data == "numeric" | class_data == "integer")] <- "numeric"
   class_data <- class_data[!names(class_data) %in% group]
+
+  if(any(class_data == "character")) message("La variable/s '",
+                                                   paste0(names(class_data)[class_data == "character"],collapse = "' , '"),
+                                             "' es tipo caracter y no se ha analizado")
 
   ## realitzem analisis descriptiu i/o comparatiu
   list_var <- list()
