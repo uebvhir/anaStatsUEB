@@ -48,10 +48,12 @@ desc_group <- function(frml = NULL,
 
   ## comprobacions
   if(is.null(frml) & !is.null(group) ) {
-    if(!group %in% names(data))stop("The variable/s '", group, "' do not exist.")}
-  if(is.null(frml) & any(!covariates %in% names(data))) {stop("The variable/s '",
+    if(!group %in% names(data)) stop("The variable/s '", group, "' do not exist.")}
+  if(is.null(frml) ) {
+    if(any(!covariates %in% names(data))) {stop("The variable/s '",
                                                               paste0(covariates[!covariates %in% names(data)], collapse = "' , '"),
-                                                              "' do not exist.")}
+                                                              "' do not exist.")}}
+
   if(!is.null(group) & all(is.na(data[,group]))) {stop("Variable '", group, "' is empty")}
 
 
@@ -83,7 +85,7 @@ desc_group <- function(frml = NULL,
   class_data <- class_data[!names(class_data) %in% group]
 
   if(any(class_data == "character")) message("La variable/s '",
-                                                   paste0(names(class_data)[class_data == "character"],collapse = "' , '"),
+                                             paste0(names(class_data)[class_data == "character"],collapse = "' , '"),
                                              "' es tipo caracter y no se ha analizado")
 
   ## realitzem analisis descriptiu i/o comparatiu
