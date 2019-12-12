@@ -47,11 +47,11 @@ desc_group <- function(frml = NULL,
                        col.varsel = "#ebe0e9", ...){
 
   ## comprobacions
-  if(is.null(frml) & !group %in% names(data)) {stop("The variable/s '", group, "' do not exist.")}
+  if(is.null(frml) & !is.null(group) & !group %in% names(data)) {stop("The variable/s '", group, "' do not exist.")}
   if(is.null(frml) & any(!covariates %in% names(data))) {stop("The variable/s '",
                                                               paste0(covariates[!covariates %in% names(data)], collapse = "' , '"),
                                                               "' do not exist.")}
-  if(all(is.na(data[,group]))) {stop("Variable '", group, "' is empty")}
+  if(!is.null(group) & all(is.na(data[,group]))) {stop("Variable '", group, "' is empty")}
 
 
   ## en el cas de que hi hagi formula seleccionem el grup i les covariates
