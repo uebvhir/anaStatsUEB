@@ -51,7 +51,7 @@ summary.quali <- function(x,
 
   if(any(table(data[,x]) == 0 ) ) {
     lb <- Hmisc::label(data[,x])
-    data[,x] <- droplevels(data[,x])
+    if(is.factor(data[,x] )) data[,x] <- droplevels(data[,x])
     message("Some levels of ", x, " are removed since no observation in that/those levels")
     Hmisc::label(data[,x]) <- lb
   }
