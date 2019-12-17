@@ -112,6 +112,7 @@ desc_group <- function(frml = NULL,
     results$p.val.adj[which(results$p.value != "")] <- round(p.adjust(as.numeric(as.character(pvalues)), method = "BH"),2)
     results$p.val.adj[which(results$p.value == "")] <- ""
     results <- results[,c(names(results)[1:which(names(results) == "p.value")], "p.val.adj", "n") ]
+    results$p.val.adj[which(results$p.val.adj != "" & results$p.val.adj < 0.001)] <- "<0.001"
   }
   ## Caption de la taula final
   footnote <- NULL
