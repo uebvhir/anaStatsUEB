@@ -50,7 +50,7 @@ quickCor <- function(x, y, dat,
                      corplot = TRUE,
                      cex.txt = 0.8,
                      cex.main = 0.8,
-                     xtab.type = "latex",
+                     xtab.type = "html",
                      sub = NULL,
                      lm.fit = TRUE,
                      show.res = TRUE,
@@ -71,6 +71,7 @@ quickCor <- function(x, y, dat,
 
   result <- t(data.frame(Pearson, Spearman))
   colnames(result) <- c("rho", "IC", "p-value")
+  result[,"p-value"][which(as.numeric(as.character(result[,"p-value"])) < 0.001)] <- "<0.001"
 
   fit <- lm(dat[, y] ~ dat[, x])
 
