@@ -148,6 +148,8 @@ summary.quali <- function(x,
       txt_caption <-  paste(txt_caption,txt_descriptive,txt_descriptive,txt_pval )
 
 
+    }else{
+      txt_pval <- NULL
     }
 
     if (show.n)     res_all$n <-  c(sum(table(xx,yy)),rep("",nrow(res_all) - 1))
