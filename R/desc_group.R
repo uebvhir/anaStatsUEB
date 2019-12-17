@@ -10,7 +10,8 @@
 #' @param byrow logical or NA. Percentage of categorical variables must be reported by rows (TRUE), by columns (FALSE) or by columns and rows to sum up 1 (NA). Default value is FALSE, which means that percentages are reported by columns (withing groups).
 #' @param width_lev defines the maximum width of table columns. Default value is 8em
 #' @param pval_cut cut p.value colored
-#' @param show.pval.adj ogical indicating whether adjust p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is FALSE.
+#' @param show.pval logical indicating whether p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is TRUE.
+#' @param show.pval.adj logical indicating whether adjust p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is FALSE.
 #' @param caption Character vector containing the table's caption or title.
 #' @keywords summary ci qualitative descriptive exploratory
 #' @export desc_group
@@ -44,7 +45,8 @@ desc_group <- function(frml = NULL,
                        show.pval.adj = FALSE,
                        pval_cut = 0.05,
                        col.background = "#993489",
-                       col.varsel = "#ebe0e9", ...){
+                       col.varsel = "#ebe0e9",
+                       show.pval = TRUE, ...){
 
   ## comprobacions
   if(is.null(frml) & !is.null(group) ) {
@@ -93,8 +95,10 @@ desc_group <- function(frml = NULL,
   for (i in seq_along(class_data)) {
     list_var[[names(class_data)[i]]] <- switch(class_data[i],
                                                "numeric" = summary.quanti( x = names(class_data)[i] , group = group ,
-                                                                           method = method, data = data, prep2sum = TRUE,... ) ,
-                                               "factor" = summary.quali( x = names(class_data)[i], group = group ,data = data, byrow = byrow, ...),
+                                                                           method = method, data = data, prep2sum = TRUE,
+                                                                           show.pval = show.pval ,... ) ,
+                                               "factor" = summary.quali( x = names(class_data)[i], group = group ,data = data, byrow = byrow,
+                                                                         show.pval = show.pval , ...),
     )
   }
   list_var_sum <- lapply(list_var, function(x)x[["summary"]])
