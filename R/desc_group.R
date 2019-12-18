@@ -19,12 +19,14 @@
 #' @import kableExtra formula.tools
 #' @examples
 #'  # set.seed(1)
-#'   dat <- df <- data.frame(MUT = factor(c(rep("A", 12),rep("B",13))),
-#'                            var = factor(sample(c("Yes", "no"), 25, replace = TRUE)),
-#'                            size = rnorm(25),
-#'                            id = paste0("a",1:25))
+#'   dat <- df <- data.frame(MUT = factor(c(rep("A", 13),rep("B",13))),
+#'                            var = factor(sample(c("Yes", "no"), 26, replace = TRUE)),
+#'                            size = rnorm(26),
+#'                            id = paste0("a",1:26))
 #'   dat$id <- as.character(dat$id)
 #'   res <- desc_group(group  = "MUT",covariates = names(dat), data = dat)
+#'   res$res
+#'   res <- desc_group(group  = "MUT",covariates = names(dat), data = dat, paired = TRUE)
 #'   res$res
 
 
@@ -46,7 +48,8 @@ desc_group <- function(frml = NULL,
                        pval_cut = 0.05,
                        col.background = "#993489",
                        col.varsel = "#ebe0e9",
-                       show.pval = TRUE, ...){
+                       show.pval = TRUE,
+                       paired = FALSE, ...){
 
   ## comprobacions
   if(is.null(frml) & !is.null(group) ) {
@@ -96,9 +99,9 @@ desc_group <- function(frml = NULL,
     list_var[[names(class_data)[i]]] <- switch(class_data[i],
                                                "numeric" = summary.quanti( x = names(class_data)[i] , group = group ,
                                                                            method = method, data = data, prep2sum = TRUE,
-                                                                           show.pval = show.pval ,... ) ,
+                                                                           show.pval = show.pval, paired = paired,... ) ,
                                                "factor" = summary.quali( x = names(class_data)[i], group = group ,data = data, byrow = byrow,
-                                                                         show.pval = show.pval , ...),
+                                                                         show.pval = show.pval, paired = paired, ...),
     )
   }
   list_var_sum <- lapply(list_var, function(x)x[["summary"]])
