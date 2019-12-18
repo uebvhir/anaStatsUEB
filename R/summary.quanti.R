@@ -17,8 +17,8 @@
 #' @import Publish
 #' @examples
 #'  # set.seed(1)
-#'  # data <- df <- data.frame(MUT = factor(c(rep("A", 12),rep("B",13))),
-#'  #                          var = rnorm(25))
+#'  # data <- df <- data.frame(MUT = factor(c(rep("A", 13),rep("B",13))),
+#'  #                          var = rnorm(26))
 #'
 #'  # summary.quanti(x = "var", data = df)
 #'  # tab <- summary.quanti(x = "var",group = "MUT",data = df)
@@ -39,7 +39,8 @@ summary.quanti <- function(x,
                            show.all = TRUE,
                            show.n = TRUE,
                            prep2sum = FALSE,
-                           sub.ht = TRUE){
+                           sub.ht = TRUE,
+                           paired = FALSE){
 
 
 
@@ -140,15 +141,23 @@ summary.quanti <- function(x,
     ### Test
     if (show.pval) {
       ## Decidim test que es realitza
-      if (is.null(test))    test <- switch(method,
+
+      if (is.null(test) & !paired)    test <- switch(method,
                                            "param" = ifelse(length(levels(yy)) > 2, "Anova","Student's T"),
                                            "non-param" = ifelse(length(levels(yy)) > 2, "Kruska-Wallis","Mann–Whitney U"))
+
+      if (is.null(test) & paired)    test <- switch(method,
+                                                     "param" = ifelse(length(levels(yy)) > 2, "no implementat","Paired Student's T"),
+                                                     "non-param" = ifelse(length(levels(yy)) > 2, "no implementat","Wilcoxon signed-rank test"))
       ## Calculem test
       pval <- try(switch(test,
                          "Student's T" = t.test(xx~yy)$p.va,
                          "Mann–Whitney U" = wilcox.test(xx~yy)$p.va,
                          "Anova" = summary(aov(xx~yy))[[1]][["Pr(>F)"]][1],
-                         "Kruska-Wallis" = kruskal.test(xx~yy)$p.va), TRUE)
+                         "Kruska-Wallis" = kruskal.test(xx~yy)$p.va,
+                         "Paired Student's T" = t.test(xx~yy, paired = TRUE)$p.va,
+                         "Wilcoxon signed-rank test" = wilcox.test(xx~yy, paired = TRUE)$p.va,
+                         "no implementat" = stop("La funció encara no esta preparada per a aquests test!")),TRUE)
       pval <- ifelse(grepl("Error", pval), ".",pval)
       pval_round <- ifelse(grepl("Error", try(round(pval,3), TRUE)), ".", round(pval,3))
 
