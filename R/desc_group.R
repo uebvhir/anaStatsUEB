@@ -99,6 +99,7 @@ desc_group <- function(frml = NULL,
 
   pvalues <- unlist(lapply(list_var, function(x)x[["pval"]]))
 
+
   if (show.pval.adj) {
     if (anyNA(results$p.value)) stop("P.value NA")
     results$p.val.adj <- NA
@@ -173,5 +174,5 @@ desc_group <- function(frml = NULL,
 
   return(list(group = group, covariates = covariates,
               selVar = var_pval_cut,
-              pvalues = pvalues, results = results_ht))
+              pvalues = as.numeric(as.character(pvalues)),results = results_ht))
 }
