@@ -25,7 +25,9 @@ descGroup(...)
 
 \item{pval_cut}{cut p.value colored}
 
-\item{show.pval.adj}{ogical indicating whether adjust p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is FALSE.}
+\item{show.pval}{logical indicating whether p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is TRUE.}
+
+\item{show.pval.adj}{logical indicating whether adjust p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is FALSE.}
 
 \item{caption}{Character vector containing the table's caption or title.}
 }
@@ -39,7 +41,8 @@ DESCRIPCIO DE LA FUNCIO
                            size = rnorm(25),
                            id = paste0("a",1:25))
   dat$id <- as.character(dat$id)
-  desc_group(group  = "MUT",covariates = c("var","size","id"), data = dat)
+  res <- desc_group(group  = "MUT",covariates = names(dat), data = dat)
+  res$res
 }
 \keyword{ci}
 \keyword{descriptive}

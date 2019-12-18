@@ -54,7 +54,7 @@ factor_ueb <- function(x, levs = NULL, labs = NULL, del.empty.val = TRUE, name.v
   }
 
 
-  if (del.empty.val) var_factor <- factor(var_factor)
+  if (del.empty.val) var_factor <- droplevels(var_factor)
   Hmisc::label(var_factor) <- lab_var
   return(var_factor)
 }

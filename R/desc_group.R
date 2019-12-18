@@ -10,7 +10,8 @@
 #' @param byrow logical or NA. Percentage of categorical variables must be reported by rows (TRUE), by columns (FALSE) or by columns and rows to sum up 1 (NA). Default value is FALSE, which means that percentages are reported by columns (withing groups).
 #' @param width_lev defines the maximum width of table columns. Default value is 8em
 #' @param pval_cut cut p.value colored
-#' @param show.pval.adj ogical indicating whether adjust p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is FALSE.
+#' @param show.pval logical indicating whether p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is TRUE.
+#' @param show.pval.adj logical indicating whether adjust p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is FALSE.
 #' @param caption Character vector containing the table's caption or title.
 #' @keywords summary ci qualitative descriptive exploratory
 #' @export desc_group
@@ -44,14 +45,18 @@ desc_group <- function(frml = NULL,
                        show.pval.adj = FALSE,
                        pval_cut = 0.05,
                        col.background = "#993489",
-                       col.varsel = "#ebe0e9", ...){
+                       col.varsel = "#ebe0e9",
+                       show.pval = TRUE, ...){
 
   ## comprobacions
-  if(is.null(frml) & !group %in% names(data)) {stop("The variable/s '", group, "' do not exist.")}
-  if(is.null(frml) & any(!covariates %in% names(data))) {stop("The variable/s '",
+  if(is.null(frml) & !is.null(group) ) {
+    if(!group %in% names(data)) stop("The variable/s '", group, "' do not exist.")}
+  if(is.null(frml) ) {
+    if(any(!covariates %in% names(data))) {stop("The variable/s '",
                                                               paste0(covariates[!covariates %in% names(data)], collapse = "' , '"),
-                                                              "' do not exist.")}
-  if(all(is.na(data[,group]))) {stop("Variable '", group, "' is empty")}
+                                                              "' do not exist.")}}
+
+  if(!is.null(group) & all(is.na(data[,group]))) {stop("Variable '", group, "' is empty")}
 
 
   ## en el cas de que hi hagi formula seleccionem el grup i les covariates
@@ -82,7 +87,7 @@ desc_group <- function(frml = NULL,
   class_data <- class_data[!names(class_data) %in% group]
 
   if(any(class_data == "character")) message("La variable/s '",
-                                                   paste0(names(class_data)[class_data == "character"],collapse = "' , '"),
+                                             paste0(names(class_data)[class_data == "character"],collapse = "' , '"),
                                              "' es tipo caracter y no se ha analizado")
 
   ## realitzem analisis descriptiu i/o comparatiu
@@ -90,8 +95,10 @@ desc_group <- function(frml = NULL,
   for (i in seq_along(class_data)) {
     list_var[[names(class_data)[i]]] <- switch(class_data[i],
                                                "numeric" = summary.quanti( x = names(class_data)[i] , group = group ,
-                                                                           method = method, data = data, prep2sum = TRUE,... ) ,
-                                               "factor" = summary.quali( x = names(class_data)[i], group = group ,data = data, byrow = byrow, ...),
+                                                                           method = method, data = data, prep2sum = TRUE,
+                                                                           show.pval = show.pval ,... ) ,
+                                               "factor" = summary.quali( x = names(class_data)[i], group = group ,data = data, byrow = byrow,
+                                                                         show.pval = show.pval , ...),
     )
   }
   list_var_sum <- lapply(list_var, function(x)x[["summary"]])
@@ -106,6 +113,7 @@ desc_group <- function(frml = NULL,
     results$p.val.adj[which(results$p.value != "")] <- round(p.adjust(as.numeric(as.character(pvalues)), method = "BH"),2)
     results$p.val.adj[which(results$p.value == "")] <- ""
     results <- results[,c(names(results)[1:which(names(results) == "p.value")], "p.val.adj", "n") ]
+    results$p.val.adj[which(results$p.val.adj != "" & results$p.val.adj < 0.001)] <- "<0.001"
   }
   ## Caption de la taula final
   footnote <- NULL

@@ -48,7 +48,7 @@ summary.quanti <- function(x,
   if(all(is.na(data[,x]))) stop(paste0("The variable '",x,"' is empty"))
   if(is.factor(data[,x])) stop(paste0("La variable '",x,"' debe ser numérica"))
 
-  if(!is.factor(data[,group])) {
+  if(!is.null(group) & !is.factor(data[,group])) {
     data[,group] <- factor(data[,group])
     warning( paste0("La variable '", group, "' ha sido transformada a factor" ))
   }
