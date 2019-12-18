@@ -37,7 +37,8 @@ summary.quali <- function(x,
                           show.all = TRUE,
                           show.n = TRUE,
                           byrow = FALSE,
-                          sub.ht = TRUE){
+                          sub.ht = TRUE,
+                          paired = FALSE){
 
   ## Comprovacions variades
   if (!is.null(group)) {
@@ -130,21 +131,31 @@ summary.quali <- function(x,
     ## Es realitza test estadístic
     if (show.pval) {
       ## Decidim test que es realitza
-      if (is.null(test))    test <- ifelse( any(table(xx, yy) < 5) , "Fisher's exact","Chi-squared")
+      if (is.null(test)){
+        test <- ifelse( any(table(xx, yy) < 5) , "Fisher's exact","Chi-squared")
+      }
+
+      if(paired) { if(length(levels(xx)) == 2 & length(levels(yy)) == 2){test <- "Mcnemar test"}else{ stop("La funcio no esta preparada")}}
+
       ## Calculem test
       pval <- try(switch(test,
                          "Fisher's exact" = fisher.test(table(xx,yy))$p.va,
-                         "Chi-squared" = chisq.test(xx,yy)$p.val), TRUE)
+                         "Chi-squared" = chisq.test(xx,yy)$p.val,
+                         "Mcnemar test" = mcnemar.test(table(xx,yy))$p.val), TRUE)
       ## arreglem p.val final
       pval <- ifelse(grepl("Error", pval), ".",pval)
       pval_round <- ifelse(grepl("Error", try(round(pval,3), TRUE)), "-", round(pval,3))
       pval_round <- switch(test,
                            "Fisher's exact" = paste0(pval_round,  "<sup>3</sup>"),
-                           "Chi-squared" = paste0(pval_round,  "<sup>4</sup>"))
+                           "Chi-squared" = paste0(pval_round,  "<sup>4</sup>"),
+                           "Mcnemar test" = paste0(pval_round,  "<sup>5</sup>"))
       pval_round[grep("-",pval_round, fixed = T)] <- "-"
 
       res_all$p.value <- c(ifelse(pval != "." & pval < 0.001, "<0.001", pval_round ), rep("", nrow(res_all) - 1))
-      txt_pval <- paste0("<font size='1'> <br> p.value: ",switch(test, "Fisher's exact" = "<sup>3</sup>","Chi-squared" = "<sup>4</sup>"), test, "</font>")
+      txt_pval <- paste0("<font size='1'> <br> p.value: ",switch(test,
+                                                                 "Fisher's exact" = "<sup>3</sup>",
+                                                                 "Chi-squared" = "<sup>4</sup>",
+                                                                 "Mcnemar test" = "<sup>5</sup>"), test, "</font>")
       txt_caption <-  paste(txt_caption,txt_descriptive,txt_descriptive,txt_pval )
 
 
