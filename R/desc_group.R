@@ -71,7 +71,7 @@ desc_group <- function(frml = NULL,
   }
 
   ## Seleccionem variables i etiquetes
-  data <- data[,names(data) %in% c(covariates,group)]
+  data <- data[,names(data) %in% c(covariates,group,idvar)]
   if (!is.null(group)) {
     data[,group] <- factor_ueb(data[,group])
     varname_group <- ifelse( Hmisc::label(data[,group]) != "", Hmisc::label(data[,group]), group)
