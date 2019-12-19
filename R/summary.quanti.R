@@ -17,14 +17,17 @@
 #' @import Publish
 #' @examples
 #'  # set.seed(1)
-#'  # data <- df <- data.frame(MUT = factor(c(rep("A", 13),rep("B",13))),
+#'  # data <- df <- data.frame(id = c(1:13,1:13), MUT = factor(c(rep("A", 13),rep("B",13))),
 #'  #                          var = rnorm(26))
 #'
-#'  # summary.quanti(x = "var", data = df)
-#'  # tab <- summary.quanti(x = "var",group = "MUT",data = df)
-#'  # kable(tab$summary,escape = F, row.names = F,align = "c", txt_caption = tab$txt_caption) %>%
-#'  #   kable_styling(latex_options = c("striped","hold_position", "repeat_header"), full_width = F, font_size = 14) %>%
-#'  #   row_spec(0,background = "#993489", color = "white")
+#'   summary.quanti(x = "var", data = df)
+#'   tab <- summary.quanti(x = "var",group = "MUT",data = df)
+#'   tab <- summary.quanti(x = "var",group = "MUT",data = df,method = "non-param")
+#'   tab <- summary.quanti(x = "var",group = "MUT",data = df, idvar = "id", paired =TRUE)
+#'   tab <- summary.quanti(x = "var",group = "MUT",data = df, idvar = "id", paired =TRUE,method = "non-param")
+#'   kable(tab$summary,escape = F, row.names = F,align = "c", caption = c(paste(tab$txt_caption, tab$txt_test)) ) %>%
+#'     kable_styling(latex_options = c("striped","hold_position", "repeat_header"), full_width = F, font_size = 14) %>%
+#'     row_spec(0,background = "#993489", color = "white")
 
 
 
@@ -40,7 +43,8 @@ summary.quanti <- function(x,
                            show.n = TRUE,
                            prep2sum = FALSE,
                            sub.ht = TRUE,
-                           paired = FALSE){
+                           paired = FALSE,
+                           idvar){
 
 
 
@@ -55,7 +59,7 @@ summary.quanti <- function(x,
   }
 
   ## només dades completes
-  if(!is.null(group))   data <- na.omit(data[,c(x,group)])
+  # if(!is.null(group))   data <- na.omit(data[,c(x,group)])
 
 
 
@@ -149,14 +153,21 @@ summary.quanti <- function(x,
       if (is.null(test) & paired)    test <- switch(method,
                                                      "param" = ifelse(length(levels(yy)) > 2, "no implementat","Paired Student's T"),
                                                      "non-param" = ifelse(length(levels(yy)) > 2, "no implementat","Wilcoxon signed-rank test"))
-      ## Calculem test
+
+      if(paired){
+        data_wide <- reshape(data, timevar = group, idvar = idvar, direction = "wide") #, v.names = "x")
+      }
+
+       ## Calculem test
       pval <- try(switch(test,
                          "Student's T" = t.test(xx~yy)$p.va,
                          "Mann–Whitney U" = wilcox.test(xx~yy)$p.va,
                          "Anova" = summary(aov(xx~yy))[[1]][["Pr(>F)"]][1],
                          "Kruska-Wallis" = kruskal.test(xx~yy)$p.va,
-                         "Paired Student's T" = t.test(xx~yy, paired = TRUE)$p.va,
-                         "Wilcoxon signed-rank test" = wilcox.test(xx~yy, paired = TRUE)$p.va,
+                         "Paired Student's T" = t.test(data_wide[,paste0(x,".A")],
+                                                       data_wide[,paste0(x,".B")], paired = TRUE)$p.va,
+                         "Wilcoxon signed-rank test" = wilcox.test(data_wide[,paste0(x,".A")],
+                                                                   data_wide[,paste0(x,".B")], paired = TRUE)$p.va,
                          "no implementat" = stop("La funció encara no esta preparada per a aquests test!")),TRUE)
       pval <- ifelse(grepl("Error", pval), ".",pval)
       pval_round <- ifelse(grepl("Error", try(round(pval,3), TRUE)), ".", round(pval,3))
