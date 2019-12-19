@@ -49,7 +49,9 @@ desc_group <- function(frml = NULL,
                        col.background = "#993489",
                        col.varsel = "#ebe0e9",
                        show.pval = TRUE,
-                       paired = FALSE, ...){
+                       paired = FALSE,
+                       idvar = NULL,
+                       ...){
 
   ## comprobacions
   if(is.null(frml) & !is.null(group) ) {
@@ -99,7 +101,7 @@ desc_group <- function(frml = NULL,
     list_var[[names(class_data)[i]]] <- switch(class_data[i],
                                                "numeric" = summary.quanti( x = names(class_data)[i] , group = group ,
                                                                            method = method, data = data, prep2sum = TRUE,
-                                                                           show.pval = show.pval, paired = paired,... ) ,
+                                                                           show.pval = show.pval, paired = paired, idvar = idvar... ) ,
                                                "factor" = summary.quali( x = names(class_data)[i], group = group ,data = data, byrow = byrow,
                                                                          show.pval = show.pval, ...),
     )

@@ -44,7 +44,7 @@ summary.quanti <- function(x,
                            prep2sum = FALSE,
                            sub.ht = TRUE,
                            paired = FALSE,
-                           idvar){
+                           idvar = NULL){
 
 
 
