@@ -26,7 +26,7 @@
 #'   dat$id <- as.character(dat$id)
 #'   res <- desc_group(group  = "MUT",covariates = names(dat), data = dat)
 #'   res$res
-#'   res <- desc_group(group  = "MUT",covariates = names(dat), data = dat, paired = TRUE)
+#'   res <- desc_group(group  = "MUT",covariates = names(dat), data = dat, show.pval = FALSE)
 #'   res$res
 
 
@@ -64,6 +64,7 @@ desc_group <- function(frml = NULL,
   if(!is.null(group) & all(is.na(data[,group]))) {stop("Variable '", group, "' is empty")}
 
 
+  if(!show.pval)  pval_cut <- -1
   ## en el cas de que hi hagi formula seleccionem el grup i les covariates
   if(!is.null(frml)){
     covariates <- rhs.vars(frml)
@@ -101,9 +102,9 @@ desc_group <- function(frml = NULL,
     list_var[[names(class_data)[i]]] <- switch(class_data[i],
                                                "numeric" = summary.quanti( x = names(class_data)[i] , group = group ,
                                                                            method = method, data = data, prep2sum = TRUE,
-                                                                           show.pval = show.pval, paired = paired, idvar = idvar,... ) ,
+                                                                           show.pval = T, paired = paired, idvar = idvar,... ) ,
                                                "factor" = summary.quali( x = names(class_data)[i], group = group ,data = data, byrow = byrow,
-                                                                         show.pval = show.pval, ...),
+                                                                         show.pval = T, ...),
                                                "character" = next()
     )
   }
@@ -167,6 +168,9 @@ desc_group <- function(frml = NULL,
   # groups_row <- cumsum(groups_row)
   options(knitr.kable.NA = '')
   ## Taula HTML
+  if(!show.pval){
+    results <- results[,!names(results) %in% "p.value"]
+    pvalues <- NA}
   results_ht <- results %>%
     # mutate(p.value = cell_spec(p.value, "html", color = ifelse(condition,"black", "white"),
     #                            background = ifelse(condition, "white", "#993489"))) %>%
