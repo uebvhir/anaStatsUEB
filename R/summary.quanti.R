@@ -61,6 +61,11 @@ summary.quanti <- function(x,
   ## només dades completes
   # if(!is.null(group))   data <- na.omit(data[,c(x,group)])
 
+  if(paired){
+    data_wide <- reshape(data[,c(x,group,idvar)], timevar = group, idvar = idvar, direction = "wide") #, v.names = "x")
+    idcomplete <- na.omit(data_wide)$id
+    data <- data[which(data[,idvar] %in% idcomplete ), ]
+  }
 
 
 
@@ -76,6 +81,12 @@ summary.quanti <- function(x,
   if (sub.ht) sub <- "<sub>2</sub>"
   txt_descriptive <-  "<br> <font size='1'> 2: N <br> mean(sd) <br> [CI95% mean] <br> median[IQR] </font>"
   txt_caption = txt_descriptive
+
+
+
+
+
+
 
 
   ## Resum univariat mean(sd) \\ IC mean \\ median[IQR]
@@ -154,9 +165,6 @@ summary.quanti <- function(x,
                                                      "param" = ifelse(length(levels(yy)) > 2, "no implementat","Paired Student's T"),
                                                      "non-param" = ifelse(length(levels(yy)) > 2, "no implementat","Wilcoxon signed-rank test"))
 
-      if(paired){
-        data_wide <- reshape(data[,c(x,group,idvar)], timevar = group, idvar = idvar, direction = "wide") #, v.names = "x")
-      }
 
        ## Calculem test
       pval <- try(switch(test,
