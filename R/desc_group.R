@@ -101,7 +101,7 @@ desc_group <- function(frml = NULL,
                                                                            method = method, data = data, prep2sum = TRUE,
                                                                            show.pval = show.pval, paired = paired,... ) ,
                                                "factor" = summary.quali( x = names(class_data)[i], group = group ,data = data, byrow = byrow,
-                                                                         show.pval = show.pval, paired = paired, ...),
+                                                                         show.pval = show.pval, ...),
     )
   }
   list_var_sum <- lapply(list_var, function(x)x[["summary"]])
