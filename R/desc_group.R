@@ -169,7 +169,7 @@ desc_group <- function(frml = NULL,
   options(knitr.kable.NA = '')
   ## Taula HTML
   if(!show.pval){
-    results <- results[,!names(results) %in% "p.value"]
+    results <- results[,!names(results) %in% c("ALL","n","p.value")]
     pvalues <- NA}
   results_ht <- results %>%
     # mutate(p.value = cell_spec(p.value, "html", color = ifelse(condition,"black", "white"),
