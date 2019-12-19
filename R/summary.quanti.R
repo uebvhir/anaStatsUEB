@@ -164,10 +164,10 @@ summary.quanti <- function(x,
                          "Mann–Whitney U" = wilcox.test(xx~yy)$p.va,
                          "Anova" = summary(aov(xx~yy))[[1]][["Pr(>F)"]][1],
                          "Kruska-Wallis" = kruskal.test(xx~yy)$p.va,
-                         "Paired Student's T" = t.test(data_wide[,paste0(x,levels(yy)[1], collapse = "." )],
-                                                       data_wide[,paste0(x,levels(yy)[2], collapse = ".")], paired = TRUE)$p.va,
-                         "Wilcoxon signed-rank test" = wilcox.test(data_wide[,paste0(x,levels(yy)[1], collapse = "." )],
-                                                                   data_wide[,paste0(x,levels(yy)[2], collapse = ".")], paired = TRUE)$p.va,
+                         "Paired Student's T" = t.test(data_wide[,paste0(x,".",levels(yy)[1], collapse = "" )],
+                                                       data_wide[,paste0(x,".",levels(yy)[2], collapse = "")], paired = TRUE)$p.va,
+                         "Wilcoxon signed-rank test" = wilcox.test(data_wide[,paste0(x,".",levels(yy)[1], collapse = "" )],
+                                                                   data_wide[,paste0(x,".",levels(yy)[2], collapse = "")], paired = TRUE)$p.va,
                          "no implementat" = stop("La funció encara no esta preparada per a aquests test!")),TRUE)
       pval <- ifelse(grepl("Error", pval), ".",pval)
       pval_round <- ifelse(grepl("Error", try(round(pval,3), TRUE)), ".", round(pval,3))
