@@ -49,8 +49,11 @@ desc_group <- function(frml = NULL,
                        col.background = "#993489",
                        col.varsel = "#ebe0e9",
                        show.pval = TRUE,
+                       show.all = TRUE,
+                       show.n = TRUE,
                        paired = FALSE,
                        idvar = NULL,
+                       prep2sum = TRUE,
                        ...){
 
   ## comprobacions
@@ -101,7 +104,7 @@ desc_group <- function(frml = NULL,
   for (i in seq_along(class_data)) {
     list_var[[names(class_data)[i]]] <- switch(class_data[i],
                                                "numeric" = summary.quanti( x = names(class_data)[i] , group = group ,
-                                                                           method = method, data = data, prep2sum = TRUE,
+                                                                           method = method, data = data, prep2sum = prep2sum,
                                                                            show.pval = T, paired = paired, idvar = idvar,... ) ,
                                                "factor" = summary.quali( x = names(class_data)[i], group = group ,data = data, byrow = byrow,
                                                                          show.pval = T, ...),
@@ -169,8 +172,14 @@ desc_group <- function(frml = NULL,
   options(knitr.kable.NA = '')
   ## Taula HTML
   if(!show.pval){
-    results <- results[,!names(results) %in% c("ALL","n","p.value")]
+    results <- results[,!names(results) %in% c("p.value")]
     pvalues <- NA}
+  if(!show.all){
+      results <- results[,!names(results) %in% c("ALL")]
+  }
+  if(!show.n){
+    results <- results[,!names(results) %in% c("n")]
+  }
   results_ht <- results %>%
     # mutate(p.value = cell_spec(p.value, "html", color = ifelse(condition,"black", "white"),
     #                            background = ifelse(condition, "white", "#993489"))) %>%
