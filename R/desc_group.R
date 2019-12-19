@@ -101,7 +101,7 @@ desc_group <- function(frml = NULL,
     list_var[[names(class_data)[i]]] <- switch(class_data[i],
                                                "numeric" = summary.quanti( x = names(class_data)[i] , group = group ,
                                                                            method = method, data = data, prep2sum = TRUE,
-                                                                           show.pval = show.pval, paired = paired, idvar = idvar... ) ,
+                                                                           show.pval = show.pval, paired = paired, idvar = idvar,... ) ,
                                                "factor" = summary.quali( x = names(class_data)[i], group = group ,data = data, byrow = byrow,
                                                                          show.pval = show.pval, ...),
     )
