@@ -155,7 +155,7 @@ summary.quanti <- function(x,
                                                      "non-param" = ifelse(length(levels(yy)) > 2, "no implementat","Wilcoxon signed-rank test"))
 
       if(paired){
-        data_wide <- reshape(data, timevar = group, idvar = idvar, direction = "wide") #, v.names = "x")
+        data_wide <- reshape(data[,c(x,group,idvar)], timevar = group, idvar = idvar, direction = "wide") #, v.names = "x")
       }
 
        ## Calculem test
@@ -166,8 +166,8 @@ summary.quanti <- function(x,
                          "Kruska-Wallis" = kruskal.test(xx~yy)$p.va,
                          "Paired Student's T" = t.test(data_wide[,paste0(x,".A")],
                                                        data_wide[,paste0(x,".B")], paired = TRUE)$p.va,
-                         "Wilcoxon signed-rank test" = wilcox.test(data_wide[,paste0(x,".A")],
-                                                                   data_wide[,paste0(x,".B")], paired = TRUE)$p.va,
+                         "Wilcoxon signed-rank test" = wilcox.test(data_wide[,paste0(x,levels(yy)[1], collapse = "." )],
+                                                                   data_wide[,paste0(x,levels(yy)[1], collapse = ".")], paired = TRUE)$p.va,
                          "no implementat" = stop("La funció encara no esta preparada per a aquests test!")),TRUE)
       pval <- ifelse(grepl("Error", pval), ".",pval)
       pval_round <- ifelse(grepl("Error", try(round(pval,3), TRUE)), ".", round(pval,3))
