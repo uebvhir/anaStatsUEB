@@ -31,6 +31,7 @@ summary.quali <- function(x,
                           group = NULL,
                           data,
                           include.NA = FALSE,
+                          patt.NA = "NA",
                           format = "html",
                           nround = 1,
                           test = NULL,
@@ -44,7 +45,7 @@ summary.quali <- function(x,
   if(include.NA){
     lb <- Hmisc::label(data[,x])
     data[,x] <- as.character(data[,x])
-    data[,x][which(is.na(data[,x]))] <- "NA"
+    data[,x][which(is.na(data[,x]))] <- patt.NA
     data[,x] <- factor_ueb(data[,x])
     Hmisc::label(data[,x]) <- lb
   }
