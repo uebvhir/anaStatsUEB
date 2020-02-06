@@ -54,6 +54,7 @@ desc_group <- function(frml = NULL,
                        paired = FALSE,
                        idvar = NULL,
                        prep2sum = TRUE,
+                       include.NA = FALSE,
                        ...){
 
   ## comprobacions
@@ -107,7 +108,7 @@ desc_group <- function(frml = NULL,
                                                                            method = method, data = data, prep2sum = prep2sum,
                                                                            show.pval = T, paired = paired, idvar = idvar,... ) ,
                                                "factor" = summary.quali( x = names(class_data)[i], group = group ,data = data, byrow = byrow,
-                                                                         show.pval = T, ...),
+                                                                         show.pval = T, include.NA = include.NA, ...),
                                                "character" = next()
     )
   }

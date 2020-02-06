@@ -30,6 +30,7 @@
 summary.quali <- function(x,
                           group = NULL,
                           data,
+                          include.NA = FALSE,
                           format = "html",
                           nround = 1,
                           test = NULL,
@@ -47,6 +48,13 @@ summary.quali <- function(x,
     data <- na.omit(data[,c(x,group)])
   }
   if (class(data[,x])[length(class(data[,x]))] != "factor") stop("La variable x debe ser factor")
+  if(include.NA){
+    lb <- Hmisc::label(data[,x])
+    data[,x] <- as.character(data[,x])
+    data[,x][is.na(data[,x])] <- "NA"
+    data[,x] <- factor_ueb(data[,x])
+    Hmisc::label(data[,x]) <- lb
+  }
 
 
   if(any(table(data[,x]) == 0 ) ) {
