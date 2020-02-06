@@ -6,7 +6,8 @@
 \usage{
 \method{summary}{quanti}(x, group = NULL, data, method = "param",
   format = "html", nround = 1, test = NULL, show.pval = TRUE,
-  show.all = TRUE, show.n = TRUE, prep2sum = FALSE, sub.ht = TRUE)
+  show.all = TRUE, show.n = TRUE, prep2sum = FALSE, sub.ht = TRUE,
+  paired = FALSE, idvar = NULL)
 }
 \arguments{
 \item{x}{numeric or integer variable}
@@ -35,13 +36,16 @@
 DESCRIPCIO DE LA FUNCIO
 }
 \examples{
- # set.seed(1)
- # data <- df <- data.frame(MUT = factor(c(rep("A", 12),rep("B",13))),
- #                          var = rnorm(25))
+ #  set.seed(1)
+ # data <- df <- data.frame(id = c(1:13,1:13), MUT = factor(c(rep("A", 13),rep("B",13))),
+ #                          var = rnorm(26))
 
  # summary.quanti(x = "var", data = df)
  # tab <- summary.quanti(x = "var",group = "MUT",data = df)
- # kable(tab$summary,escape = F, row.names = F,align = "c", txt_caption = tab$txt_caption) \%>\%
+ # tab <- summary.quanti(x = "var",group = "MUT",data = df,method = "non-param")
+ # tab <- summary.quanti(x = "var",group = "MUT",data = df, idvar = "id", paired =TRUE)
+ # tab <- summary.quanti(x = "var",group = "MUT",data = df, idvar = "id", paired =TRUE,method = "non-param")
+ # kable(tab$summary,escape = F, row.names = F,align = "c", caption = c(paste(tab$txt_caption, tab$txt_test)) ) \%>\%
  #   kable_styling(latex_options = c("striped","hold_position", "repeat_header"), full_width = F, font_size = 14) \%>\%
  #   row_spec(0,background = "#993489", color = "white")
 }

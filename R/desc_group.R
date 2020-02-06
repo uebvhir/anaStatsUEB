@@ -19,15 +19,15 @@
 #' @import kableExtra formula.tools
 #' @examples
 #'  # set.seed(1)
-#'   dat <- df <- data.frame(MUT = factor(c(rep("A", 13),rep("B",13))),
-#'                            var = factor(sample(c("Yes", "no"), 26, replace = TRUE)),
-#'                            size = rnorm(26),
-#'                            id = paste0("a",1:26))
-#'   dat$id <- as.character(dat$id)
-#'   res <- desc_group(group  = "MUT",covariates = names(dat), data = dat)
-#'   res$res
-#'   res <- desc_group(group  = "MUT",covariates = names(dat), data = dat, show.pval = FALSE)
-#'   res$res
+#'  # dat <- df <- data.frame(MUT = factor(c(rep("A", 13),rep("B",13))),
+#'  #                          var = factor(sample(c("Yes", "no"), 26, replace = TRUE)),
+#'  #                          size = rnorm(26),
+#'  #                          id = paste0("a",1:26))
+#'  # dat$id <- as.character(dat$id)
+#'  # res <- desc_group(group  = "MUT",covariates = names(dat), data = dat)
+#'  # res$res
+#'  # res <- desc_group(group  = "MUT",covariates = names(dat), data = dat, show.pval = FALSE)
+#'  # res$res
 
 
 descGroup <- function(...) {
@@ -55,7 +55,7 @@ desc_group <- function(frml = NULL,
                        idvar = NULL,
                        prep2sum = TRUE,
                        include.NA = FALSE,
-                       patt.NA = "NA",
+                       patt.NA = "No",
                        ...){
 
   ## comprobacions

@@ -16,18 +16,18 @@
 #' @export summary.quanti
 #' @import Publish
 #' @examples
-#'  # set.seed(1)
+#'  #  set.seed(1)
 #'  # data <- df <- data.frame(id = c(1:13,1:13), MUT = factor(c(rep("A", 13),rep("B",13))),
 #'  #                          var = rnorm(26))
 #'
-#'   summary.quanti(x = "var", data = df)
-#'   tab <- summary.quanti(x = "var",group = "MUT",data = df)
-#'   tab <- summary.quanti(x = "var",group = "MUT",data = df,method = "non-param")
-#'   tab <- summary.quanti(x = "var",group = "MUT",data = df, idvar = "id", paired =TRUE)
-#'   tab <- summary.quanti(x = "var",group = "MUT",data = df, idvar = "id", paired =TRUE,method = "non-param")
-#'   kable(tab$summary,escape = F, row.names = F,align = "c", caption = c(paste(tab$txt_caption, tab$txt_test)) ) %>%
-#'     kable_styling(latex_options = c("striped","hold_position", "repeat_header"), full_width = F, font_size = 14) %>%
-#'     row_spec(0,background = "#993489", color = "white")
+#'  # summary.quanti(x = "var", data = df)
+#'  # tab <- summary.quanti(x = "var",group = "MUT",data = df)
+#'  # tab <- summary.quanti(x = "var",group = "MUT",data = df,method = "non-param")
+#'  # tab <- summary.quanti(x = "var",group = "MUT",data = df, idvar = "id", paired =TRUE)
+#'  # tab <- summary.quanti(x = "var",group = "MUT",data = df, idvar = "id", paired =TRUE,method = "non-param")
+#'  # kable(tab$summary,escape = F, row.names = F,align = "c", caption = c(paste(tab$txt_caption, tab$txt_test)) ) %>%
+#'  #   kable_styling(latex_options = c("striped","hold_position", "repeat_header"), full_width = F, font_size = 14) %>%
+#'  #   row_spec(0,background = "#993489", color = "white")
 
 
 
