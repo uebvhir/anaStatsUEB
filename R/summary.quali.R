@@ -40,6 +40,15 @@ summary.quali <- function(x,
                           byrow = FALSE,
                           sub.ht = TRUE){
 
+
+  if(include.NA){
+    lb <- Hmisc::label(data[,x])
+    data[,x] <- as.character(data[,x])
+    data[,x][which(is.na(data[,x]))] <- "NA"
+    data[,x] <- factor_ueb(data[,x])
+    Hmisc::label(data[,x]) <- lb
+  }
+
   ## Comprovacions variades
   if (!is.null(group)) {
     if (length(length(table(data[,group]))) > 10) warning("La variable group tiene mas de 10 niveles")
@@ -48,13 +57,7 @@ summary.quali <- function(x,
     data <- na.omit(data[,c(x,group)])
   }
   if (class(data[,x])[length(class(data[,x]))] != "factor") stop("La variable x debe ser factor")
-  if(include.NA){
-    lb <- Hmisc::label(data[,x])
-    data[,x] <- as.character(data[,x])
-    data[,x][is.na(data[,x])] <- "NA"
-    data[,x] <- factor_ueb(data[,x])
-    Hmisc::label(data[,x]) <- lb
-  }
+
 
 
   if(any(table(data[,x]) == 0 ) ) {
