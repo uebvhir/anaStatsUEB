@@ -142,7 +142,7 @@ summary.quali <- function(x,
     ## Es realitza test estadístic
     if (show.pval) {
       ## Decidim test que es realitza
-      if (is.null(test))    test <- ifelse( any(table(xx, yy) < 5) , "Fisher's exact","Chi-squared")
+      if (is.null(test))    test <- ifelse( any(chisq.test(table(xx, yy))$expected < 5) , "Fisher's exact","Chi-squared")
       ## Calculem test
       pval <- try(switch(test,
                          "Fisher's exact" = fisher.test(table(xx,yy))$p.va,
