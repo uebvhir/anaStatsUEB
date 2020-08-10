@@ -63,8 +63,8 @@ desc_group <- function(frml = NULL,
     if(!group %in% names(data)) stop("The variable/s '", group, "' do not exist.")}
   if(is.null(frml) ) {
     if(any(!covariates %in% names(data))) {stop("The variable/s '",
-                                                              paste0(covariates[!covariates %in% names(data)], collapse = "' , '"),
-                                                              "' do not exist.")}}
+                                                paste0(covariates[!covariates %in% names(data)], collapse = "' , '"),
+                                                "' do not exist.")}}
 
   if(!is.null(group) & all(is.na(data[,group]))) {stop("Variable '", group, "' is empty")}
 
@@ -84,11 +84,18 @@ desc_group <- function(frml = NULL,
   }
 
   ## eliminem variables buides
-  emptyvar <- colSums(is.na(data)) != nrow(data)
-  var2del <- names(emptyvar[which(emptyvar == FALSE)])
-  if (length(var2del) > 0 ) {
-    warning(paste0("Las variable ",var2del, " ha sido eliminada. Todos sus valores son NA. \n" ))
-    data <- data[,!names(data) %in% var2del]
+  if(length(covariates )!= 1 | !is.null(group) ){
+    emptyvar <- colSums(is.na(data)) != nrow(data)
+    var2del <- names(emptyvar[which(emptyvar == FALSE)])
+    if (length(var2del) > 0 ) {
+      warning(paste0("Las variable ",var2del, " ha sido eliminada. Todos sus valores son NA. \n" ))
+      data <- data[,!names(data) %in% var2del]
+    }}
+  if(is.null(dim(data))){
+    lbl <- Hmisc::label(data)
+    data <- data.frame(data)
+    names(data) <- covariates
+    Hmisc::label(data) <- lbl
   }
 
 
@@ -177,7 +184,7 @@ desc_group <- function(frml = NULL,
     results <- results[,!names(results) %in% c("p.value")]
     pvalues <- NA}
   if(!show.all){
-      results <- results[,!names(results) %in% c("ALL")]
+    results <- results[,!names(results) %in% c("ALL")]
   }
   if(!show.n){
     results <- results[,!names(results) %in% c("n")]
