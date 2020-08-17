@@ -162,6 +162,7 @@ summary.quali <- function(x,
 
     }else{
       txt_pval <- NULL
+      pval <- NULL
     }
 
     if (show.n)     res_all$n <-  c(sum(table(xx,yy)),rep("",nrow(res_all) - 1))

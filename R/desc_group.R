@@ -114,9 +114,9 @@ desc_group <- function(frml = NULL,
     list_var[[names(class_data)[i]]] <- switch(class_data[i],
                                                "numeric" = summary.quanti( x = names(class_data)[i] , group = group ,
                                                                            method = method, data = data, prep2sum = prep2sum,
-                                                                           show.pval = T, paired = paired, idvar = idvar,... ) ,
+                                                                           show.pval = show.pval, paired = paired, idvar = idvar,... ) ,
                                                "factor" = summary.quali( x = names(class_data)[i], group = group ,data = data, byrow = byrow,
-                                                                         show.pval = T, include.NA = include.NA, patt.NA = patt.NA, ...),
+                                                                         show.pval = show.pval, include.NA = include.NA, patt.NA = patt.NA,...),
                                                "character" = next()
     )
   }
