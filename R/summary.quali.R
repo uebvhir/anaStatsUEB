@@ -140,7 +140,7 @@ summary.quali <- function(x,
 
 
     ## Es realitza test estadístic
-    if (show.pval) {
+    if (show.pval & all(dim(table(xx, yy))!=1)) {
       ## Decidim test que es realitza
       if (is.null(test))    test <- ifelse( any(chisq.test(table(xx, yy))$expected < 5) , "Fisher's exact","Chi-squared")
       ## Calculem test
