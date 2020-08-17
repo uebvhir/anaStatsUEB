@@ -16,7 +16,7 @@
 #' @keywords summary ci qualitative descriptive exploratory
 #' @export desc_group
 #' @export descGroup
-#' @import kableExtra formula.tools plyr
+#' @import kableExtra formula.tools
 #' @examples
 #'  # set.seed(1)
 #'  # dat <- df <- data.frame(MUT = factor(c(rep("A", 13),rep("B",13))),
@@ -121,8 +121,8 @@ desc_group <- function(frml = NULL,
     )
   }
   list_var_sum <- lapply(list_var, function(x)x[["summary"]])
-  # results <- do.call("rbind", list_var_sum)
-  results <- plyr::rbind.fill(list_var_sum)
+  results <- do.call("rbind", list_var_sum)
+  # results <- plyr::rbind.fill(list_var_sum)
 
   pvalues <- unlist(lapply(list_var, function(x)x[["pval"]]))
 
