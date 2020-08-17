@@ -184,6 +184,9 @@ summary.quanti <- function(x,
       res_all$p.value <- ifelse(pval != "." & pval < 0.001, "<0.001", pval_round  )
       txt_pval = paste0("<font size='1'> <br> p.value:  ", test, "</font>")
 
+    }else{
+      pval <- NULL
+      txt_pval <- NULL
     }
 
     if (show.n) res_all$n <- sum(complete.cases(xx) & complete.cases(yy))
