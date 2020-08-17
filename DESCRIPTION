@@ -4,7 +4,7 @@ Version: 0.0.0.9000
 Authors@R: person("Mota", "Miriam", email = "miriam.mota@vhir.org", role = c("aut", "cre"))
 Description: Statistical analysis function - Statistics and Bioinformatics Unit (UEB - VHIR)
 Depends:
-    R (>= 3.3.2), compareGroups, formula.tools, xtable, mada, knitr, kableExtra, Hmisc, dplyr, Publish, survival, binom, janitor
+    R (>= 3.3.2), compareGroups, formula.tools, plyr, xtable, mada, knitr, kableExtra, Hmisc, dplyr, Publish, survival, binom, janitor
 License: MIT
 Encoding: UTF-8
 LazyData: true
