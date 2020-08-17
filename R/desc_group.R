@@ -121,7 +121,7 @@ desc_group <- function(frml = NULL,
     )
   }
   list_var_sum <- lapply(list_var, function(x)x[["summary"]])
-  results <- do.call("rbind", list_var_sum)
+  # results <- do.call("rbind", list_var_sum)
   results <- plyr::rbind.fill(list_var_sum)
 
   pvalues <- unlist(lapply(list_var, function(x)x[["pval"]]))
