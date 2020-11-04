@@ -58,6 +58,9 @@ quickCor <- function(x, y, dat,
 
   if (!is.numeric(dat[, x])) stop("La variable x debe ser numérica")
   if (!is.numeric(dat[, y])) stop("La variable y debe ser numérica")
+  namex <- ifelse(Hmisc::label(dat[,x]) == "", x,  Hmisc::label(dat[,x]))
+  namey <- ifelse(Hmisc::label(dat[,y]) == "", y,  Hmisc::label(dat[,y]))
+
   pe <- cor.test(dat[, x], dat[, y], method = "pearson")
   sp <- cor.test(dat[, x], dat[, y], method = "spearman")
   ic.sp <- CIrho(sp$estimate, dim(na.omit(dat[ , c(x, y)]))[1], level = 0.95 )
@@ -76,9 +79,9 @@ quickCor <- function(x, y, dat,
   fit <- lm(dat[, y] ~ dat[, x])
 
   if (corplot) {
-    if (is.null(main)) main <- paste(x, "with", y)
+    if (is.null(main)) main <- paste(namex, "with", namey)
     plot(dat[, x], dat[, y],
-         xlab = x, ylab = y,
+         xlab = namex, ylab = namey,
          col = "purple",
          pch = 19,
          main =  main, cex.main = cex.main )
