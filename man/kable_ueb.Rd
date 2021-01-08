@@ -4,9 +4,16 @@
 \alias{kable_ueb}
 \title{A kable_ueb Function}
 \usage{
-kable_ueb(tab, caption = NULL, font_size = 13, full_width = FALSE,
-  escape = FALSE, col.background = "#993489", position = "center",
-  ...)
+kable_ueb(
+  tab,
+  caption = NULL,
+  font_size = 13,
+  full_width = FALSE,
+  escape = FALSE,
+  col.background = "#993489",
+  position = "center",
+  ...
+)
 }
 \arguments{
 \item{tab}{table to kable}

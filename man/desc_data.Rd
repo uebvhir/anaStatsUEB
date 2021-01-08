@@ -4,8 +4,15 @@
 \alias{desc_data}
 \title{A desc_data Function}
 \usage{
-desc_data(data, format = "html", maxlev = 7, maxNA = 80, size = 13,
-  caption = NULL, remove_cols = TRUE)
+desc_data(
+  data,
+  format = "html",
+  maxlev = 7,
+  maxNA = 80,
+  size = 13,
+  caption = NULL,
+  remove_cols = TRUE
+)
 }
 \arguments{
 \item{data}{data frame, list or environment (or object coercible by 'as.data.frame' to a data frame) containing the variables in the model. If they are not found in 'data', the variables are taken from 'environment(formula)'.}

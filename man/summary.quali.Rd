@@ -4,10 +4,21 @@
 \alias{summary.quali}
 \title{A summary.quali Function}
 \usage{
-\method{summary}{quali}(x, group = NULL, data, include.NA = FALSE,
-  patt.NA = "NA", format = "html", nround = 1, test = NULL,
-  show.pval = TRUE, show.all = TRUE, show.n = TRUE, byrow = FALSE,
-  sub.ht = TRUE)
+\method{summary}{quali}(
+  x,
+  group = NULL,
+  data,
+  include.NA = FALSE,
+  patt.NA = "NA",
+  format = "html",
+  nround = 1,
+  test = NULL,
+  show.pval = TRUE,
+  show.all = TRUE,
+  show.n = TRUE,
+  byrow = FALSE,
+  sub.ht = TRUE
+)
 }
 \arguments{
 \item{x}{factor variable.}

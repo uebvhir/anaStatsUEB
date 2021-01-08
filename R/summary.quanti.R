@@ -62,6 +62,9 @@ summary.quanti <- function(x,
   # if(!is.null(group))   data <- na.omit(data[,c(x,group)])
 
   if(paired){
+    show.all = F
+    names(data)[names(data)==idvar] <- "id"
+    idvar <- "id"
     data_wide <- reshape(data[,c(x,group,idvar)], timevar = group, idvar = idvar, direction = "wide") #, v.names = "x")
     idcomplete <- na.omit(data_wide)$id
     data <- data[which(data[,idvar] %in% idcomplete ), ]

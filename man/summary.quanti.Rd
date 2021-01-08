@@ -4,10 +4,22 @@
 \alias{summary.quanti}
 \title{A summary.quanti Function}
 \usage{
-\method{summary}{quanti}(x, group = NULL, data, method = "param",
-  format = "html", nround = 1, test = NULL, show.pval = TRUE,
-  show.all = TRUE, show.n = TRUE, prep2sum = FALSE, sub.ht = TRUE,
-  paired = FALSE, idvar = NULL)
+\method{summary}{quanti}(
+  x,
+  group = NULL,
+  data,
+  method = "param",
+  format = "html",
+  nround = 1,
+  test = NULL,
+  show.pval = TRUE,
+  show.all = TRUE,
+  show.n = TRUE,
+  prep2sum = FALSE,
+  sub.ht = TRUE,
+  paired = FALSE,
+  idvar = NULL
+)
 }
 \arguments{
 \item{x}{numeric or integer variable}
