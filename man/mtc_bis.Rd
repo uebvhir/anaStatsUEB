@@ -4,7 +4,9 @@
 \name{mtc_bis}
 \alias{mtc_bis}
 \title{Motor Trend Car Road Tests. (reclass)}
-\format{A data frame with 32 observations on 11 variables.}
+\format{
+A data frame with 32 observations on 11 variables.
+}
 \description{
 The data was extracted from the 1974 Motor Trend US magazine,
 and comprises fuel consumption and 10 aspects of automobile design

@@ -13,6 +13,8 @@
 #' @param show.pval logical indicating whether p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is TRUE.
 #' @param show.pval.adj logical indicating whether adjust p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is FALSE.
 #' @param caption Character vector containing the table's caption or title.
+#' @param paired  logical indicating paired data. Default value is FALSE.
+#' @param idvar a character string with name of identifier variable .
 #' @keywords summary ci qualitative descriptive exploratory
 #' @export desc_group
 #' @export descGroup
@@ -67,6 +69,10 @@ desc_group <- function(frml = NULL,
                                                 "' do not exist.")}}
 
   if(!is.null(group) & all(is.na(data[,group]))) {stop("Variable '", group, "' is empty")}
+  if(paired) {
+    names(data)[names(data)==idvar] <- "id"
+    idvar <- "id"
+  }
 
 
   if(!show.pval)  pval_cut <- -1
@@ -102,7 +108,7 @@ desc_group <- function(frml = NULL,
   ## guardem class de cada variable
   class_data <- unlist(lapply(data, function(x) class(x)[length(class(x))]))
   class_data[which(class_data == "numeric" | class_data == "integer")] <- "numeric"
-  class_data <- class_data[!names(class_data) %in% group]
+  class_data <- class_data[!names(class_data) %in% c(group,idvar)]
 
   if(any(class_data == "character")) message("La variable/s '",
                                              paste0(names(class_data)[class_data == "character"],collapse = "' , '"),

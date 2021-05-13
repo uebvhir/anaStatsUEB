@@ -30,6 +30,10 @@ descGroup(...)
 \item{show.pval.adj}{logical indicating whether adjust p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is FALSE.}
 
 \item{caption}{Character vector containing the table's caption or title.}
+
+\item{paired}{logical indicating paired data. Default value is FALSE.}
+
+\item{idvar}{a character string with name of identifier variable .}
 }
 \description{
 DESCRIPCIO DE LA FUNCIO
