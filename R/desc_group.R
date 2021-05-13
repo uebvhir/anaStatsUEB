@@ -199,7 +199,7 @@ desc_group <- function(frml = NULL,
 
   ## Afegim percentatges als titols
   results  <- results %>% rename_at(levels(data[,group]), ~ paste0(levels(data[,group]), "<br>",
-                                                                   table(data[,group]),"(",round(prop.table(table(data[,group]))*100,2),"%)"  ))
+                                                                   table(data[,group])," (",round(prop.table(table(data[,group]))*100,2),"%)"  ))
 
 
 
