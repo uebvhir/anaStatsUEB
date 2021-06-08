@@ -5,7 +5,7 @@
 #' @param covariates a character string with names of variables.
 #' @param group factor variable. Outcome. Default value is NULL
 #' @param data data frame, list or environment (or object coercible by 'as.data.frame' to a data frame) containing the variables in the model. If they are not found in 'data', the variables are taken from 'environment(formula)'.
-#' @param method character string indicating the method to test use; possible values are 'param' or 'nonparam'. Default values is 'param'.
+#' @param method character string indicating the method to test use; possible values are 'param' or 'non-param'. Default values is 'non-param'.
 #' @param font_size A numeric input for table font size
 #' @param byrow logical or NA. Percentage of categorical variables must be reported by rows (TRUE), by columns (FALSE) or by columns and rows to sum up 1 (NA). Default value is FALSE, which means that percentages are reported by columns (withing groups).
 #' @param width_lev defines the maximum width of table columns. Default value is 8em
