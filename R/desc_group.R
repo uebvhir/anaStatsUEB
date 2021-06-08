@@ -196,6 +196,14 @@ desc_group <- function(frml = NULL,
   if(!show.n){
     results <- results[,!names(results) %in% c("n")]
   }
+
+  ## Afegim percentatges als titols
+  results  <- results %>% rename_at(levels(data[,group]), ~ paste0(levels(data[,group]), "<br>",
+                                                                   table(data[,group])," (",round(prop.table(table(data[,group]))*100,2),"%)"  ))
+
+
+
+
   results_ht <- results %>%
     # mutate(p.value = cell_spec(p.value, "html", color = ifelse(condition,"black", "white"),
     #                            background = ifelse(condition, "white", "#993489"))) %>%
