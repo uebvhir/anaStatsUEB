@@ -10,7 +10,7 @@ sumsurv_df(sumsurv)
 \item{sumsurv}{summary.survfit object}
 }
 \description{
-DESCRIPCIO DE LA FUNCIO
+data frame of summary.survfit object
 }
 \keyword{summary}
 \keyword{survfit}

@@ -15,7 +15,7 @@ descGroup(...)
 
 \item{data}{data frame, list or environment (or object coercible by 'as.data.frame' to a data frame) containing the variables in the model. If they are not found in 'data', the variables are taken from 'environment(formula)'.}
 
-\item{method}{character string indicating the method to test use; possible values are 'param' or 'nonparam'. Default values is 'param'.}
+\item{method}{character string indicating the method to test use; possible values are 'param' or 'non-param'. Default values is 'non-param'.}
 
 \item{font_size}{A numeric input for table font size}
 
