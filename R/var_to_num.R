@@ -17,7 +17,7 @@
 #' @keywords numeric character class change warnings
 
 
-var_to_num <- function(x, name.var){
+var_to_num <- function(x, name.var = NULL){
   x_orig <- x
   x <- as.character(x)
   x <- gsub(",",".", x)
@@ -26,6 +26,7 @@ var_to_num <- function(x, name.var){
   na_value <- na.omit(unique(x_orig[is.na(x)]))
   try(name_var <- unlist(strsplit(x,split = "$",fixed = T))[2], T)
   if(length(na_value) >0)
-    warning(paste("Los valores", na_value, "de la variable",ifelse(exists("name.var"), name.var,"")," han sido considerados datos faltantes"))
+    name.var <- ifelse(!is.null(name.var), name.var,"")
+  warning(paste("Los valores", na_value, "de la variable",name.var," han sido considerados datos faltantes"))
   return(x)
 }
