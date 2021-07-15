@@ -2,6 +2,7 @@
 #'
 #' The function var_to_num is used to convert a character variable to numeric variable. Change ',' by '.'. Delete spaces. Return a numeric variable and a warning with the delete values.
 #' @param x   a character variable with numbers
+#' @param name.var a string with variable name
 #' @export var_to_num
 #' @author Miriam Mota  \email{miriam.mota@@vhir.org}
 #' @examples
@@ -16,8 +17,7 @@
 #' @keywords numeric character class change warnings
 
 
-var_to_num <- function(x){
-  lbl <- Hmisc::label(x)
+var_to_num <- function(x, name.var){
   x_orig <- x
   x <- as.character(x)
   x <- gsub(",",".", x)
@@ -26,7 +26,6 @@ var_to_num <- function(x){
   na_value <- na.omit(unique(x_orig[is.na(x)]))
   try(name_var <- unlist(strsplit(x,split = "$",fixed = T))[2], T)
   if(length(na_value) >0)
-    warning(paste("Los valores", na_value, "de la variable '' han sido considerados datos faltantes"))
-  Hmisc::label(x) <- lbl
+    warning(paste("Los valores", na_value, "de la variable",ifelse(exists("name.var"), name.var,"")," han sido considerados datos faltantes"))
   return(x)
 }
