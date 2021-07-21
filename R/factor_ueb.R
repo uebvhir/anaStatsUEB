@@ -35,7 +35,7 @@
 
 #' @keywords factor variable class levels labels
 
-factor_ueb <- function(x, levs = NULL, labs = NULL, del.empty.val = TRUE, name.var = NULL){
+factor_ueb <- function(x, levs = NULL, labs = NULL, del.empty.val = TRUE, name.var = NULL,desc_changes = T){
 
   lab_var <- Hmisc::label(x)
   name_sep <- strsplit(deparse(substitute(x)), "$",fixed = T)[[1]]
@@ -44,8 +44,12 @@ factor_ueb <- function(x, levs = NULL, labs = NULL, del.empty.val = TRUE, name.v
 
   if(!is.null(levs) & !is.null(labs)){
     levels_dif <- unique_noNA  %in% levs
-    if (!all(levels_dif)) { warning("Los individuos con valor '", paste(unique_noNA[!levels_dif], collapse = "', '"),
-                                    "' para la variable ",name.var," han sido considerados NA \n", call. = FALSE) }
+    if (!all(levels_dif)) {
+      mss <- paste0("Los individuos con valor '", paste(unique_noNA[!levels_dif], collapse = "', '"),
+                    "' para la variable ",name.var," han sido considerados NA \n")
+      warning(mss, call. = FALSE)
+      desc_changes(mss)
+      }
     var_factor <- factor(x, levels = levs, labels = labs )
   } else if (is.null(levs) & !is.null(labs)) {
     var_factor <- factor_reorder(x, labs = labs )
