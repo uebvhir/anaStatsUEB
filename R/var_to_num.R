@@ -27,6 +27,8 @@ var_to_num <- function(x, name.var = NULL){
   try(name_var <- unlist(strsplit(x,split = "$",fixed = T))[2], T)
   if(length(na_value) >0)
     name.var <- ifelse(!is.null(name.var), name.var,"")
-  warning(paste("Los valores", na_value, "de la variable",name.var," han sido considerados datos faltantes"))
+  mss <- paste("Los valores", na_value, "de la variable",name.var," han sido considerados datos faltantes")
+  desc_changes(mss)
+  warning(mss)
   return(x)
 }
