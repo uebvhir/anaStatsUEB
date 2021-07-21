@@ -25,10 +25,11 @@ var_to_num <- function(x, name.var = NULL){
   x <- as.numeric(x)
   na_value <- na.omit(unique(x_orig[is.na(x)]))
   try(name_var <- unlist(strsplit(x,split = "$",fixed = T))[2], T)
-  if(length(na_value) >0)
+  if(length(na_value) >0){
     name.var <- ifelse(!is.null(name.var), name.var,"")
-  mss <- paste("Los valores", na_value, "de la variable",name.var," han sido considerados datos faltantes")
-  desc_changes(mss)
-  warning(mss)
+    mss <- paste("Los valores", na_value, "de la variable",name.var," han sido considerados datos faltantes")
+    desc_changes(mss)
+    warning(mss)
+  }
   return(x)
 }
