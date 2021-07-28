@@ -20,7 +20,7 @@
 var_to_num <- function(x, name.var = NULL){
   x_orig <- x
   x <- as.character(x)
-  x <- gsub(",",".", x)
+  x <- gsub("%","",gsub(",",".", x))
   x <- trimws(x)
   x <- as.numeric(x)
   na_value <- na.omit(unique(x_orig[is.na(x)]))
