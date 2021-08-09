@@ -145,7 +145,7 @@ summary.quali <- function(x,
       if (is.null(test))    test <- ifelse( any(chisq.test(table(xx, yy))$expected < 5) , "Fisher's exact","Chi-squared")
       ## Calculem test
       pval <- try(switch(test,
-                         "Fisher's exact" = fisher.test(table(xx,yy))$p.va,
+                         "Fisher's exact" = fisher.test(table(xx,yy),simulate.p.value = T )$p.va,
                          "Chi-squared" = chisq.test(xx,yy)$p.val), TRUE)
       ## arreglem p.val final
       pval <- ifelse(grepl("Error", pval), ".",pval)
