@@ -112,7 +112,7 @@ quickCor <- function(x, y, dat,
   if (xtab) {
 
     print(kable_ueb(result, caption = paste("Correlation", x, "whit", y,".", sub)))
-  }else{
+  # }else{
     if (show.res) return( list(coeff = summary(fit), result = result) )
   }
 
