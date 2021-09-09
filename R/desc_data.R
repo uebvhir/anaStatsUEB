@@ -8,6 +8,7 @@
 #' @param maxNA an integer indicating the maximum number of missing data.
 #' @param caption Character vector containing the table's caption or title. Default value is a summary.
 #' @param remove_cols logical value. Removes all columns from a data that are composed entirely of NA values.
+#' @param df logical value. return data.frame
 #' @keywords read clean data summary depurate
 #' @export desc_data
 #' @import kableExtra Hmisc dplyr janitor
@@ -25,7 +26,8 @@ desc_data <- function(data,
                 maxNA = 80,
                 size = 13,
                 caption = NULL,
-                remove_cols = TRUE) {
+                remove_cols = TRUE,
+                df = FALSE) {
 
   new_line <- switch(format, "html" = " <br> ", "latex" = " \\\\ " ) #, "R" = " \n ")
   caption <- paste0("Summary Data.", new_line,
@@ -78,7 +80,8 @@ desc_data <- function(data,
   }
 
   # Informació Final
-  df_res  %>%
+  if(!df) {
+    df_res  %>%
     mutate(
       mm_lev = cell_spec(mm_lev, color = ifelse(nlev > maxlev, "red", "black"), escape = F),
       compl_mis = cell_spec(compl_mis, color = ifelse(percNA > maxNA, "red", "black"), escape = F)
@@ -86,4 +89,7 @@ desc_data <- function(data,
     kable(format = format, booktabs = T,  col.names = colnames, caption = caption, longtable = TRUE, escape = F) %>%
     kable_styling(latex_options = c("striped","hold_position", "repeat_header"),
                   font_size = size, full_width = F, position = "left")
+  }else{
+      return(df_res)
+    }
 }
