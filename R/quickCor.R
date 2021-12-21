@@ -76,6 +76,8 @@ quickCor <- function(x, y, dat,
   colnames(result) <- c("rho", "IC", "p-value")
   result[,"p-value"][which(as.numeric(as.character(result[,"p-value"])) < 0.001)] <- "<0.001"
 
+  if(!show.pval) result <- result[, !colnames(result) %in% c("p-value")]
+
   fit <- lm(dat[, y] ~ dat[, x])
 
   if (corplot) {
@@ -89,12 +91,12 @@ quickCor <- function(x, y, dat,
 
     txt.plot <- ifelse(pearson,
                        paste("Pearson Correlation = ", result["Pearson", "rho"],
-                             "\n 95%CI", result["Pearson", "IC"], "p-value = ",
-                             result["Pearson", "p-value"]),
+                             "\n 95%CI", result["Pearson", "IC"], ifelse(show.pval,paste0("p-value = ",
+                             result["Pearson", "p-value"]),"")),
                        paste("Spearman Correlation = ",
                              result["Spearman", "rho"],
-                             "\n 95%CI", result["Spearman", "IC"], "p-value = ",
-                             result["Spearman", "p-value"]))
+                             "\n 95%CI", result["Spearman", "IC"], ifelse(show.pval,paste0("p-value = ",
+                             result["Spearman", "p-value"]),"")))
 
     if (lm.fit) {
       abline(fit, col = "red", lwd = 3, lty = 3)
