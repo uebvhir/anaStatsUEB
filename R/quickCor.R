@@ -54,7 +54,8 @@ quickCor <- function(x, y, dat,
                      sub = NULL,
                      lm.fit = TRUE,
                      show.res = TRUE,
-                     pos.text = -1.8) {
+                     pos.text = -1.8,
+                     show.pval = TRUE) {
 
   if (!is.numeric(dat[, x])) stop("La variable x debe ser numérica")
   if (!is.numeric(dat[, y])) stop("La variable y debe ser numérica")
