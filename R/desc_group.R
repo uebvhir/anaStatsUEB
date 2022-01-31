@@ -110,9 +110,12 @@ desc_group <- function(frml = NULL,
   class_data[which(class_data == "numeric" | class_data == "integer")] <- "numeric"
   class_data <- class_data[!names(class_data) %in% c(group,idvar)]
 
-  if(any(class_data == "character")) message("La variable/s '",
-                                             paste0(names(class_data)[class_data == "character"],collapse = "' , '"),
-                                             "' es tipo caracter y no se ha analizado")
+  if(any(class_data == "character")) {
+    message("La variable/s '",
+            paste0(names(class_data)[class_data == "character"],collapse = "' , '"),
+            "' es tipo caracter y no se ha analizado")
+    covariates <- covariates[!covariates %in% names(class_data)[class_data == "character"]]
+    }
 
   ## realitzem analisis descriptiu i/o comparatiu
   list_var <- list()
