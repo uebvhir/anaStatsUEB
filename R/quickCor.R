@@ -64,17 +64,19 @@ quickCor <- function(x, y, dat,
 
   pe <- cor.test(dat[, x], dat[, y], method = "pearson")
   sp <- cor.test(dat[, x], dat[, y], method = "spearman")
+  n <- nrow(na.omit(dat[ , c(x, y)]))
+
   ic.sp <- CIrho(sp$estimate, dim(na.omit(dat[ , c(x, y)]))[1], level = 0.95 )
   Pearson <- c(round(pe$estimate, nround),
                paste0("(", round(pe$conf.int[1], nround), ", ", round(pe$conf.int[2], nround), ")"),
-               round(pe$p.value, nround) )
+               round(pe$p.value, nround),n )
 
   Spearman <- c(round(sp$estimate, nround),
                 paste0("(", round(ic.sp[2], nround), ", ", round(ic.sp[3], nround), ")"),
-                round(sp$p.value, nround) )
+                round(sp$p.value, nround),n )
 
   result <- t(data.frame(Pearson, Spearman))
-  colnames(result) <- c("rho", "IC", "p-value")
+  colnames(result) <- c("rho", "IC", "p-value", "n")
   result[,"p-value"][which(as.numeric(as.character(result[,"p-value"])) < 0.001)] <- "<0.001"
 
   if(!show.pval) result <- result[, !colnames(result) %in% c("p-value")]
