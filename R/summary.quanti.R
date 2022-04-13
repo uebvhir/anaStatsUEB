@@ -28,12 +28,20 @@
 #'  # kable(tab$summary,escape = F, row.names = F,align = "c", caption = c(paste(tab$txt_caption, tab$txt_test)) ) %>%
 #'  #   kable_styling(latex_options = c("striped","hold_position", "repeat_header"), full_width = F, font_size = 14) %>%
 #'  #   row_spec(0,background = "#993489", color = "white")
+#'  # mtc_bis %>% summary.quanti( x = qsec)
+#'  # summary.quanti( mtc_bis, x = qsec)$summary %>% kable_ueb()
+#'  # mtc_bis %>% summary.quanti( x = "qsec")
+#'  # summary.quanti( mtc_bis, x = "qsec")
+#'  # mtc_bis %>% summary.quanti( x = qsec, group = vs)
+#'  # summary.quanti( mtc_bis, x = qsec, group = vs)
+#'  # mtc_bis %>% summary.quanti( x = "qsec", group = "vs")
+#'  # summary.quanti( mtc_bis, x = "qsec", group = "vs")
 
 
 
-summary.quanti <- function(x,
+summary.quanti <- function(data,
+                           x,
                            group = NULL,
-                           data,
                            method = "param",
                            format = "html",
                            nround = 1,
@@ -44,16 +52,22 @@ summary.quanti <- function(x,
                            prep2sum = FALSE,
                            sub.ht = TRUE,
                            paired = FALSE,
-                           idvar = NULL){
+                           idvar = NULL,
+                           var.tidy = TRUE){
 
 
-
+  if (var.tidy){
+    ## Les 3 seguents linies permeten pasar el nom de la variable com a text o estil tidyverse
+    x <- gsub('\"', "", deparse(substitute(x)))
+    try(group <- gsub('\"', "", deparse(substitute(group))), TRUE)
+    if (group == "NULL") group <- NULL
+  }
 
   ## Comprovacions, stops i warnings
-  if(all(is.na(data[,x]))) stop(paste0("The variable '",x,"' is empty"))
-  if(is.factor(data[,x])) stop(paste0("La variable '",x,"' debe ser numérica"))
+  if (all(is.na(data[,x]))) stop(paste0("The variable '",x,"' is empty"))
+  if (is.factor(data[,x])) stop(paste0("La variable '",x,"' debe ser numérica"))
 
-  if(!is.null(group) & !is.factor(data[,group])) {
+  if (!is.null(group) & !is.factor(data[,group])) {
     data[,group] <- factor(data[,group])
     warning( paste0("La variable '", group, "' ha sido transformada a factor" ))
   }
@@ -61,9 +75,9 @@ summary.quanti <- function(x,
   ## només dades completes
   # if(!is.null(group))   data <- na.omit(data[,c(x,group)])
 
-  if(paired){
+  if (paired) {
     show.all = F
-    names(data)[names(data)==idvar] <- "id"
+    names(data)[names(data) == idvar] <- "id"
     idvar <- "id"
     data_wide <- reshape(data[,c(x,group,idvar)], timevar = group, idvar = idvar, direction = "wide") #, v.names = "x")
     idcomplete <- na.omit(data_wide)$id
@@ -127,16 +141,16 @@ summary.quanti <- function(x,
     ci_bi <- as.data.frame(ci.mean(xx ~ yy, data = data))[c("yy","lower", "upper")]
 
     ### En el cas que alguna de les categories no tingui recollit cap valor (p.e. homes no test embaràs), crear les celes buides
-    if(nrow(sum_bi) != length(levels(yy)))  {
-      sum_bi <- rbind(sum_bi, data.frame(yy = levels(yy)[!levels(yy) %in% sum_bi$yy], xx = rep(NA, length(levels(yy))-nrow(sum_bi)) ) )
+    if (nrow(sum_bi) != length(levels(yy))) {
+      sum_bi <- rbind(sum_bi, data.frame(yy = levels(yy)[!levels(yy) %in% sum_bi$yy], xx = rep(NA, length(levels(yy)) - nrow(sum_bi)) ) )
       rownames(sum_bi) <- sum_bi$yy
       sum_bi <- sum_bi[levels(yy),]
 
       ## IC
       ci_bi <- as.data.frame(ci.mean(xx ~ yy, data = data))[c("yy","lower", "upper")]
       ci_bi <- rbind(ci_bi, data.frame(yy = levels(yy)[!levels(yy) %in% ci_bi$yy],
-                                         lower = rep(NA, length(levels(yy))-nrow(ci_bi)),
-                                         upper = rep(NA, length(levels(yy))-nrow(ci_bi))) )
+                                         lower = rep(NA, length(levels(yy)) - nrow(ci_bi)),
+                                         upper = rep(NA, length(levels(yy)) - nrow(ci_bi))) )
       rownames(ci_bi) <- ci_bi$yy
       ci_bi <- ci_bi[levels(yy),]
     }

@@ -49,6 +49,10 @@ DESCRIPCIO DE LA FUNCIO
  # res$res
  # res <- desc_group(group  = "MUT",covariates = names(dat), data = dat, show.pval = FALSE)
  # res$res
+ # desc_group(covariates = qsec, group = vs, data = mtc_bis)
+ # desc_group(covariates = gear, group = vs, data = mtc_bis)
+ # mtc_bis \%>\% desc_group(covariates = qsec, group = vs)
+ # mtc_bis \%>\% desc_group(covariates = c(qsec, mpg, gear), group = vs)
 }
 \keyword{ci}
 \keyword{descriptive}

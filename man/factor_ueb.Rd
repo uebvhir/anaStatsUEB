@@ -4,7 +4,14 @@
 \alias{factor_ueb}
 \title{factor_ueb Function}
 \usage{
-factor_ueb(x, levs = NULL, labs = NULL, del.empty.val = TRUE, name.var = NULL)
+factor_ueb(
+  x,
+  levs = NULL,
+  labs = NULL,
+  del.empty.val = TRUE,
+  name.var = NULL,
+  write_changes = T
+)
 }
 \arguments{
 \item{x}{a vector of data, usually taking a small number of distinct values.}

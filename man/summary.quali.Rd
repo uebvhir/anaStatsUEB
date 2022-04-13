@@ -5,9 +5,9 @@
 \title{A summary.quali Function}
 \usage{
 \method{summary}{quali}(
+  data,
   x,
   group = NULL,
-  data,
   include.NA = FALSE,
   patt.NA = "NA",
   format = "html",
@@ -17,15 +17,16 @@
   show.all = TRUE,
   show.n = TRUE,
   byrow = FALSE,
-  sub.ht = TRUE
+  sub.ht = TRUE,
+  var.tidy = TRUE
 )
 }
 \arguments{
+\item{data}{data frame, list or environment (or object coercible by 'as.data.frame' to a data frame) containing the variables in the model. If they are not found in 'data', the variables are taken from 'environment(formula)'.}
+
 \item{x}{factor variable.}
 
 \item{group}{factor variable. Outcome}
-
-\item{data}{data frame, list or environment (or object coercible by 'as.data.frame' to a data frame) containing the variables in the model. If they are not found in 'data', the variables are taken from 'environment(formula)'.}
 
 \item{format}{a character string; possible values are ht, r, no. Default value is "ht".}
 
@@ -54,6 +55,10 @@ DESCRIPCIO DE LA FUNCIO
  # kable(tab$summary,escape = F, row.names = F,align = "c", txt_caption = tab$txt_caption)  \%>\%
  # kable_styling(latex_options = c("striped","hold_position", "repeat_header"), font_size = 14) \%>\%
  # row_spec(0,background = "#993489", color = "white")
+ # mtc_bis \%>\% summary.quali( x = gear, group = vs)
+ # summary.quali( mtc_bis, x = gear, group = vs)
+ # mtc_bis \%>\% summary.quali( x = "gear", group = "vs")
+ # summary.quali( mtc_bis, x = "gear", group = "vs")
 }
 \keyword{ci}
 \keyword{exploratory}

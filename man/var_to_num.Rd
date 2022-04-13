@@ -4,18 +4,22 @@
 \alias{var_to_num}
 \title{var_to_num Function}
 \usage{
-var_to_num(x)
+var_to_num(x, pat = NULL, rep = NULL)
 }
 \arguments{
 \item{x}{a character variable with numbers}
+
+\item{pat}{a string or strings with pattern to delete}
+
+\item{rep}{a string or strings witg pattern to replace}
 }
 \value{
 a numeric variable and a warning with delete values.
- edad <- c("6", "6,7", "10 ", "12.5", "3   ", "4,", "no se" )
+ edad <- c("6", "6,7", "10 ", "12.5", "3%   ", "4,", "no se", ">2" ,"4pct")
  Hmisc::label(edad) <- "Edad de los pacientes"
- edad_num <- var_to_num(edad)
- edad_num
- Hmisc::label(edad_num)
+ df <- data.frame(edad = edad, e1 = edad)
+ df %>% mutate(edad_mod = structure(var_to_num(edad), label = Hmisc::label(edad)))
+ df %>% mutate(edad_mod2 = structure(var_to_num(edad, pat = c(">", "pct"),rep = c("","")), label = Hmisc::label(edad)))
 }
 \description{
 The function var_to_num is used to convert a character variable to numeric variable. Change ',' by '.'. Delete spaces. Return a numeric variable and a warning with the delete values.

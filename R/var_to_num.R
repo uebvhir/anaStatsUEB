@@ -81,4 +81,4 @@ var_to_num <- function( x ,pat = NULL, rep = NULL){
 #     warning(mss)
 #   }
 #   return(x)
-}
+# }

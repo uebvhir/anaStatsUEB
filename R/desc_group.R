@@ -30,6 +30,11 @@
 #'  # res$res
 #'  # res <- desc_group(group  = "MUT",covariates = names(dat), data = dat, show.pval = FALSE)
 #'  # res$res
+#'  # desc_group(covariates = qsec, group = vs, data = mtc_bis)
+#'  # desc_group(covariates = gear, group = vs, data = mtc_bis)
+#'  # mtc_bis %>% desc_group(covariates = qsec, group = vs)
+#'  # mtc_bis %>% desc_group(covariates = c(qsec, mpg, gear), group = vs)
+
 
 
 descGroup <- function(...) {
@@ -37,10 +42,12 @@ descGroup <- function(...) {
   desc_group(...)
 }
 
-desc_group <- function(frml = NULL,
+
+
+desc_group <- function(data,
+                       frml = NULL,
                        covariates,
                        group = NULL,
-                       data,
                        method = "non-param",
                        caption = NULL,
                        font_size = 13,
@@ -60,26 +67,31 @@ desc_group <- function(frml = NULL,
                        patt.NA = "No",
                        ...){
 
-  ## comprobacions
-  if(is.null(frml) & !is.null(group) ) {
-    if(!group %in% names(data)) stop("The variable/s '", group, "' do not exist.")}
-  if(is.null(frml) ) {
-    if(any(!covariates %in% names(data))) {stop("The variable/s '",
-                                                paste0(covariates[!covariates %in% names(data)], collapse = "' , '"),
-                                                "' do not exist.")}}
+  ## Les 3 seguents linies permeten pasar el nom de la variable com a text o estil tidyverse
 
-  if(!is.null(group) & all(is.na(data[,group]))) {stop("Variable '", group, "' is empty")}
-  if(paired) {
-    names(data)[names(data)==idvar] <- "id"
+  covariates <- names(data %>% select({{covariates}}))
+  group <- names(data %>% select({{group}}))
+
+  ## comprobacions
+  if (is.null(frml) & !is.null(group) ) {
+    if (!group %in% names(data)) stop("The variable/s '", group, "' do not exist.")}
+  if (is.null(frml) ) {
+    if (any(!covariates %in% names(data))) {stop("The variable/s '",
+                                                 paste0(covariates[!covariates %in% names(data)], collapse = "' , '"),
+                                                 "' do not exist.")}}
+
+  if (!is.null(group) & all(is.na(data[,group]))) {stop("Variable '", group, "' is empty")}
+  if (paired) {
+    names(data)[names(data) == idvar] <- "id"
     idvar <- "id"
   }
 
 
-  if(!show.pval)  pval_cut <- -1
+  if (!show.pval)  pval_cut <- -1
   ## en el cas de que hi hagi formula seleccionem el grup i les covariates
-  if(!is.null(frml)){
+  if (!is.null(frml)) {
     covariates <- rhs.vars(frml)
-    if(!is.null(lhs.vars(frml))) {group <- lhs.vars(frml)}
+    if (!is.null(lhs.vars(frml))) {group <- lhs.vars(frml)}
   }
 
   ## Seleccionem variables i etiquetes
@@ -90,14 +102,14 @@ desc_group <- function(frml = NULL,
   }
 
   ## eliminem variables buides
-  if(length(covariates )!= 1 | !is.null(group) ){
+  if (length(covariates ) != 1 | !is.null(group) ) {
     emptyvar <- colSums(is.na(data)) != nrow(data)
     var2del <- names(emptyvar[which(emptyvar == FALSE)])
     if (length(var2del) > 0 ) {
       warning(paste0("Las variable ",var2del, " ha sido eliminada. Todos sus valores son NA. \n" ))
       data <- data[,!names(data) %in% var2del]
     }}
-  if(is.null(dim(data))){
+  if (is.null(dim(data))) {
     lbl <- Hmisc::label(data)
     data <- data.frame(data)
     names(data) <- covariates
@@ -110,12 +122,12 @@ desc_group <- function(frml = NULL,
   class_data[which(class_data == "numeric" | class_data == "integer")] <- "numeric"
   class_data <- class_data[!names(class_data) %in% c(group,idvar)]
 
-  if(any(class_data == "character")) {
+  if (any(class_data == "character")) {
     message("La variable/s '",
             paste0(names(class_data)[class_data == "character"],collapse = "' , '"),
             "' es tipo caracter y no se ha analizado")
     covariates <- covariates[!covariates %in% names(class_data)[class_data == "character"]]
-    }
+  }
 
   ## realitzem analisis descriptiu i/o comparatiu
   list_var <- list()
@@ -123,9 +135,9 @@ desc_group <- function(frml = NULL,
     list_var[[names(class_data)[i]]] <- switch(class_data[i],
                                                "numeric" = summary.quanti( x = names(class_data)[i] , group = group ,
                                                                            method = method, data = data, prep2sum = prep2sum,
-                                                                           show.pval = show.pval, paired = paired, idvar = idvar,... ) ,
+                                                                           show.pval = show.pval, paired = paired, idvar = idvar, var.tidy=FALSE, ... ) ,
                                                "factor" = summary.quali( x = names(class_data)[i], group = group ,data = data, byrow = byrow,
-                                                                         show.pval = show.pval, include.NA = include.NA, patt.NA = patt.NA,...),
+                                                                         show.pval = show.pval, include.NA = include.NA, patt.NA = patt.NA, var.tidy=FALSE,...),
                                                "character" = next()
     )
   }
@@ -171,7 +183,7 @@ desc_group <- function(frml = NULL,
   # groups_row <- table(var)[unique(var)]
 
   ## parametres per donar color a les variables amb p.value inferior a punt de tall
-  if(show.pval.adj){
+  if (show.pval.adj) {
     pval_valid <- results$p.val.adj
   }else{
     pval_valid <- results$p.value
@@ -190,13 +202,13 @@ desc_group <- function(frml = NULL,
   # groups_row <- cumsum(groups_row)
   options(knitr.kable.NA = '')
   ## Taula HTML
-  if(!show.pval){
+  if (!show.pval) {
     results <- results[,!names(results) %in% c("p.value")]
     pvalues <- NA}
-  if(!show.all){
+  if (!show.all) {
     results <- results[,!names(results) %in% c("ALL")]
   }
-  if(!show.n){
+  if (!show.n) {
     results <- results[,!names(results) %in% c("n")]
   }
 

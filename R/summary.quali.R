@@ -24,12 +24,15 @@
 #'  # kable(tab$summary,escape = F, row.names = F,align = "c", txt_caption = tab$txt_caption)  %>%
 #'  # kable_styling(latex_options = c("striped","hold_position", "repeat_header"), font_size = 14) %>%
 #'  # row_spec(0,background = "#993489", color = "white")
+#'  # mtc_bis %>% summary.quali( x = gear, group = vs)
+#'  # summary.quali( mtc_bis, x = gear, group = vs)
+#'  # mtc_bis %>% summary.quali( x = "gear", group = "vs")
+#'  # summary.quali( mtc_bis, x = "gear", group = "vs")
 
 
-
-summary.quali <- function(x,
+summary.quali <- function(data,
+                          x,
                           group = NULL,
-                          data,
                           include.NA = FALSE,
                           patt.NA = "NA",
                           format = "html",
@@ -39,10 +42,17 @@ summary.quali <- function(x,
                           show.all = TRUE,
                           show.n = TRUE,
                           byrow = FALSE,
-                          sub.ht = TRUE){
+                          sub.ht = TRUE,
+                          var.tidy = TRUE) {
 
+  if (var.tidy) {
+    ## Les 3 seguents linies permeten pasar el nom de la variable com a text o estil tidyverse
+    x <- gsub('\"', "", deparse(substitute(x)))
+    try(group <- gsub('\"', "", deparse(substitute(group))), TRUE)
+    if (group == "NULL") group <- NULL
+  }
 
-  if(include.NA){
+  if (include.NA) {
     lb <- Hmisc::label(data[,x])
     data[,x] <- as.character(data[,x])
     data[,x][which(is.na(data[,x]))] <- patt.NA
@@ -52,6 +62,7 @@ summary.quali <- function(x,
 
   ## Comprovacions variades
   if (!is.null(group)) {
+
     if (length(length(table(data[,group]))) > 10) warning("La variable group tiene mas de 10 niveles")
     if (class(data[,group])[length(class(data[,group]))] != "factor") stop("La variable group debe ser factor")
     ### només dades completes
@@ -61,19 +72,12 @@ summary.quali <- function(x,
 
 
 
-  if(any(table(data[,x]) == 0 ) ) {
+  if (any(table(data[,x]) == 0 ) ) {
     lb <- Hmisc::label(data[,x])
-    if(is.factor(data[,x] )) data[,x] <- droplevels(data[,x])
+    if (is.factor(data[,x] )) data[,x] <- droplevels(data[,x])
     message("Some levels of ", x, " are removed since no observation in that/those levels")
     Hmisc::label(data[,x]) <- lb
   }
-  # if(any(table(data[,group]) == 0 ) ) {
-  #   lbg <- Hmisc::label(data[,group])
-  #   data[,group] <- droplevels(data[,group])
-  #   message("Some levels of ", group, " are removed since no observation in that/those levels")
-  #   Hmisc::label(data[,group]) <- lbg
-  # }
-
 
 
 

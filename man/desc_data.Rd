@@ -11,7 +11,8 @@ desc_data(
   maxNA = 80,
   size = 13,
   caption = NULL,
-  remove_cols = TRUE
+  remove_cols = TRUE,
+  df = FALSE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ desc_data(
 \item{caption}{Character vector containing the table's caption or title. Default value is a summary.}
 
 \item{remove_cols}{logical value. Removes all columns from a data that are composed entirely of NA values.}
+
+\item{df}{logical value. return data.frame}
 }
 \description{
 DESCRIPCIO DE LA FUNCIO

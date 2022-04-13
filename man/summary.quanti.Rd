@@ -5,9 +5,9 @@
 \title{A summary.quanti Function}
 \usage{
 \method{summary}{quanti}(
+  data,
   x,
   group = NULL,
-  data,
   method = "param",
   format = "html",
   nround = 1,
@@ -18,15 +18,16 @@
   prep2sum = FALSE,
   sub.ht = TRUE,
   paired = FALSE,
-  idvar = NULL
+  idvar = NULL,
+  var.tidy = TRUE
 )
 }
 \arguments{
+\item{data}{data frame, list or environment (or object coercible by 'as.data.frame' to a data frame) containing the variables in the model. If they are not found in 'data', the variables are taken from 'environment(formula)'.}
+
 \item{x}{numeric or integer variable}
 
 \item{group}{factor variable. Outcome}
-
-\item{data}{data frame, list or environment (or object coercible by 'as.data.frame' to a data frame) containing the variables in the model. If they are not found in 'data', the variables are taken from 'environment(formula)'.}
 
 \item{method}{character string indicating the method to test use; possible values are 'param' or 'nonparam'. Default values is 'param'.}
 
@@ -60,6 +61,14 @@ DESCRIPCIO DE LA FUNCIO
  # kable(tab$summary,escape = F, row.names = F,align = "c", caption = c(paste(tab$txt_caption, tab$txt_test)) ) \%>\%
  #   kable_styling(latex_options = c("striped","hold_position", "repeat_header"), full_width = F, font_size = 14) \%>\%
  #   row_spec(0,background = "#993489", color = "white")
+ # mtc_bis \%>\% summary.quanti( x = qsec)
+ # summary.quanti( mtc_bis, x = qsec)$summary \%>\% kable_ueb()
+ # mtc_bis \%>\% summary.quanti( x = "qsec")
+ # summary.quanti( mtc_bis, x = "qsec")
+ # mtc_bis \%>\% summary.quanti( x = qsec, group = vs)
+ # summary.quanti( mtc_bis, x = qsec, group = vs)
+ # mtc_bis \%>\% summary.quanti( x = "qsec", group = "vs")
+ # summary.quanti( mtc_bis, x = "qsec", group = "vs")
 }
 \keyword{ci}
 \keyword{descriptive}
