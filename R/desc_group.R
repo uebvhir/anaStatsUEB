@@ -73,8 +73,11 @@ desc_group <- function(data,
   group <- names(data %>% select({{group}}))
 
   ## comprobacions
-  if (is.null(frml) & !is.null(group) ) {
-    if (!group %in% names(data)) stop("The variable/s '", group, "' do not exist.")}
+  if (is.null(frml) & (!is.null(group) & length(group > 0) )) {
+    if (!group %in% names(data)) stop("The variable/s '", group, "' do not exist.")
+  }else{
+      group <- NULL
+    }
   if (is.null(frml) ) {
     if (any(!covariates %in% names(data))) {stop("The variable/s '",
                                                  paste0(covariates[!covariates %in% names(data)], collapse = "' , '"),
@@ -135,9 +138,9 @@ desc_group <- function(data,
     list_var[[names(class_data)[i]]] <- switch(class_data[i],
                                                "numeric" = summary.quanti( x = names(class_data)[i] , group = group ,
                                                                            method = method, data = data, prep2sum = prep2sum,
-                                                                           show.pval = show.pval, paired = paired, idvar = idvar, var.tidy=FALSE, ... ) ,
+                                                                           show.pval = show.pval, paired = paired, idvar = idvar, var.tidy = FALSE, ... ) ,
                                                "factor" = summary.quali( x = names(class_data)[i], group = group ,data = data, byrow = byrow,
-                                                                         show.pval = show.pval, include.NA = include.NA, patt.NA = patt.NA, var.tidy=FALSE,...),
+                                                                         show.pval = show.pval, include.NA = include.NA, patt.NA = patt.NA, var.tidy = FALSE,...),
                                                "character" = next()
     )
   }
@@ -242,3 +245,4 @@ desc_group <- function(data,
               selVar = var_pval_cut,
               pvalues = as.numeric(as.character(pvalues)),df_all = results,results = results_ht))
 }
+
