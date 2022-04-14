@@ -23,7 +23,7 @@
 var_to_num <- function( x ,pat = NULL, rep = NULL){
   txt_col <- deparse(substitute(x))
   orig <- x  #variable original
-  x_new <-  as.numeric(trimws(reduce2(fixed(c(",", "%", pat)), fixed(c(".", "",rep)), .init = dat.col, str_replace)))
+  x_new <-  as.numeric(trimws(reduce2(fixed(c(",", "%", pat)), fixed(c(".", "",rep)), .init = x, str_replace)))
   na_value <-   na.omit(unique(orig[is.na(x_new)]))
   if(length(na_value) >0){
     mss <- paste0("Los valores '", paste0(na_value, collapse = "', '"), "' de la variable '",txt_col,
