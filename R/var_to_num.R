@@ -5,7 +5,7 @@
 #' @param pat a string or strings with pattern to delete
 #' @param rep a string or strings witg pattern to replace
 #' @export var_to_num
-#' @import magrittr
+#' @import magrittr purrr
 #' @author Miriam Mota  \email{miriam.mota@@vhir.org}
 #' @examples
 #'
