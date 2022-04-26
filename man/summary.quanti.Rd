@@ -16,6 +16,7 @@
   show.all = TRUE,
   show.n = TRUE,
   prep2sum = FALSE,
+  prep.tab = FALSE,
   sub.ht = TRUE,
   paired = FALSE,
   idvar = NULL,
@@ -42,6 +43,10 @@
 \item{show.all}{logical indicating whether the 'ALL' column (all data without stratifying by groups) is displayed or not. Default value is FALSE if grouping variable is defined, and FALSE if there are no groups.}
 
 \item{show.n}{ogical indicating whether number of individuals analyzed for each row-variable is displayed or not in the 'descr' table. Default value is TRUE.}
+
+\item{prep2sum}{logical value. prepara la taula de sortida per a la funció desc_group. Default value is FALSE}
+
+\item{prep.tab}{logical value. prepara la taula de sortida per a la funció desc_quanti Default value is FALSE}
 
 \item{byrow}{logical or NA. Percentage of categorical variables must be reported by rows (TRUE), by columns (FALSE) or by columns and rows to sum up 1 (NA). Default value is FALSE, which means that percentages are reported by columns (withing groups).}
 }

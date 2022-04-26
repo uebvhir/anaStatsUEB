@@ -40,7 +40,7 @@
 #' @keywords quickCor pearson sperman plotcor correlation
 
 
-quickCor <- function(x, y, dat,
+quickCor <- function(dat, x, y,
                      nround = 3,
                      main = NULL,
                      xtab = TRUE,
@@ -55,7 +55,11 @@ quickCor <- function(x, y, dat,
                      lm.fit = TRUE,
                      show.res = TRUE,
                      pos.text = -1.8,
-                     show.pval = TRUE) {
+                     show.pval = TRUE,
+                     prep.tab = FALSE) {
+  x <- names(dat %>% dplyr::select({{x}}))
+  y <- names(dat %>% dplyr::select({{y}}))
+
 
   if (!is.numeric(dat[, x])) stop("La variable x debe ser numérica")
   if (!is.numeric(dat[, y])) stop("La variable y debe ser numérica")
@@ -79,7 +83,7 @@ quickCor <- function(x, y, dat,
   colnames(result) <- c("rho", "IC", "p-value", "n")
   result[,"p-value"][which(as.numeric(as.character(result[,"p-value"])) < 0.001)] <- "<0.001"
 
-  if(!show.pval) result <- result[, !colnames(result) %in% c("p-value")]
+  if (!show.pval) result <- result[, !colnames(result) %in% c("p-value")]
 
   fit <- lm(dat[, y] ~ dat[, x])
 
@@ -114,12 +118,24 @@ quickCor <- function(x, y, dat,
     mtext(txt.plot, cex = cex.txt, line = pos.text )
 
   }
+
+
+  result_list <- list(coeff = summary(fit), methods = "Correlation coefficient", result = result)
+  if (prep.tab) {
+    qc_res <- data.frame(result)
+    result_list$df_prep_tab <- data.frame(t(c(variable = x,
+                         levels = paste(rownames(qc_res), collapse = " <br>"),
+                         summary = paste(qc_res$rho, qc_res$IC, collapse = " <br> " ),
+                         p.value = paste(qc_res$p.value, collapse = " <br> " ),
+                         n = unique(qc_res$n))))
+  }
+
   if (xtab) {
 
     print(kable_ueb(result, caption = paste("Correlation", x, "whit", y,".", sub)))
   # }else{
-    if (show.res) return( list(coeff = summary(fit), result = result) )
   }
+  if (show.res) return( result_list )
 
 }
 

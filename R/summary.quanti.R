@@ -12,6 +12,8 @@
 #' @param show.all logical indicating whether the 'ALL' column (all data without stratifying by groups) is displayed or not. Default value is FALSE if grouping variable is defined, and FALSE if there are no groups.
 #' @param show.n ogical indicating whether number of individuals analyzed for each row-variable is displayed or not in the 'descr' table. Default value is TRUE.
 #' @param byrow logical or NA. Percentage of categorical variables must be reported by rows (TRUE), by columns (FALSE) or by columns and rows to sum up 1 (NA). Default value is FALSE, which means that percentages are reported by columns (withing groups).
+#' @param prep2sum logical value. prepara la taula de sortida per a la funció desc_group. Default value is FALSE
+#' @param prep.tab logical value. prepara la taula de sortida per a la funció desc_quanti Default value is FALSE
 #' @keywords summary ci qualitative descriptive exploratory
 #' @export summary.quanti
 #' @import Publish
@@ -50,13 +52,14 @@ summary.quanti <- function(data,
                            show.all = TRUE,
                            show.n = TRUE,
                            prep2sum = FALSE,
+                           prep.tab = FALSE,
                            sub.ht = TRUE,
                            paired = FALSE,
                            idvar = NULL,
                            var.tidy = TRUE){
 
 
-  if (var.tidy){
+  if (var.tidy) {
     ## Les 3 seguents linies permeten pasar el nom de la variable com a text o estil tidyverse
     x <- gsub('\"', "", deparse(substitute(x)))
     try(group <- gsub('\"', "", deparse(substitute(group))), TRUE)
@@ -149,8 +152,8 @@ summary.quanti <- function(data,
       ## IC
       ci_bi <- as.data.frame(ci.mean(xx ~ yy, data = data))[c("yy","lower", "upper")]
       ci_bi <- rbind(ci_bi, data.frame(yy = levels(yy)[!levels(yy) %in% ci_bi$yy],
-                                         lower = rep(NA, length(levels(yy)) - nrow(ci_bi)),
-                                         upper = rep(NA, length(levels(yy)) - nrow(ci_bi))) )
+                                       lower = rep(NA, length(levels(yy)) - nrow(ci_bi)),
+                                       upper = rep(NA, length(levels(yy)) - nrow(ci_bi))) )
       rownames(ci_bi) <- ci_bi$yy
       ci_bi <- ci_bi[levels(yy),]
     }
@@ -175,15 +178,15 @@ summary.quanti <- function(data,
       ## Decidim test que es realitza
 
       if (is.null(test) & !paired)    test <- switch(method,
-                                           "param" = ifelse(length(levels(yy)) > 2, "Anova","Student's T"),
-                                           "non-param" = ifelse(length(levels(yy)) > 2, "Kruska-Wallis","Mann–Whitney U"))
+                                                     "param" = ifelse(length(levels(yy)) > 2, "Anova","Student's T"),
+                                                     "non-param" = ifelse(length(levels(yy)) > 2, "Kruska-Wallis","Mann–Whitney U"))
 
       if (is.null(test) & paired)    test <- switch(method,
-                                                     "param" = ifelse(length(levels(yy)) > 2, "no implementat","Paired Student's T"),
-                                                     "non-param" = ifelse(length(levels(yy)) > 2, "no implementat","Wilcoxon signed-rank test"))
+                                                    "param" = ifelse(length(levels(yy)) > 2, "no implementat","Paired Student's T"),
+                                                    "non-param" = ifelse(length(levels(yy)) > 2, "no implementat","Wilcoxon signed-rank test"))
 
 
-       ## Calculem test
+      ## Calculem test
       pval <- try(switch(test,
                          "Student's T" = t.test(xx~yy)$p.va,
                          "Mann–Whitney U" = wilcox.test(xx~yy)$p.va,
@@ -209,18 +212,30 @@ summary.quanti <- function(data,
     if (show.n) res_all$n <- sum(complete.cases(xx) & complete.cases(yy))
 
     txt_caption = paste0("Summary of results by groups of ",varname_group,txt_descriptive)
+
+    list_return <- list(rows = x,
+                        txt_test = txt_pval,
+                        pval = pval,
+                        txt_caption = txt_caption,
+                        methods = txt_descriptive,
+                        summary = res_all )
+
+    if (prep.tab) {
+
+
+      sq_sum <- t(res_all %>% select(-variable,-p.value, -n))
+      list_return$df_prep_tab <- data.frame(data.frame(variable = group,
+                                                       levels = rownames(sq_sum),
+                                                       summary = sq_sum[,1],
+                                                       p.value = unlist(c(sq_s %>% select(p.value), rep("", nrow(sq_sum) - 1))),
+                                                       n =  unlist(c(sq_s %>% select(n), rep("", nrow(sq_sum) - 1)))))
+    }
   }
 
 
   ## RESULTATS
   ifelse(!is.null(group),
-         return(list(rows = x,
-                     columns = group,
-                     txt_test = txt_pval,
-                     pval = pval,
-                     txt_caption = txt_caption,
-                     methods = txt_descriptive,
-                     summary = res_all )),
+         return(list_return),
          return(list(variable = x,methods = txt_caption, txt_caption = txt_caption,  summary = res_uni)))
 
 }

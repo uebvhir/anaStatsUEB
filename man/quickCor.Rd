@@ -7,9 +7,9 @@
 #' @usage \\method{names}{mtc_bis}(x) <- value
 }
 \arguments{
-\item{x, y}{numeric vectors of data values. x and y must have the same length.}
-
 \item{dat}{an optional matrix or data frame (or similar: see model.frame) containing the variables in the formula formula.}
+
+\item{x, y}{numeric vectors of data values. x and y must have the same length.}
 
 \item{nround}{integer indicating the number of decimal places (round).}
 
