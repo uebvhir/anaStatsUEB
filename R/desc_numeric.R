@@ -188,7 +188,8 @@ desc_numeric<- function(data,
 
   return(list(outcome = y, covariates = covariates,
               # selVar = var_pval_cut,
-              pvalues = as.numeric(as.character(pvalues)), df_all = results, results = results_ht))
+              # pvalues = as.numeric(as.character(pvalues)),
+              df_all = results, results = results_ht))
 }
 
 
