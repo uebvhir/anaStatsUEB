@@ -222,7 +222,7 @@ summary.quanti <- function(data,
 
     if (prep.tab) {
 
-
+      sq_s <- data.frame(res_all)
       sq_sum <- t(res_all %>% select(-variable,-p.value, -n))
       list_return$df_prep_tab <- data.frame(data.frame(variable = group,
                                                        levels = rownames(sq_sum),
