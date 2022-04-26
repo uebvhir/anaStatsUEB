@@ -1,4 +1,4 @@
-#' A desc_quanti Function
+#' A desc_numeric Function
 #'
 #' DESCRIPCIO DE LA FUNCIO
 #' @param frml Right side of ~ must have the terms in an additive way, and left side of ~ must contain the name of the grouping variable or can be left in blank (in this latter case descriptives for whole sample are calculated and no test is performed).
@@ -11,13 +11,13 @@
 #' @param show.pval logical indicating whether p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is TRUE.
 #' @param caption Character vector containing the table's caption or title.
 #' @keywords summary ci quantitative outcome descriptive exploratory
-#' @export desc_quanti
+#' @export desc_numeric
 #' @import magrittr
 #' @examples
 
 
 
-desc_quanti<- function(data,
+desc_numeric<- function(data,
                        covariates,
                        y,
                        frml = NULL,
