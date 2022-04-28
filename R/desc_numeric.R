@@ -174,7 +174,7 @@ desc_numeric<- function(data,
 
 
 # Hmisc::label(mtc_bis, self = F) <- paste0("Labels", names(mtc_bis))
-desc_numeric(data = mtc_bis, covariates = c("am", "mpg", "cyl", "drat"), y = "wt")
+# desc_numeric(data = mtc_bis, covariates = c("am", "mpg", "cyl", "drat"), y = "wt")
 
 
 
