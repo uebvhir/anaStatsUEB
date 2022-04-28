@@ -224,7 +224,7 @@ summary.quanti <- function(data,
 
       sq_s <- data.frame(res_all)
       sq_sum <- t(res_all %>% select(-variable,-p.value, -n))
-      list_return$df_prep_tab <- data.frame(data.frame(variable = group,
+      list_return$df_prep_tab <- data.frame(data.frame(variable = varname_group,
                                                        levels = rownames(sq_sum),
                                                        summary = sq_sum[,1],
                                                        p.value = unlist(c(sq_s %>% select(p.value), rep("", nrow(sq_sum) - 1))),

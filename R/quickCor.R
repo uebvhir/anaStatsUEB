@@ -123,7 +123,7 @@ quickCor <- function(dat, x, y,
   result_list <- list(coeff = summary(fit), methods = "Correlation coefficient", result = result)
   if (prep.tab) {
     qc_res <- data.frame(result)
-    result_list$df_prep_tab <- data.frame(t(c(variable = x,
+    result_list$df_prep_tab <- data.frame(t(c(variable = namex,
                          levels = paste(rownames(qc_res), collapse = " <br>"),
                          summary = paste(qc_res$rho, qc_res$IC, collapse = " <br> " ),
                          p.value = paste(qc_res$p.value, collapse = " <br> " ),

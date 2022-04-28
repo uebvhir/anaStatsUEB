@@ -17,20 +17,22 @@
 
 
 
+
 desc_numeric<- function(data,
-                       covariates,
-                       y,
-                       frml = NULL,
-                       method = "non-param",
-                       caption = NULL,
-                       font_size = 13,
-                       width_lev = "9em",
-                       col.background = "#993489",
-                       show.pval = TRUE,
-                       show.all = TRUE,
-                       show.n = TRUE,
-                       corplot = FALSE,
-                       ...){
+                        covariates,
+                        y,
+                        frml = NULL,
+                        method = "non-param",
+                        caption = NULL,
+                        font_size = 13,
+                        width_lev = "9em",
+                        col.background = "#993489",
+                        show.pval = TRUE,
+                        show.all = TRUE,
+                        show.n = TRUE,
+                        corplot = FALSE,
+                        nround = 1,
+                        ...){
 
   covariates <- names(data %>% select({{covariates}}))
   y <- names(data %>% select({{y}}))
@@ -66,18 +68,15 @@ desc_numeric<- function(data,
       warning(paste0("Las variable ",var2del, " ha sido eliminada. Todos sus valores son NA. \n" ))
       data <- data[,!names(data) %in% var2del]
     }}
-  if (is.null(dim(data))) {
-    lbl <- Hmisc::label(data)
-    data <- data.frame(data)
-    names(data) <- covariates
-    Hmisc::label(data) <- lbl
-  }
+  # Hmisc::label(data,self = F)[Hmisc::label(data) == ""] <- names(data)[Hmisc::label(data) == ""]
+
 
 
   ## guardem class de cada variable
   class_data <- unlist(lapply(data, function(x) class(x)[length(class(x))]))
   class_data[which(class_data == "numeric" | class_data == "integer")] <- "numeric"
-  class_data <- class_data[!names(class_data) %in% c(y)]
+  class_data <- sort(class_data[!names(class_data) %in% c(y)])
+  data %<>% select(y, names(class_data) )
 
   if (any(class_data == "character")) {
     message("La variable/s '",
@@ -90,9 +89,11 @@ desc_numeric<- function(data,
   list_var <- list()
   for (i in seq_along(class_data)) {
     list_var[[names(class_data)[i]]] <- switch(class_data[i],
-                                               "numeric" = quickCor(x = names(class_data)[i], y = y,dat = data, prep.tab = T,corplot = corplot, xtab = F, ...) ,
+                                               "numeric" = quickCor(x = names(class_data)[i], y = y,dat = data, prep.tab = T,
+                                                                    corplot = corplot, xtab = F, nround = nround, ...) ,
                                                "factor" = summary.quanti( x = y, group =  names(class_data)[i],data = data,
-                                                                         show.pval = show.pval,var.tidy = F, prep.tab = T, method = method, ...),
+                                                                          show.pval = show.pval,var.tidy = F, prep.tab = T, method = method,
+                                                                          nround = nround, ...),
                                                "character" = next()
     )
   }
@@ -125,22 +126,8 @@ desc_numeric<- function(data,
 
   ## alineament a la taula
   align = rep("c",ncol(results))
-  align[names(results) == "levels"] <- "l"
+  align[names(results) == "levels"] <- "c"
 
-
-  ## parametres per donar color a les variables amb p.value inferior a punt de tall
-  # pval_valid <- results$p.value
-
-
-  # pval_trunc <- as.numeric(sub("su.*", "",gsub("<","",pval_valid,
-                                               # fixed = T)))
-  # condition <- pval_trunc > pval_cut | is.na(pval_trunc)
-  # if (!all(condition)) {
-    # var_pval_cut <- var[which(!condition)]
-    # colorRow <- which(var %in% var_pval_cut )
-  # }else{
-    # var_pval_cut <- NA
-  # }
 
   options(knitr.kable.NA = '')
   ## Taula HTML
@@ -156,12 +143,10 @@ desc_numeric<- function(data,
 
   ## Afegim percentatges als titols
   results  <- results %>% rename_at(levels(data[,y]), ~ paste0(levels(data[,y]), "<br>",
-                                                                   table(data[,y])," (",round(prop.table(table(data[,y]))*100,2),"%)"  ))
+                                                               table(data[,y])," (",round(prop.table(table(data[,y]))*100,2),"%)"  ))
 
 
-
-
-  results_ht <- results %>%
+   results_ht <- results %>%
     select(-variable)%>%
     # mutate(p.value = cell_spec(p.value, "html", color = ifelse(condition,"black", "white"),
     #                            background = ifelse(condition, "white", "#993489"))) %>%
@@ -171,20 +156,11 @@ desc_numeric<- function(data,
     row_spec(0,background = col.background, color = "white") %>%
     column_spec(which(names(results) == "levels"), width_max = width_lev) %>%
     column_spec(which(names(results) == "variable"), bold = T)   %>%
-    column_spec(which(names(results) == "ALL"), bold = T)   %>%
+    # column_spec(which(names(results) == "ALL"), bold = T)   %>%
     add_footnote(footnote, escape = F,
                  notation = "symbol" )%>%
-    row_spec(which(results$levels == "ALL"), bold = T)
-
-  # if (!is.null(y) & (sum(pval_trunc < pval_cut, na.rm = T) != 0)) {
-  #   results_ht <- results_ht %>%
-  #     row_spec(colorRow, bold = F, color = "black",background = col.varsel )
-  #   }#%>%
-
-  results_ht  %<>%
+    row_spec(which(results$levels == "ALL"), bold = T, align = "right")  %>%
     pack_rows(index  = table(results$variable)[unique(results$variable)])
-  # pack_rows(groups_row ,hline_after = F, indent = F)
-
 
   return(list(outcome = y, covariates = covariates,
               # selVar = var_pval_cut,
@@ -197,11 +173,12 @@ desc_numeric<- function(data,
 
 
 
+# Hmisc::label(mtc_bis, self = F) <- paste0("Labels", names(mtc_bis))
+desc_numeric(data = mtc_bis, covariates = c("am", "mpg", "cyl", "drat"), y = "wt")
 
 
 
-
-
+#
 
 
 
