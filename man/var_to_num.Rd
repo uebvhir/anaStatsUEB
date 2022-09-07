@@ -24,9 +24,6 @@ a numeric variable and a warning with delete values.
 \description{
 The function var_to_num is used to convert a character variable to numeric variable. Change ',' by '.'. Delete spaces. Return a numeric variable and a warning with the delete values.
 }
-\examples{
-
-}
 \author{
 Miriam Mota  \email{miriam.mota@vhir.org}
 }

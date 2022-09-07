@@ -18,7 +18,7 @@
 
 
 
-desc_numeric<- function(data,
+desc_numeric <- function(data,
                         covariates,
                         y,
                         frml = NULL,

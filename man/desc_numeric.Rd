@@ -17,6 +17,8 @@ desc_numeric(
   show.pval = TRUE,
   show.all = TRUE,
   show.n = TRUE,
+  corplot = FALSE,
+  nround = 1,
   ...
 )
 }

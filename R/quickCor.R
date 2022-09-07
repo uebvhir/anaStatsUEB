@@ -17,6 +17,7 @@
 #' @param sub a sub title for the plot.
 #' @param lm.fit A logical value indicating if show a linear regression line. Default value is TRUE.
 #' @param pos.text on which MARgin line, starting at 0 counting outwards.
+#' @param cor_cut integer indicating the number cut relevant correlation
 #' @export quickCor
 #' @usage #' @usage \\method{names}{mtc_bis}(x) <- value
 #' @import xtable mada
@@ -56,7 +57,8 @@ quickCor <- function(dat, x, y,
                      show.res = TRUE,
                      pos.text = -1.8,
                      show.pval = TRUE,
-                     prep.tab = FALSE) {
+                     prep.tab = FALSE,
+                     cor_cut = 0.7) {
   x <- names(dat %>% dplyr::select({{x}}))
   y <- names(dat %>% dplyr::select({{y}}))
 
@@ -129,6 +131,9 @@ quickCor <- function(dat, x, y,
                          p.value = paste(qc_res$p.value, collapse = " <br> " ),
                          n = unique(qc_res$n))))
   }
+
+  if (abs(pe$estimate) > cor_cut | abs(sp$estimate) > cor_cut) {result_list$select <- namex}
+
 
   if (xtab) {
 
