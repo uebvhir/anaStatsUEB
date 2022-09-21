@@ -23,7 +23,7 @@ descGroup(...)
 
 \item{width_lev}{defines the maximum width of table columns. Default value is 8em}
 
-\item{pval_cut}{cut p.value colored}
+\item{pval_cut}{cut p.value colored. To select}
 
 \item{show.pval}{logical indicating whether p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is TRUE.}
 

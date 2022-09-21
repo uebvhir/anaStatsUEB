@@ -10,6 +10,8 @@
 #' @param width_lev defines the maximum width of table columns. Default value is 9em
 #' @param show.pval logical indicating whether p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is TRUE.
 #' @param caption Character vector containing the table's caption or title.
+#' @param pval_cut  A numeric value to variable select (p.value)
+#' @param cor_cut A numeric value to variable select
 #' @keywords summary ci quantitative outcome descriptive exploratory
 #' @export desc_numeric
 #' @import magrittr
@@ -32,6 +34,8 @@ desc_numeric <- function(data,
                         show.n = TRUE,
                         corplot = FALSE,
                         nround = 1,
+                        cor_cut = 0.7,
+                        pval_cut = 0.05,
                         ...){
 
   covariates <- names(data %>% select({{covariates}}))
@@ -97,6 +101,12 @@ desc_numeric <- function(data,
                                                "character" = next()
     )
   }
+
+  ## Guardem el nom de les variables que es consideren estadísticament rellevants
+  select_num <- unlist(lapply(list_var[names(which(class_data == "numeric"))], function(x) any(var_to_num(x[["result"]][,"rho"]) > cor_cut)   ))
+  select_fac <- unlist(lapply(list_var[names(which(class_data == "factor"))], function(x) any(var_to_num(x[["pval"]]) < pval_cut)   ))
+  selVar <- names(which(c(select_fac , select_num)))
+
 
   list_var_sum <- lapply(list_var, function(x)x[["df_prep_tab"]])
   results <- do.call("rbind", list_var_sum)
@@ -165,7 +175,9 @@ desc_numeric <- function(data,
   return(list(outcome = y, covariates = covariates,
               # selVar = var_pval_cut,
               # pvalues = as.numeric(as.character(pvalues)),
-              df_all = results, results = results_ht))
+              df_all = results,
+              selVar = selVar,
+              results = results_ht))
 }
 
 

@@ -19,6 +19,8 @@ desc_numeric(
   show.n = TRUE,
   corplot = FALSE,
   nround = 1,
+  cor_cut = 0.7,
+  pval_cut = 0.05,
   ...
 )
 }
@@ -40,6 +42,10 @@ desc_numeric(
 \item{width_lev}{defines the maximum width of table columns. Default value is 9em}
 
 \item{show.pval}{logical indicating whether p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is TRUE.}
+
+\item{cor_cut}{A numeric value to variable select}
+
+\item{pval_cut}{A numeric value to variable select (p.value)}
 }
 \description{
 DESCRIPCIO DE LA FUNCIO
