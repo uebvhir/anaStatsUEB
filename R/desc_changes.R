@@ -20,8 +20,8 @@
 #' @keywords message report changes
 
 
-desc_changes <- function(x){
-  x <- paste("\n * <span style='color:blue'>",x,"</span> \n")
+desc_changes <- function(x, col = "blue"){
+  x <- paste("\n * <span style='color:",col,"'>",x,"</span> \n")
   if(!exists("list_changes")){
     list_changes <<- list()
     i = 0

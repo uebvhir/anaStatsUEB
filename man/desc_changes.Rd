@@ -4,7 +4,7 @@
 \alias{desc_changes}
 \title{desc_changes Function}
 \usage{
-desc_changes(x)
+desc_changes(x, col = "blue")
 }
 \arguments{
 \item{x}{a string}
