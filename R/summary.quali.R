@@ -177,15 +177,8 @@ summary.quali <- function(data,
                            "Fisher's exact" = "-",
                            "Chi-squared" = chisq.test(xx,yy)$stat), TRUE)
         ## arreglem stat final
-        stat <- ifelse(grepl("Error", stat), ".",stat)
-        stat_round <- ifelse(grepl("Error", try(round(pval,3), TRUE)), "-", round(stat,3))
-
-        stat_round[grep("-",stat_round, fixed = T)] <- "-"
-
+        stat_round <- ifelse(stat == "-", ".", round(stat,3))
         res_all$stat <- c(stat_round, rep("", nrow(res_all) - 1))
-
-
-
       }else{
         stat <- NULL
 
