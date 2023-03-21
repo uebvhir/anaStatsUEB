@@ -60,6 +60,7 @@ desc_group <- function(data,
                        show.pval = TRUE,
                        show.all = TRUE,
                        show.n = TRUE,
+                       show.stat = FALSE,
                        paired = FALSE,
                        idvar = NULL,
                        prep2sum = TRUE,
@@ -76,8 +77,8 @@ desc_group <- function(data,
   if (is.null(frml) & (!is.null(group) & length(group > 0) )) {
     if (!group %in% names(data)) stop("The variable/s '", group, "' do not exist.")
   }else{
-      group <- NULL
-    }
+    group <- NULL
+  }
   if (is.null(frml) ) {
     if (any(!covariates %in% names(data))) {stop("The variable/s '",
                                                  paste0(covariates[!covariates %in% names(data)], collapse = "' , '"),
@@ -138,9 +139,9 @@ desc_group <- function(data,
     list_var[[names(class_data)[i]]] <- switch(class_data[i],
                                                "numeric" = summary.quanti( x = names(class_data)[i] , group = group ,
                                                                            method = method, data = data, prep2sum = prep2sum,
-                                                                           show.pval = show.pval, paired = paired, idvar = idvar, var.tidy = FALSE, ... ) ,
+                                                                           show.pval = show.pval,show.stat = show.stat, paired = paired, idvar = idvar, var.tidy = FALSE, ... ) ,
                                                "factor" = summary.quali( x = names(class_data)[i], group = group ,data = data, byrow = byrow,
-                                                                         show.pval = show.pval, include.NA = include.NA, patt.NA = patt.NA, var.tidy = FALSE,...),
+                                                                         show.pval = show.pval,show.stat = show.stat, include.NA = include.NA, patt.NA = patt.NA, var.tidy = FALSE,...),
                                                "character" = next()
     )
   }

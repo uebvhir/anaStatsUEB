@@ -40,7 +40,6 @@
 #'  # summary.quanti( mtc_bis, x = "qsec", group = "vs")
 
 
-
 summary.quanti <- function(data,
                            x,
                            group = NULL,
@@ -51,6 +50,7 @@ summary.quanti <- function(data,
                            show.pval = TRUE,
                            show.all = TRUE,
                            show.n = TRUE,
+                           show.stat = FALSE,
                            prep2sum = FALSE,
                            prep.tab = FALSE,
                            sub.ht = TRUE,
@@ -173,6 +173,12 @@ summary.quanti <- function(data,
     ### Es mostra columna ALL
     if (show.all)    res_all$ALL  <- res_uni$ALL
 
+
+
+
+
+
+
     ### Test
     if (show.pval) {
       ## Decidim test que es realitza
@@ -204,10 +210,42 @@ summary.quanti <- function(data,
       res_all$p.value <- ifelse(pval != "." & pval < 0.001, "<0.001", pval_round  )
       txt_pval = paste0("<font size='1'> <br> p.value:  ", test, "</font>")
 
+
+      if(show.stat){
+        stat <- try(switch(test,
+                           "Student's T" = t.test(xx~yy)$stat,
+                           "Mann–Whitney U" = wilcox.test(xx~yy)$stat,
+                           "Anova" = summary(aov(xx~yy))[[1]][["F value"]][1],
+                           "Kruska-Wallis" = kruskal.test(xx~yy)$stat,
+                           "Paired Student's T" = t.test(data_wide[,paste0(x,".",levels(yy)[1], collapse = "" )],
+                                                         data_wide[,paste0(x,".",levels(yy)[2], collapse = "")], paired = TRUE)$stat,
+                           "Wilcoxon signed-rank test" = wilcox.test(data_wide[,paste0(x,".",levels(yy)[1], collapse = "" )],
+                                                                     data_wide[,paste0(x,".",levels(yy)[2], collapse = "")], paired = TRUE)$stat,
+                           "no implementat" = stop("La funció encara no esta preparada per a aquests test!")),TRUE)
+        stat <- ifelse(grepl("Error", stat), ".",stat)
+        stat_round <- ifelse(grepl("Error", try(round(pval,3), TRUE)), ".", round(stat,3))
+
+
+        res_all$stat <- stat_round
+
+      }else{
+        stat <- NULL
+
+      }
+
+
+
     }else{
       pval <- NULL
       txt_pval <- NULL
     }
+
+
+
+
+
+
+
 
     if (show.n) res_all$n <- sum(complete.cases(xx) & complete.cases(yy))
 

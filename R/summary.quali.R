@@ -30,6 +30,10 @@
 #'  # summary.quali( mtc_bis, x = "gear", group = "vs")
 
 
+
+
+
+
 summary.quali <- function(data,
                           x,
                           group = NULL,
@@ -41,6 +45,7 @@ summary.quali <- function(data,
                           show.pval = TRUE,
                           show.all = TRUE,
                           show.n = TRUE,
+                          show.stat = FALSE,
                           byrow = FALSE,
                           sub.ht = TRUE,
                           var.tidy = TRUE) {
@@ -164,6 +169,30 @@ summary.quali <- function(data,
       txt_caption <-  paste(txt_caption,txt_descriptive,txt_descriptive,txt_pval )
 
 
+
+      if (show.stat ) {
+
+        ## Calculem test
+        stat <- try(switch(test,
+                           "Fisher's exact" = "-",
+                           "Chi-squared" = chisq.test(xx,yy)$stat), TRUE)
+        ## arreglem stat final
+        stat <- ifelse(grepl("Error", stat), ".",stat)
+        stat_round <- ifelse(grepl("Error", try(round(pval,3), TRUE)), "-", round(stat,3))
+
+        stat_round[grep("-",stat_round, fixed = T)] <- "-"
+
+        res_all$stat <- c(stat_round, rep("", nrow(res_all) - 1))
+
+
+
+      }else{
+        stat <- NULL
+
+      }
+
+
+
     }else{
       pval <- NULL
       txt_pval <- NULL
@@ -187,3 +216,11 @@ summary.quali <- function(data,
                      summary = res_all )),
          return(list(variable = x, methods = txt_caption, txt_caption = txt_caption, summary = res_uni)))
 }
+
+
+
+
+
+
+
+
