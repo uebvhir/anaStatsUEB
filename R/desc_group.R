@@ -70,6 +70,7 @@ desc_group <- function(data,
 
   ## Les 3 seguents linies permeten pasar el nom de la variable com a text o estil tidyverse
 
+  data <- data %>% as.data.frame()
   covariates <- names(data %>% select({{covariates}}))
   group <- names(data %>% select({{group}}))
 
