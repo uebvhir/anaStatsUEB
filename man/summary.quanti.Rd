@@ -15,6 +15,7 @@
   show.pval = TRUE,
   show.all = TRUE,
   show.n = TRUE,
+  show.stat = FALSE,
   prep2sum = FALSE,
   prep.tab = FALSE,
   sub.ht = TRUE,

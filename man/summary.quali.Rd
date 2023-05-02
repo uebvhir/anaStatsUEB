@@ -16,6 +16,7 @@
   show.pval = TRUE,
   show.all = TRUE,
   show.n = TRUE,
+  show.stat = FALSE,
   byrow = FALSE,
   sub.ht = TRUE,
   var.tidy = TRUE
