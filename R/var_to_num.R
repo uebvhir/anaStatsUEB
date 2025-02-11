@@ -28,7 +28,7 @@ var_to_num <- function( x ,pat = NULL, rep = NULL){
   if(length(na_value) >0){
     mss <- paste0("Los valores '", paste0(na_value, collapse = "', '"), "' de la variable '",txt_col,
                   "' han sido considerados datos faltantes")
-    desc_changes(mss)
+    desc_changes(mss, col = "#33cc33" )
     warning(mss)
   }
   return(x_new)

@@ -47,7 +47,7 @@ factor_ueb <- function(x, levs = NULL, labs = NULL, del.empty.val = TRUE, name.v
     if (!all(levels_dif)) {
       mss <- paste0("Los individuos con valor '", paste(unique_noNA[!levels_dif], collapse = "', '"),
                     "' para la variable ",name.var," han sido considerados NA \n")
-      if(write_changes) desc_changes(mss)
+      if(write_changes) desc_changes(mss, col = "#ff6600")
       warning(mss, call. = FALSE)
 
       }
