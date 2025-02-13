@@ -21,22 +21,22 @@
 
 
 desc_numeric <- function(data,
-                        covariates,
-                        y,
-                        frml = NULL,
-                        method = "non-param",
-                        caption = NULL,
-                        font_size = 13,
-                        width_lev = "9em",
-                        col.background = "#993489",
-                        show.pval = TRUE,
-                        show.all = TRUE,
-                        show.n = TRUE,
-                        corplot = FALSE,
-                        nround = 1,
-                        cor_cut = 0.7,
-                        pval_cut = 0.05,
-                        ...){
+                         covariates,
+                         y,
+                         frml = NULL,
+                         method = "non-param",
+                         caption = NULL,
+                         font_size = 13,
+                         width_lev = "9em",
+                         col.background = "#993489",
+                         show.pval = TRUE,
+                         show.all = TRUE,
+                         show.n = TRUE,
+                         corplot = FALSE,
+                         nround = 1,
+                         cor_cut = 0.7,
+                         pval_cut = 0.05,
+                         ...){
 
   covariates <- names(data %>% select({{covariates}}))
   y <- names(data %>% select({{y}}))
@@ -96,7 +96,7 @@ desc_numeric <- function(data,
                                                "numeric" = quickCor(x = names(class_data)[i], y = y,dat = data, prep.tab = T,
                                                                     corplot = corplot, xtab = F, nround = nround, ...) ,
                                                "factor" = summary.quanti( x = y, group =  names(class_data)[i],data = data,
-                                                                          show.pval = show.pval,var.tidy = F, prep.tab = T, method = method,
+                                                                          var.tidy = F, prep.tab = T, method = method,
                                                                           nround = nround, ...),
                                                "character" = next()
     )
@@ -145,7 +145,7 @@ desc_numeric <- function(data,
     results <- results[,!names(results) %in% c("p.value")]
     pvalues <- NA}
   if (!show.all) {
-    results <- results[,!names(results) %in% c("ALL")]
+    results <- results[!grepl("ALL", rownames(results)), ]
   }
   if (!show.n) {
     results <- results[,!names(results) %in% c("n")]
@@ -156,7 +156,7 @@ desc_numeric <- function(data,
                                                                table(data[,y])," (",round(prop.table(table(data[,y]))*100,2),"%)"  ))
 
 
-   results_ht <- results %>%
+  results_ht <- results %>%
     select(-variable)%>%
     # mutate(p.value = cell_spec(p.value, "html", color = ifelse(condition,"black", "white"),
     #                            background = ifelse(condition, "white", "#993489"))) %>%
