@@ -47,10 +47,14 @@ factor_ueb <- function(x, levs = NULL, labs = NULL, del.empty.val = TRUE, name.v
     if (!all(levels_dif)) {
       mss <- paste0("Los individuos con valor '", paste(unique_noNA[!levels_dif], collapse = "', '"),
                     "' para la variable ",name.var," han sido considerados NA \n")
-      if(write_changes) desc_changes(mss, col = "#ff6600")
-      warning(mss, call. = FALSE)
+      if(write_changes) {
+        desc_changes(mss, col = "#ff6600")
+        warning(mss, call. = FALSE)
 
       }
+    }
+    desc_changes(paste0("Para la variable **",name.var,"**, los valores numéricos originales ('",paste0(levs, collapse = "', '"), "') fueron recodificados como '",
+                        paste0(labs, collapse = "', '"), "' respectivamente, para facilitar la interpretación."), col = "#eb9b34")
     var_factor <- factor(x, levels = levs, labels = labs )
   } else if (is.null(levs) & !is.null(labs)) {
     var_factor <- factor_reorder(x, labs = labs )
@@ -63,6 +67,7 @@ factor_ueb <- function(x, levs = NULL, labs = NULL, del.empty.val = TRUE, name.v
   Hmisc::label(var_factor) <- lab_var
   return(var_factor)
 }
+
 
 
 
