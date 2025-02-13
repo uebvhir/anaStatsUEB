@@ -65,6 +65,7 @@ quickCor <- function(dat, x, y,
 
   if (!is.numeric(dat[, x])) stop("La variable x debe ser numérica")
   if (!is.numeric(dat[, y])) stop("La variable y debe ser numérica")
+  if(length(unique(na.omit(dat[, x]))) <2 | length(unique(na.omit(dat[, y]))) <2 ) stop("No es posible calcular la correlación. Una de las variables es constante.")
   namex <- ifelse(Hmisc::label(dat[,x]) == "", x,  Hmisc::label(dat[,x]))
   namey <- ifelse(Hmisc::label(dat[,y]) == "", y,  Hmisc::label(dat[,y]))
 
@@ -101,11 +102,11 @@ quickCor <- function(dat, x, y,
     txt.plot <- ifelse(pearson,
                        paste("Pearson Correlation = ", result["Pearson", "rho"],
                              "\n 95%CI", result["Pearson", "IC"], ifelse(show.pval,paste0("p-value = ",
-                             result["Pearson", "p-value"]),"")),
+                                                                                          result["Pearson", "p-value"]),"")),
                        paste("Spearman Correlation = ",
                              result["Spearman", "rho"],
                              "\n 95%CI", result["Spearman", "IC"], ifelse(show.pval,paste0("p-value = ",
-                             result["Spearman", "p-value"]),"")))
+                                                                                           result["Spearman", "p-value"]),"")))
 
     if (lm.fit) {
       abline(fit, col = "red", lwd = 3, lty = 3)
@@ -126,10 +127,10 @@ quickCor <- function(dat, x, y,
   if (prep.tab) {
     qc_res <- data.frame(result)
     result_list$df_prep_tab <- data.frame(t(c(variable = namex,
-                         levels = paste(rownames(qc_res), collapse = " <br>"),
-                         summary = paste(qc_res$rho, qc_res$IC, collapse = " <br> " ),
-                         p.value = paste(qc_res$p.value, collapse = " <br> " ),
-                         n = unique(qc_res$n))))
+                                              levels = paste(rownames(qc_res), collapse = " <br>"),
+                                              summary = paste(qc_res$rho, qc_res$IC, collapse = " <br> " ),
+                                              p.value = paste(qc_res$p.value, collapse = " <br> " ),
+                                              n = unique(qc_res$n))))
   }
 
   if (abs(pe$estimate) > cor_cut | abs(sp$estimate) > cor_cut) {result_list$select <- namex}
@@ -138,11 +139,12 @@ quickCor <- function(dat, x, y,
   if (xtab) {
 
     print(kable_ueb(result, caption = paste("Correlation", x, "whit", y,".", sub)))
-  # }else{
+    # }else{
   }
   if (show.res) return( result_list )
 
 }
+
 
 ## corrplot color by group
 # ggplot(cansue_cantum_wide_clin, aes(x=miR_106b.CANsue, y=miR_106b.CANtum, color = TN_HER2)) +
