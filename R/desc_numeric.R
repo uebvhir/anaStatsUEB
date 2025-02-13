@@ -160,7 +160,7 @@ desc_numeric <- function(data,
     select(-variable)%>%
     # mutate(p.value = cell_spec(p.value, "html", color = ifelse(condition,"black", "white"),
     #                            background = ifelse(condition, "white", "#993489"))) %>%
-    kable(escape = F, row.names = F,align = align, caption = caption)  %>%
+    kable(escape = F, row.names = F,align = align, caption = caption, format = "html")  %>%
     kable_styling(latex_options = c("striped","hold_position", "repeat_header"),
                   font_size = font_size, full_width = F, fixed_thead = T) %>%
     row_spec(0,background = col.background, color = "white") %>%
