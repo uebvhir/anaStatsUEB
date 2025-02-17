@@ -27,7 +27,7 @@ kable_ueb <- function(tab,
                       position = "center",
                       ...){
   options(knitr.kable.NA = '')
-  kable(tab, caption = caption, escape = escape, ...) %>%
+  kable(tab, caption = caption, escape = escape, format = "html", ...) %>%
     kable_styling(latex_options = c("striped","hold_position",
                                     "repeat_header"),
                   position = position,
