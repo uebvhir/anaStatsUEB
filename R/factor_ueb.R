@@ -35,7 +35,7 @@
 
 #' @keywords factor variable class levels labels
 
-factor_ueb <- function(x, levs = NULL, labs = NULL, del.empty.val = TRUE, name.var = NULL,write_changes = T){
+factor_ueb <- function(x, levs = NULL, labs = NULL, del.empty.val = TRUE, name.var = NULL,write_changes = T, write_recod= T){
 
   lab_var <- Hmisc::label(x)
   name_sep <- strsplit(deparse(substitute(x)), "$",fixed = T)[[1]]
@@ -53,7 +53,7 @@ factor_ueb <- function(x, levs = NULL, labs = NULL, del.empty.val = TRUE, name.v
 
       }
     }
-    desc_changes(paste0("Para la variable **",name.var,"**, los valores numéricos originales ('",paste0(levs, collapse = "', '"), "') fueron recodificados como '",
+    if(write_recod) desc_changes(paste0("Para la variable **",name.var,"**, los valores numéricos originales ('",paste0(levs, collapse = "', '"), "') fueron recodificados como '",
                         paste0(labs, collapse = "', '"), "' respectivamente, para facilitar la interpretación."), col = "#eb9b34")
     var_factor <- factor(x, levels = levs, labels = labs )
   } else if (is.null(levs) & !is.null(labs)) {
