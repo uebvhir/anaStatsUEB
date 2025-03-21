@@ -10,8 +10,8 @@
 #' @param width_lev defines the maximum width of table columns. Default value is 9em
 #' @param show.pval logical indicating whether p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is TRUE.
 #' @param caption Character vector containing the table's caption or title.
-#' @param pval_cut  A numeric value to variable select (p.value)
-#' @param cor_cut A numeric value to variable select
+#' @param pval_cut  A numeric value to variable dplyr::select (p.value)
+#' @param cor_cut A numeric value to variable dplyr::select
 #' @keywords summary ci quantitative outcome descriptive exploratory
 #' @export desc_numeric
 #' @import magrittr
@@ -38,8 +38,8 @@ desc_numeric <- function(data,
                          pval_cut = 0.05,
                          ...){
 
-  covariates <- names(data %>% select({{covariates}}))
-  y <- names(data %>% select({{y}}))
+  covariates <- names(data %>% dplyr::select({{covariates}}))
+  y <- names(data %>% dplyr::select({{y}}))
 
   ## comprobacions
   if (is.null(frml) & !is.null(y) ) {
@@ -80,7 +80,7 @@ desc_numeric <- function(data,
   class_data <- unlist(lapply(data, function(x) class(x)[length(class(x))]))
   class_data[which(class_data == "numeric" | class_data == "integer")] <- "numeric"
   class_data <- sort(class_data[!names(class_data) %in% c(y)])
-  data %<>% select(y, names(class_data) )
+  data %<>% dplyr::select(y, names(class_data) )
 
   if (any(class_data == "character")) {
     message("La variable/s '",
@@ -157,7 +157,7 @@ desc_numeric <- function(data,
 
 
   results_ht <- results %>%
-    select(-variable)%>%
+    dplyr::select(-variable)%>%
     # mutate(p.value = cell_spec(p.value, "html", color = ifelse(condition,"black", "white"),
     #                            background = ifelse(condition, "white", "#993489"))) %>%
     kable(escape = F, row.names = F,align = align, caption = caption, format = "html")  %>%
@@ -224,7 +224,7 @@ desc_numeric <- function(data,
 # require(kableExtra)
 #
 # df %>%
-#   select(-variable) %>%
+#   dplyr::select(-variable) %>%
 #   kable_ueb(row.names = F, caption = paste0( "Summary of results for ", y), align = "c"  ) %>%
 #   pack_rows(index  = table(df$variable)[unique(df$variable)]) %>%
 #   row_spec(which(df$levels == "ALL"), bold = T)
@@ -234,13 +234,13 @@ desc_numeric <- function(data,
 # # sq <- summary.quanti( data, x = mpg, group = vs)$summary
 # # sq_s <- data.frame(sq$summary)
 #
-# # sq_sum <- t(sq_s %>% select(-variable,-p.value, - n))
+# # sq_sum <- t(sq_s %>% dplyr::select(-variable,-p.value, - n))
 #
 # # df %<>% bind_rows(data.frame(variable = sq$columns,
 # #                              levels= rownames(sq_sum),
 # #                             summary = sq_sum[,1],
-# #                             p.value = unlist(c(sq_s %>% select(p.value), rep("", nrow(sq_sum)-1))),
-# #                             n =  unlist(c(sq_s %>% select(n), rep("", nrow(sq_sum)-1)))))
+# #                             p.value = unlist(c(sq_s %>% dplyr::select(p.value), rep("", nrow(sq_sum)-1))),
+# #                             n =  unlist(c(sq_s %>% dplyr::select(n), rep("", nrow(sq_sum)-1)))))
 #
 #
 #
@@ -352,8 +352,8 @@ desc_numeric <- function(data,
 #
 #   ## Les 3 seguents linies permeten pasar el nom de la variable com a text o estil tidyverse
 #
-#   covariates <- names(data %>% select({{covariates}}))
-#   group <- names(data %>% select({{group}}))
+#   covariates <- names(data %>% dplyr::select({{covariates}}))
+#   group <- names(data %>% dplyr::select({{group}}))
 #
 #   ## comprobacions
 #   if (is.null(frml) & !is.null(group) ) {
