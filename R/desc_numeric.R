@@ -96,9 +96,9 @@ desc_numeric <- function(data,
   for (i in seq_along(class_data)) {
     list_var[[names(class_data)[i]]] <- switch(class_data[i],
                                                "numeric" = quickCor(x = names(class_data)[i], y = y,dat = data, prep.tab = T,
-                                                                    corplot = corplot, xtab = F, nround = nround, ...) ,
+                                                                    corplot = corplot, xtab = F, nround = nround, method = method.cor, ...) ,
                                                "factor" = summary.quanti( x = y, group =  names(class_data)[i],data = data,
-                                                                          var.tidy = F, prep.tab = T, method = method.cor,
+                                                                          var.tidy = F, prep.tab = T, method = method,
                                                                           nround = nround, ...),
                                                "character" = next()
     )
