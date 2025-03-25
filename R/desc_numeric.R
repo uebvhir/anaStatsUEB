@@ -6,6 +6,7 @@
 #' @param y numeric variable. Outcome
 #' @param data data frame, list or environment (or object coercible by 'as.data.frame' to a data frame) containing the variables in the model. If they are not found in 'data', the variables are taken from 'environment(formula)'.
 #' @param method character string indicating the method to test use; possible values are 'param' or 'non-param'. Default values is 'non-param'.
+#' @param method.cor character string indicating the method to correlation use; possible values are 'pearson' or 'spearman' or "both. Default values is 'pearson'.
 #' @param font_size A numeric input for table font size
 #' @param width_lev defines the maximum width of table columns. Default value is 9em
 #' @param show.pval logical indicating whether p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is TRUE.
@@ -25,6 +26,7 @@ desc_numeric <- function(data,
                          y,
                          frml = NULL,
                          method = "non-param",
+                         method.cor = "pearson",
                          caption = NULL,
                          font_size = 13,
                          width_lev = "9em",
@@ -96,7 +98,7 @@ desc_numeric <- function(data,
                                                "numeric" = quickCor(x = names(class_data)[i], y = y,dat = data, prep.tab = T,
                                                                     corplot = corplot, xtab = F, nround = nround, ...) ,
                                                "factor" = summary.quanti( x = y, group =  names(class_data)[i],data = data,
-                                                                          var.tidy = F, prep.tab = T, method = method,
+                                                                          var.tidy = F, prep.tab = T, method = method.cor,
                                                                           nround = nround, ...),
                                                "character" = next()
     )

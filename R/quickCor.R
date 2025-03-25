@@ -5,7 +5,7 @@
 #' @param dat an optional matrix or data frame (or similar: see model.frame) containing the variables in the formula formula.
 #' @param nround integer indicating the number of decimal places (round).
 #' @param xtab A logical value indicating whether the output is a xtable
-#' @param pearson A logical value indicating whether the text output is Pearson. Default value is TRUE.
+#' @param method "pearson", "spearman" or "both" Default value is "pearson".
 #' @param corplot A logical value indicating whether the output is a plot. Default value is TRUE.
 #' @param pos a character string indicating the legend location. Options: "bottomright",  "bottom", "bottomleft", "left", "topleft", "top", "topright", "right" and "center".
 #' @param A character vector that is inserted just before the tabular environment starts. This can be used to set the font size and a variety of other table settings. Initial backslashes are automatically prefixed, if not supplied by user. Default value is "small".
@@ -41,13 +41,14 @@
 #' @keywords quickCor pearson sperman plotcor correlation
 
 
+
 quickCor <- function(dat, x, y,
                      nround = 3,
                      main = NULL,
                      xtab = TRUE,
                      pos = "bottomleft",
                      sz.xtab = NULL,
-                     pearson = TRUE,
+                     method = "pearson", #"pearson", "spearman" or "both"
                      corplot = TRUE,
                      cex.txt = 0.8,
                      cex.main = 0.8,
@@ -69,20 +70,29 @@ quickCor <- function(dat, x, y,
   namex <- ifelse(Hmisc::label(dat[,x]) == "", x,  Hmisc::label(dat[,x]))
   namey <- ifelse(Hmisc::label(dat[,y]) == "", y,  Hmisc::label(dat[,y]))
 
-  pe <- cor.test(dat[, x], dat[, y], method = "pearson")
-  sp <- cor.test(dat[, x], dat[, y], method = "spearman")
+
   n <- nrow(na.omit(dat[ , c(x, y)]))
 
-  ic.sp <- CIrho(sp$estimate, dim(na.omit(dat[ , c(x, y)]))[1], level = 0.95 )
-  Pearson <- c(round(pe$estimate, nround),
-               paste0("(", round(pe$conf.int[1], nround), ", ", round(pe$conf.int[2], nround), ")"),
-               round(pe$p.value, nround),n )
+  if(method == "pearson" | method == "both"){
+    pe <- cor.test(dat[, x], dat[, y], method = "pearson")
+    Pearson <- c(round(pe$estimate, nround),
+                 paste0("(", round(pe$conf.int[1], nround), ", ", round(pe$conf.int[2], nround), ")"),
+                 round(pe$p.value, nround),n )
+    if(method == "pearson") result <- t(data.frame(Pearson))
+  }
+  if(method == "spearman" | method == "both"){
+    sp <- cor.test(dat[, x], dat[, y], method = "spearman")
+    ic.sp <- CIrho(sp$estimate, dim(na.omit(dat[ , c(x, y)]))[1], level = 0.95 )
+    Spearman <- c(round(sp$estimate, nround),
+                  paste0("(", round(ic.sp[2], nround), ", ", round(ic.sp[3], nround), ")"),
+                  round(sp$p.value, nround),n )
+    if(method == "spearman") result <- t(data.frame(Spearman))
+  }
+  if(method == "both"){
+    result <- t(data.frame(Pearson, Spearman))
+  }
 
-  Spearman <- c(round(sp$estimate, nround),
-                paste0("(", round(ic.sp[2], nround), ", ", round(ic.sp[3], nround), ")"),
-                round(sp$p.value, nround),n )
 
-  result <- t(data.frame(Pearson, Spearman))
   colnames(result) <- c("rho", "IC", "p-value", "n")
   result[,"p-value"][which(as.numeric(as.character(result[,"p-value"])) < 0.001)] <- "<0.001"
 
@@ -99,7 +109,7 @@ quickCor <- function(dat, x, y,
          main =  main, cex.main = cex.main )
     mtext(sub, 3, line = .8)
 
-    txt.plot <- ifelse(pearson,
+    txt.plot <- ifelse(method == "pearson",
                        paste("Pearson Correlation = ", result["Pearson", "rho"],
                              "\n 95%CI", result["Pearson", "IC"], ifelse(show.pval,paste0("p-value = ",
                                                                                           result["Pearson", "p-value"]),"")),
@@ -133,7 +143,11 @@ quickCor <- function(dat, x, y,
                                               n = unique(qc_res$n))))
   }
 
-  if (abs(pe$estimate) > cor_cut | abs(sp$estimate) > cor_cut) {result_list$select <- namex}
+  safe_sp_estimate <- tryCatch(sp$estimate, error = function(e) NULL)
+
+  if (!is.null(safe_sp_estimate) && (abs(pe$estimate) > cor_cut | abs(safe_sp_estimate) > cor_cut)) {
+    result_list$select <- namex
+  }
 
 
   if (xtab) {
@@ -144,6 +158,11 @@ quickCor <- function(dat, x, y,
   if (show.res) return( result_list )
 
 }
+
+
+## corrplot color by group
+# ggplot(cansue_cantum_wide_clin, aes(x=miR_106b.CANsue, y=miR_106b.CANtum, color = TN_HER2)) +
+#   geom_point() + geom_rug()
 
 
 ## corrplot color by group
