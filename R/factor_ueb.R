@@ -53,8 +53,8 @@ factor_ueb <- function(x, levs = NULL, labs = NULL, del.empty.val = TRUE, name.v
 
       }
     }
-    if(write_recod) desc_changes(paste0("Para la variable **",name.var,"**, los valores numéricos originales ('",paste0(levs, collapse = "', '"), "') fueron recodificados como '",
-                        paste0(labs, collapse = "', '"), "' respectivamente, para facilitar la interpretación."), col = "#eb9b34")
+    if(write_recod) {desc_changes(paste0("Para la variable **",name.var,"**, los valores numéricos originales ('",paste0(levs, collapse = "', '"), "') fueron recodificados como '",
+                        paste0(labs, collapse = "', '"), "' respectivamente, para facilitar la interpretación."), col = "#eb9b34")}
     var_factor <- factor(x, levels = levs, labels = labs )
   } else if (is.null(levs) & !is.null(labs)) {
     var_factor <- factor_reorder(x, labs = labs )
