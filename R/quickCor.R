@@ -23,18 +23,18 @@
 #' @import xtable mada
 #' @author Miriam Mota  \email{miriam.mota@@vhir.org}
 #' @examples
-#' quickCor(x = "mpg", y = "hp", dat = mtc_bis,
-#' nround = 3, xtab = FALSE, pearson = TRUE, corplot = TRUE, sub = "subtitle")
-#' # Spearman correlation
-#' quickCor(x = "mpg", y = "hp", dat = mtc_bis,
-#' nround = 3, xtab = FALSE, pearson = FALSE, corplot = TRUE, sub = "subtitle")
-#' # No es mostra recta de regressio
-#' quickCor(x = "mpg", y = "hp", dat = mtc_bis,
-#' nround = 3, xtab = FALSE, pearson = TRUE, corplot = TRUE, sub = "subtitle", lm.fit =FALSE)
-#' # canviem la posicio de la llegenda
-#' quickCor(x = "mpg", y = "hp", dat = mtc_bis,
-#' nround = 3, xtab = TRUE, pearson = TRUE, corplot = TRUE, sub = "subtitle",
-#' pos = "bottomright")
+#' # quickCor(x = "mpg", y = "hp", dat = mtc_bis,
+#' # nround = 3, xtab = FALSE, pearson = TRUE, corplot = TRUE, sub = "subtitle")
+#' # # Spearman correlation
+#' # quickCor(x = "mpg", y = "hp", dat = mtc_bis,
+#' # nround = 3, xtab = FALSE, pearson = FALSE, corplot = TRUE, sub = "subtitle")
+#' # # No es mostra recta de regressio
+#' # quickCor(x = "mpg", y = "hp", dat = mtc_bis,
+#' # nround = 3, xtab = FALSE, pearson = TRUE, corplot = TRUE, sub = "subtitle", lm.fit =FALSE)
+#' # # canviem la posicio de la llegenda
+#' # quickCor(x = "mpg", y = "hp", dat = mtc_bis,
+#' # nround = 3, xtab = TRUE, pearson = TRUE, corplot = TRUE, sub = "subtitle",
+#' # pos = "bottomright")
 #' @return results:
 #' @return coeff:
 #' @return plot

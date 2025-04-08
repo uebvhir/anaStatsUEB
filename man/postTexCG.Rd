@@ -4,7 +4,7 @@
 \alias{postTexCG}
 \title{A postTexCG Function}
 \usage{
-postTexCG(nameFile)
+postTexCG(...)
 }
 \arguments{
 \item{nameFile}{Character vector of length 1 containing the name of file.}

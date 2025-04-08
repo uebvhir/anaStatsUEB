@@ -4,7 +4,7 @@
 #' @param sumsurv summary.survfit object
 #' @keywords summary survfit survival
 #' @export sumsurv_df
-#' @examples
+#'
 
 
 

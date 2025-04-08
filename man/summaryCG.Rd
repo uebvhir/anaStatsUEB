@@ -4,22 +4,7 @@
 \alias{summaryCG}
 \title{summaryCG Function}
 \usage{
-summaryCG(
-  res,
-  restab,
-  dat,
-  y,
-  xtab = FALSE,
-  col = TRUE,
-  title = NULL,
-  lbl = NULL,
-  met.adj = "fdr",
-  sz.xtab = 8,
-  xtab.type = "latex",
-  sort.pval = FALSE,
-  color = "#d6c9d6",
-  color.font = "white"
-)
+summaryCG(...)
 }
 \arguments{
 \item{res}{an object of class 'compareGroups'}
@@ -30,19 +15,19 @@ summaryCG(
 
 \item{y}{a vector variable that distinguishes the groups. It must be either a numeric, character, factor or NULL. Default value is NULL which means that descriptives for whole sample are calculated and no test is performed}
 
+\item{met.adj}{correction method. Can be abbreviated. Default value is 'fdr'}
+
 \item{xtab}{A logical value indicating whether the output is a xtable. Default value is FALSE.}
 
 \item{col}{A logical value indicating the xtable color. Default value is TRUE.}
 
 \item{title}{Character vector containing the table's caption or title. Default value is NULL.}
 
-\item{lbl}{Character vector of length 1 containing the LaTeX label. Default value is NULL.}
-
-\item{met.adj}{correction method. Can be abbreviated. Default value is 'fdr'}
-
 \item{sz.xtab}{A character vector that is inserted just before the tabular environment starts. This can be used to set the font size and a variety of other table settings. Initial backslashes are automatically prefixed, if not supplied by user. Default value is small.}
 
 \item{xtab.type}{A character string. Possible values are latex, html, markdown, pandoc, and rst; this will be automatically determined if the function is called within knitr; it can also be set in the global option knitr.table.format. If format is a function, it must return a character string.}
+
+\item{lbl}{Character vector of length 1 containing the LaTeX label. Default value is NULL.}
 }
 \value{
 summary table.
@@ -58,9 +43,9 @@ p-values are multiplied by the number of comparisons. Less conservative correcti
  and Benjamini & Yekutieli (2001) ('BY'), respectively.
 }
 \examples{
-res <- compareGroups(am ~., dat = mtc_bis, method = NA)
-restab <- createTable(res)
-summaryCG(res, restab,  dat = mtc_bis, y = 'am', xtab = FALSE)
+# res <- compareGroups(am ~., dat = mtc_bis, method = NA)
+#restab <- createTable(res)
+# summaryCG(res, restab,  dat = mtc_bis, y = 'am', xtab = FALSE)
 }
 \seealso{
 \code{\link{p.adjust}}

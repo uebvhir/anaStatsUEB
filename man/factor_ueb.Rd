@@ -10,7 +10,8 @@ factor_ueb(
   labs = NULL,
   del.empty.val = TRUE,
   name.var = NULL,
-  write_changes = T
+  write_changes = T,
+  write_recod = T
 )
 }
 \arguments{

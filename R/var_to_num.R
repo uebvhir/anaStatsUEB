@@ -7,7 +7,7 @@
 #' @export var_to_num
 #' @import magrittr purrr
 #' @author Miriam Mota  \email{miriam.mota@@vhir.org}
-#' @examples
+#'
 #'
 #' @return a numeric variable and a warning with delete values.
 #'  edad <- c("6", "6,7", "10 ", "12.5", "3%   ", "4,", "no se", ">2" ,"4pct")

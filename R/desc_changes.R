@@ -29,4 +29,16 @@ desc_changes <- function(x, col = "blue"){
     i <- length(list_changes)
   }
   list_changes[[i+1]] <<- x
+  colors <- sapply(list_changes, extract_color)
+  list_changes <- list_changes[order(match(colors, unique(colors)), na.last = TRUE)]
+}
+
+
+extract_color <- function(text) {
+  matches <- regmatches(text, regexpr("color: #[0-9a-fA-F]+|color: [a-zA-Z]+", text))
+  if (length(matches) > 0) {
+    return(matches)
+  } else {
+    return(NA)
+  }
 }

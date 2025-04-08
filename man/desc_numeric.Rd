@@ -10,6 +10,7 @@ desc_numeric(
   y,
   frml = NULL,
   method = "non-param",
+  method.cor = "pearson",
   caption = NULL,
   font_size = 13,
   width_lev = "9em",
@@ -35,6 +36,8 @@ desc_numeric(
 
 \item{method}{character string indicating the method to test use; possible values are 'param' or 'non-param'. Default values is 'non-param'.}
 
+\item{method.cor}{character string indicating the method to correlation use; possible values are 'pearson' or 'spearman' or "both. Default values is 'pearson'.}
+
 \item{caption}{Character vector containing the table's caption or title.}
 
 \item{font_size}{A numeric input for table font size}
@@ -43,9 +46,9 @@ desc_numeric(
 
 \item{show.pval}{logical indicating whether p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is TRUE.}
 
-\item{cor_cut}{A numeric value to variable select}
+\item{cor_cut}{A numeric value to variable dplyr::select}
 
-\item{pval_cut}{A numeric value to variable select (p.value)}
+\item{pval_cut}{A numeric value to variable dplyr::select (p.value)}
 }
 \description{
 DESCRIPCIO DE LA FUNCIO

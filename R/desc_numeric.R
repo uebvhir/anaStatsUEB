@@ -16,7 +16,6 @@
 #' @keywords summary ci quantitative outcome descriptive exploratory
 #' @export desc_numeric
 #' @import magrittr
-#' @examples
 
 
 
