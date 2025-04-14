@@ -13,6 +13,8 @@
 #' variable <- as.character.ueb(variable)
 #' @return  attempts to coerce its argument to character type; like as.vector it strips attributes including names. For lists and pairlists (including language objects such as calls) it deparses the elements individually, except that it extracts the first element of length-one character vectors.
 #'
+#' @author
+#' Miriam Mota-Foix <mmota.foix@gmail.com>
 #' @keywords factor variable class levels labels
 
 as.character.ueb <- function(x){

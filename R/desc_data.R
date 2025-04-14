@@ -13,6 +13,8 @@
 #' @export desc_data
 #' @import kableExtra Hmisc dplyr janitor
 #' @examples
+#' @author
+#' Miriam Mota-Foix <mmota.foix@gmail.com>
 #' # desc_data(data = iris, format = "html")
 #' # desc_data(airquality, format = "html", maxNA = 20)
 

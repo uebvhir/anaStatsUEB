@@ -12,6 +12,9 @@ sumsurv_df(sumsurv)
 \description{
 data frame of summary.survfit object
 }
+\author{
+Miriam Mota  \email{miriam.mota@vhir.org}
+}
 \keyword{summary}
 \keyword{survfit}
 \keyword{survival}

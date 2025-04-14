@@ -15,6 +15,8 @@
 #' @param cor_cut A numeric value to variable dplyr::select
 #' @keywords summary ci quantitative outcome descriptive exploratory
 #' @export desc_numeric
+#' @author
+#' Miriam Mota-Foix <mmota.foix@gmail.com>
 #' @import magrittr
 
 

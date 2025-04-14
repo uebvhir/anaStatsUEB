@@ -10,6 +10,8 @@
 #' @keywords cox coxph survival pretty
 #' @export coxPretty
 #' @import kableExtra survival
+#' @author
+#' Miriam Mota-Foix <mmota.foix@gmail.com>
 #' @examples
 #' dat <- data.frame(tm = c(rnorm(50,12*4,19), rnorm(50,12*2,12)),
 #' ev = factor(sample(c("Vivo", "Muerto"), 100, replace = TRUE)) ,

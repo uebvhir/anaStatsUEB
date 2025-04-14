@@ -76,6 +76,9 @@ DESCRIPCIO DE LA FUNCIO
  # mtc_bis \%>\% summary.quanti( x = "qsec", group = "vs")
  # summary.quanti( mtc_bis, x = "qsec", group = "vs")
 }
+\author{
+Miriam Mota  \email{miriam.mota@vhir.org}
+}
 \keyword{ci}
 \keyword{descriptive}
 \keyword{exploratory}

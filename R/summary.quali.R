@@ -13,6 +13,7 @@
 #' @param byrow logical or NA. Percentage of categorical variables must be reported by rows (TRUE), by columns (FALSE) or by columns and rows to sum up 1 (NA). Default value is FALSE, which means that percentages are reported by columns (withing groups).
 #' @keywords summary ci qualitative txt_descriptive exploratory
 #' @export summary.quali
+#' @author Miriam Mota  \email{miriam.mota@@vhir.org}
 #' @import binom
 #' @examples
 #'  # set.seed(1)

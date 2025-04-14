@@ -3,6 +3,7 @@
 #' data frame of summary.survfit object
 #' @param sumsurv summary.survfit object
 #' @keywords summary survfit survival
+#' @author Miriam Mota  \email{miriam.mota@@vhir.org}
 #' @export sumsurv_df
 #'
 

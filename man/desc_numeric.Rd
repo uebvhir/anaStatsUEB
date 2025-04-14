@@ -53,6 +53,9 @@ desc_numeric(
 \description{
 DESCRIPCIO DE LA FUNCIO
 }
+\author{
+Miriam Mota-Foix <mmota.foix@gmail.com>
+}
 \keyword{ci}
 \keyword{descriptive}
 \keyword{exploratory}

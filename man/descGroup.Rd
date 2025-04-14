@@ -54,6 +54,9 @@ DESCRIPCIO DE LA FUNCIO
  # mtc_bis \%>\% desc_group(covariates = qsec, group = vs)
  # mtc_bis \%>\% desc_group(covariates = c(qsec, mpg, gear), group = vs)
 }
+\author{
+Miriam Mota-Foix <mmota.foix@gmail.com>
+}
 \keyword{ci}
 \keyword{descriptive}
 \keyword{exploratory}

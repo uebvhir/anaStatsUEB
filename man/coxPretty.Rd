@@ -38,6 +38,9 @@ my_surv <- Surv(time = dat$tm, event = as.numeric(dat$ev) - 1)
 # coxPretty(my_surv ~ iq + age , data = dat)
 # coxPretty(my_surv ~ iq + age , data = dat,summary.cox = "r", mod_original = FALSE)
 }
+\author{
+Miriam Mota-Foix <mmota.foix@gmail.com>
+}
 \keyword{cox}
 \keyword{coxph}
 \keyword{pretty}

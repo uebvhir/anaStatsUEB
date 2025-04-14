@@ -9,6 +9,7 @@
 #' @param col.background A character string for row background color. Here please pay attention to the differences in color codes between HTML and LaTeX.
 #' @export kable_ueb
 #' @keywords kable html ueb
+#' @author Miriam Mota  \email{miriam.mota@@vhir.org}
 #' @import kableExtra
 #' @examples
 #' aa <- data.frame(num = rnorm(10), fact= factor(rep(c("A","B","C"), 10)))

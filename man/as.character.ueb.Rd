@@ -24,6 +24,8 @@ variable <- as.character.ueb(variable)
 }
 \author{
 Miriam Mota  \email{miriam.mota@vhir.org}
+
+Miriam Mota-Foix <mmota.foix@gmail.com>
 }
 \keyword{class}
 \keyword{factor}

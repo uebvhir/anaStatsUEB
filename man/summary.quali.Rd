@@ -61,6 +61,9 @@ DESCRIPCIO DE LA FUNCIO
  # mtc_bis \%>\% summary.quali( x = "gear", group = "vs")
  # summary.quali( mtc_bis, x = "gear", group = "vs")
 }
+\author{
+Miriam Mota  \email{miriam.mota@vhir.org}
+}
 \keyword{ci}
 \keyword{exploratory}
 \keyword{qualitative}

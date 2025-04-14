@@ -37,6 +37,9 @@ kable_ueb(aa)
 kable_ueb(aa, digits = 2, row.names = TRUE, position = "left")
 kable_ueb(aa, digits = 2, row.names = TRUE, format = "latex")
 }
+\author{
+Miriam Mota  \email{miriam.mota@vhir.org}
+}
 \keyword{html}
 \keyword{kable}
 \keyword{ueb}

@@ -19,6 +19,8 @@
 #' @export desc_group
 #' @export descGroup
 #' @import kableExtra formula.tools
+#' @author
+#' Miriam Mota-Foix <mmota.foix@gmail.com>
 #' @examples
 #'  # set.seed(1)
 #'  # dat <- df <- data.frame(MUT = factor(c(rep("A", 13),rep("B",13))),

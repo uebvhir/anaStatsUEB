@@ -15,6 +15,7 @@
 #' @param prep2sum logical value. prepara la taula de sortida per a la funció desc_group. Default value is FALSE
 #' @param prep.tab logical value. prepara la taula de sortida per a la funció desc_quanti Default value is FALSE
 #' @keywords summary ci qualitative descriptive exploratory
+#' @author Miriam Mota  \email{miriam.mota@@vhir.org}
 #' @export summary.quanti
 #' @import Publish
 #' @examples
