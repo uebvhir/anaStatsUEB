@@ -45,9 +45,11 @@ desc_numeric_multi <- function(var_numeric, var_expl, dat ) {
     results[[i]] <- data.frame()
     rows <- c()
     for (j in seq_along(var_expl))  {
+
+      varname <- get_ln(dat,var_numeric[[i]])
       dn <- desc_numeric(data = dat, covariates = , var_expl[j],y = var_numeric[i], show.all = F, show.n = F)$df_all %>%
         select(-variable) %>%
-        rename(!!get_ln(dat,var_numeric[[i]]) := summary)
+        rename(!!varname := summary)
       pval <- dn$p.value[dn$p.value != ""]
       dn_fin <- rbind(dn %>% select(-p.value), c("p.value",pval))
 
