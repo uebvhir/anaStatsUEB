@@ -44,15 +44,13 @@ desc_numeric_multi <- function(var_numeric, var_expl, dat ) {
     sumar[[i]] <- list()
     results[[i]] <- data.frame()
     rows <- c()
+    lab <- Hmisc::label(dat[,var_numeric[i]])
+    if (is.null(lab) || lab == "") {
+      varname <- var_numeric[i]
+    } else {
+      varname <- lab
+    }
     for (j in seq_along(var_expl))  {
-
-      lab <- Hmisc::label(dat)[var_numeric[i]]
-      if (is.null(lab) || lab == "") {
-        varname <- var_numeric[i]
-      } else {
-        varname <- lab
-      }
-
       dn <- desc_numeric(data = dat, covariates = , var_expl[j],y = var_numeric[i], show.all = F, show.n = F)$df_all %>%
         select(-variable) %>%
         rename(!!varname := summary)
