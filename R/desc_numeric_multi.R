@@ -45,19 +45,15 @@ desc_numeric_multi <- function(var_numeric, var_expl, dat ) {
     results[[i]] <- data.frame()
     rows <- c()
     lab <- Hmisc::label(dat[,var_numeric[i]])
-    if (is.null(lab) || lab == "") {
-      varname <- var_numeric[i]
-    } else {
-      varname <- lab
-    }
+
     for (j in seq_along(var_expl))  {
       dn <- desc_numeric(data = dat, covariates = , var_expl[j],y = var_numeric[i], show.all = F, show.n = F)$df_all %>%
         select(-variable) %>%
-        rename(!!varname := summary)
+        rename(!!get_ln(dat, var_numeric[i]) := summary)
       pval <- dn$p.value[dn$p.value != ""]
       dn_fin <- rbind(dn %>% select(-p.value), c("p.value",pval))
 
-      rows <- c(rows, rep(label(dat[var_expl[j]]),nrow(dn_fin)))
+      rows <- c(rows, rep(get_ln(dat,var_expl[j]),nrow(dn_fin)))
       results[[i]] <- rbind(results[[i]],dn_fin)
     }
 
@@ -81,4 +77,20 @@ desc_numeric_multi <- function(var_numeric, var_expl, dat ) {
   print(kk)
 }
 
+get_ln <- function(data, variable_names) { ##es la mateixa funcion que mmotaF::get_label_names pero la he copiada per no haber de fer una dependencia de mmotf
+  # Aplicar la lógica a cada variable en la lista
+  labels <- sapply(variable_names, function(var) {
+    # Verificar si existe una etiqueta para la variable
+    label_value <- label(data[[var]])
+
+    # Si existe una etiqueta, devolverla; si no, devolver el nombre de la variable
+    if (!is.null(label_value) && label_value != "") {
+      return(label_value)  # Devuelve la etiqueta si existe
+    } else {
+      return(var)  # Devuelve el nombre de la variable si no tiene etiqueta
+    }
+  })
+
+  return(labels)
+}
 
