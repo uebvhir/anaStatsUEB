@@ -45,11 +45,11 @@ desc_numeric_multi <- function(var_numeric, var_expl, dat ) {
     results[[i]] <- data.frame()
     rows <- c()
     lab <- Hmisc::label(dat[,var_numeric[i]])
-
+    varnumeric_name <- get_ln(dat, var_numeric[i])
     for (j in seq_along(var_expl))  {
       dn <- desc_numeric(data = dat, covariates = , var_expl[j],y = var_numeric[i], show.all = F, show.n = F)$df_all %>%
         select(-variable) %>%
-        rename(!!get_ln(dat, var_numeric[i]) := summary)
+        rename(!!varnumeric_name := summary)
       pval <- dn$p.value[dn$p.value != ""]
       dn_fin <- rbind(dn %>% select(-p.value), c("p.value",pval))
 
