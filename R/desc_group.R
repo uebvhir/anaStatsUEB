@@ -68,7 +68,12 @@ desc_group <- function(data,
                        prep2sum = TRUE,
                        include.NA = FALSE,
                        patt.NA = "No",
+                       correct = FALSE,
                        ...){
+
+  message("A partir de mayo de 2025, la prueba chi-cuadrado se ejecuta por defecto con `correct = FALSE` (sin corrección de Yates).
+          Para replicar resultados previos, especifique `correct = TRUE` explícitamente")
+
 
   ## Les 3 seguents linies permeten pasar el nom de la variable com a text o estil tidyverse
 
@@ -144,7 +149,7 @@ desc_group <- function(data,
                                                                            method = method, data = data, prep2sum = prep2sum,
                                                                            show.pval = show.pval,show.stat = show.stat, paired = paired, idvar = idvar, var.tidy = FALSE, ... ) ,
                                                "factor" = summary.quali( x = names(class_data)[i], group = group ,data = data, byrow = byrow,
-                                                                         show.pval = show.pval,show.stat = show.stat, include.NA = include.NA, patt.NA = patt.NA, var.tidy = FALSE,...),
+                                                                         show.pval = show.pval,show.stat = show.stat, include.NA = include.NA, patt.NA = patt.NA, var.tidy = FALSE,correct = correct,...),
                                                "character" = next()
     )
   }

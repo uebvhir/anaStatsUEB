@@ -19,7 +19,8 @@
   show.stat = FALSE,
   byrow = FALSE,
   sub.ht = TRUE,
-  var.tidy = TRUE
+  var.tidy = TRUE,
+  correct = FALSE
 )
 }
 \arguments{

@@ -49,7 +49,11 @@ summary.quali <- function(data,
                           show.stat = FALSE,
                           byrow = FALSE,
                           sub.ht = TRUE,
-                          var.tidy = TRUE) {
+                          var.tidy = TRUE,
+                          correct = FALSE) {
+
+  message("A partir de mayo de 2025, la prueba chi-cuadrado se ejecuta por defecto con `correct = FALSE` (sin corrección de Yates).
+          Para replicar resultados previos, especifique `correct = TRUE` explícitamente")
 
   if (var.tidy) {
     ## Les 3 seguents linies permeten pasar el nom de la variable com a text o estil tidyverse
@@ -156,7 +160,7 @@ summary.quali <- function(data,
       ## Calculem test
       pval <- try(switch(test,
                          "Fisher's exact" = fisher.test(table(xx,yy),simulate.p.value = T )$p.va,
-                         "Chi-squared" = chisq.test(xx,yy)$p.val), TRUE)
+                         "Chi-squared" = chisq.test(xx,yy,correct = correct)$p.val), TRUE)
       ## arreglem p.val final
       pval <- ifelse(grepl("Error", pval), ".",pval)
       pval_round <- ifelse(grepl("Error", try(round(pval,3), TRUE)), "-", round(pval,3))
@@ -176,7 +180,7 @@ summary.quali <- function(data,
         ## Calculem test
         stat <- try(switch(test,
                            "Fisher's exact" = "-",
-                           "Chi-squared" = chisq.test(xx,yy)$stat), TRUE)
+                           "Chi-squared" = chisq.test(xx,yy,correct = correct)$stat), TRUE)
         ## arreglem stat final
         stat_round <- ifelse(stat == "-", ".", round(stat,3))
         res_all$stat <- c(stat_round, rep("", nrow(res_all) - 1))
