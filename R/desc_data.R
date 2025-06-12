@@ -1,18 +1,22 @@
-#' A desc_data Function
+#' @title Descriptive Summary Table of a Data Frame
+#' @description
+#' Generates a summary table of a dataset with key metadata: variable types, labels, number of levels (for factors),
+#' value ranges (for numerics), and missing data. Optionally highlights problematic variables based on level count or missing values.
 #'
-#' DESCRIPCIO DE LA FUNCIO
-#' @param data data frame, list or environment (or object coercible by 'as.data.frame' to a data frame) containing the variables in the model. If they are not found in 'data', the variables are taken from 'environment(formula)'.
-#' @param format a character string; possible values are latex, html, markdown, pandoc, and rst; this will be automatically determined if the function is called within knitr; it can also be set in the global option knitr.table.format; if format is a function, it must return a character string
-#' @param size A numeric input for table font size
-#' @param maxlev an integer indicating the maximum number of levels of variable. Default value is 7.
-#' @param maxNA an integer indicating the maximum number of missing data.
-#' @param caption Character vector containing the table's caption or title. Default value is a summary.
-#' @param remove_cols logical value. Removes all columns from a data that are composed entirely of NA values.
-#' @param df logical value. return data.frame
-#' @keywords read clean data summary depurate
-#' @export desc_data
-#' @import kableExtra Hmisc dplyr janitor
-#' @examples
+#' @param data A data frame to summarize.
+#' @param format Output format: "html" or "latex". Used for line breaks and rendering style. Default is "html".
+#' @param maxlev Maximum number of levels to display for factor variables (default = 7).
+#' @param maxNA Threshold (in %) to highlight variables with too many missing values (default = 80).
+#' @param size Font size in output (for `kable` rendering, default = 13).
+#' @param caption Optional caption text. If `NULL`, a default is generated with variable and observation counts.
+#' @param remove_cols Logical. If `TRUE`, removes empty columns before processing (default = TRUE).
+#' @param df Logical. If `TRUE`, returns the summary as a data frame. If `FALSE`, returns a formatted table.
+#'
+#' @return A `kable`-styled summary table or a data frame, depending on `df`.
+#' @importFrom Hmisc label
+#' @importFrom kableExtra cell_spec kable kable_styling
+#' @importFrom janitor remove_empty
+#' @export
 #' @author
 #' Miriam Mota-Foix <mmota.foix@gmail.com>
 #' # desc_data(data = iris, format = "html")
@@ -88,7 +92,7 @@ desc_data <- function(data,
       mm_lev = cell_spec(mm_lev, color = ifelse(nlev > maxlev, "red", "black"), escape = F),
       compl_mis = cell_spec(compl_mis, color = ifelse(percNA > maxNA, "red", "black"), escape = F)
     ) %>%
-    kable(format = format, booktabs = T,  col.names = colnames, caption = caption, longtable = TRUE, escape = F) %>%
+    kable(format = format, booktabs = T,  col.names = colnames, caption = caption, longtable = TRUE, escape = F, row.names= FALSE) %>%
     kable_styling(latex_options = c("striped","hold_position", "repeat_header"),
                   font_size = size, full_width = F, position = "left")
   }else{
