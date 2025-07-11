@@ -6,7 +6,7 @@
 #' @param data data frame, list or environment (or object coercible by 'as.data.frame' to a data frame) containing the variables in the model. If they are not found in 'data', the variables are taken from 'environment(formula)'.
 #' @param format  a character string; possible values are ht, r, no. Default value is "ht".
 #' @param method character string indicating the method to test use; possible values are 'param' or 'nonparam'. Default values is 'param'.
-#' @param test character strin indicating the test to use. Possible values are 'anova','t.test','wilcox','kruskal'. Default value is NULL
+#' @param test character string indicating the test to use. Function calculates this value based on method and paired params. Possible values are 'Anova', 'Student's T', 'Mann–Whitney U', 'Paired Student's T', 'Wilcoxon signed-rank test', 'Kruskal-Wallis', 'RM-ANOVA'. Default value is NULL.
 #' @param nround integer indicating the number of decimal places (round) or significant digits (signif) to be used. Negative values are allowed (see ‘Details’). Default value is 2.
 #' @param show.pval logical indicating whether p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is TRUE.
 #' @param show.all logical indicating whether the 'ALL' column (all data without stratifying by groups) is displayed or not. Default value is FALSE if grouping variable is defined, and FALSE if there are no groups.
@@ -211,7 +211,7 @@ summary.quanti <- function(data,
                          "Student's T" = t.test(xx~yy)$p.va,
                          "Mann–Whitney U" = wilcox.test(xx~yy)$p.va,
                          "Anova" = summary(aov(xx~yy))[[1]][["Pr(>F)"]][1],
-                         "Kruska-Wallis" = kruskal.test(xx~yy)$p.va,
+                         "Kruskal-Wallis" = kruskal.test(xx~yy)$p.va,
                          "Paired Student's T" = t.test(data_wide[,paste0(x,".",levels(yy)[1], collapse = "" )],
                                                        data_wide[,paste0(x,".",levels(yy)[2], collapse = "")], paired = TRUE)$p.va,
                          "Wilcoxon signed-rank test" = wilcox.test(data_wide[,paste0(x,".",levels(yy)[1], collapse = "" )],
@@ -231,7 +231,7 @@ summary.quanti <- function(data,
                            "Student's T" = t.test(xx~yy)$stat,
                            "Mann–Whitney U" = wilcox.test(xx~yy)$stat,
                            "Anova" = summary(aov(xx~yy))[[1]][["F value"]][1],
-                           "Kruska-Wallis" = kruskal.test(xx~yy)$stat,
+                           "Kruskal-Wallis" = kruskal.test(xx~yy)$stat,
                            "Paired Student's T" = t.test(data_wide[,paste0(x,".",levels(yy)[1], collapse = "" )],
                                                          data_wide[,paste0(x,".",levels(yy)[2], collapse = "")], paired = TRUE)$stat,
                            "Wilcoxon signed-rank test" = wilcox.test(data_wide[,paste0(x,".",levels(yy)[1], collapse = "" )],
