@@ -79,15 +79,15 @@ summary.quanti <- function(data,
   ## només dades completes
   # if(!is.null(group))   data <- na.omit(data[,c(x,group)])
 
-  if (paired) {
+  if (paired) { # Si paired = TRUE pero group = NULL, falla
     show.all = F
     names(data)[names(data) == idvar] <- "id"
     idvar <- "id"
-    data_wide <- reshape(data[,c(x,group,idvar)], timevar = group, idvar = idvar, direction = "wide") #, v.names = "x")
+    data_wide <- reshape(data[, c(x, group, idvar)], timevar = group,
+                         idvar = idvar, direction = "wide")
     idcomplete <- na.omit(data_wide)$id
-    data <- data[which(data[,idvar] %in% idcomplete ), ]
+    data <- data[which(data[, idvar] %in% idcomplete), ]
   }
-
 
 
   ## Definicio de parametres
@@ -104,8 +104,21 @@ summary.quanti <- function(data,
   txt_caption = txt_descriptive
 
 
-
-
+  #  Preparamos los datos en long si es paired con más de 2 niveles para el RM-ANOVA
+  if (paired && length(levels(data[[group]])) > 2 ) {
+    # Convertir datos a formato largo (requerido por ezANOVA)
+    data_long <- data.frame(
+      id = factor(data[[idvar]]),  # Asegurar que 'id' es factor
+      tiempo = yy,                 # Variable de tiempo (p.e. basal, visita1, visita2)
+      puntuacion = xx              # Variable dependiente
+    )
+    # Eliminar sujetos con NA en cualquier tiempo
+    data_long <- na.omit(data_long)
+    data_long <- data_long %>%
+      group_by(id) %>%
+      filter(n_distinct(tiempo) == length(levels(tiempo))) %>%
+      ungroup()
+  }
 
 
 
@@ -186,13 +199,13 @@ summary.quanti <- function(data,
 
       if (is.null(test) & !paired)    test <- switch(method,
                                                      "param" = ifelse(length(levels(yy)) > 2, "Anova","Student's T"),
-                                                     "non-param" = ifelse(length(levels(yy)) > 2, "Kruska-Wallis","Mann–Whitney U"))
+                                                     "non-param" = ifelse(length(levels(yy)) > 2, "Kruskal-Wallis","Mann–Whitney U"))
 
       if (is.null(test) & paired)    test <- switch(method,
-                                                    "param" = ifelse(length(levels(yy)) > 2, "no implementat","Paired Student's T"),
+                                                    "param" = ifelse(length(levels(yy)) > 2, "RM-ANOVA","Paired Student's T"),
                                                     "non-param" = ifelse(length(levels(yy)) > 2, "no implementat","Wilcoxon signed-rank test"))
 
-
+      ##### Esto se podria juntar para hacerlo mas eficiente y no calcular 2 veces lo mismo
       ## Calculem test
       pval <- try(switch(test,
                          "Student's T" = t.test(xx~yy)$p.va,
@@ -203,6 +216,7 @@ summary.quanti <- function(data,
                                                        data_wide[,paste0(x,".",levels(yy)[2], collapse = "")], paired = TRUE)$p.va,
                          "Wilcoxon signed-rank test" = wilcox.test(data_wide[,paste0(x,".",levels(yy)[1], collapse = "" )],
                                                                    data_wide[,paste0(x,".",levels(yy)[2], collapse = "")], paired = TRUE)$p.va,
+                         "RM-ANOVA" = ezANOVA(data = data_long, dv = puntuacion, wid = id, within = tiempo, detailed = TRUE)$ANOVA$p[1],
                          "no implementat" = stop("La funció encara no esta preparada per a aquests test!")),TRUE)
       pval <- ifelse(grepl("Error", pval), ".",pval)
       pval_round <- ifelse(grepl("Error", try(round(pval,3), TRUE)), ".", round(pval,3))
@@ -222,6 +236,7 @@ summary.quanti <- function(data,
                                                          data_wide[,paste0(x,".",levels(yy)[2], collapse = "")], paired = TRUE)$stat,
                            "Wilcoxon signed-rank test" = wilcox.test(data_wide[,paste0(x,".",levels(yy)[1], collapse = "" )],
                                                                      data_wide[,paste0(x,".",levels(yy)[2], collapse = "")], paired = TRUE)$stat,
+                           "RM-ANOVA" = ezANOVA(data = data_long, dv = puntuacion, wid = id, within = tiempo, detailed = TRUE)$ANOVA$F[1],
                            "no implementat" = stop("La funció encara no esta preparada per a aquests test!")),TRUE)
         stat <- ifelse(grepl("Error", stat), ".",stat)
         stat_round <- ifelse(grepl("Error", try(round(pval,3), TRUE)), ".", round(stat,3))
