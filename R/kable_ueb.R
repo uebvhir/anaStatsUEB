@@ -32,6 +32,8 @@ kable_ueb <- function(tab,
     kable_styling(latex_options = c("striped","hold_position",
                                     "repeat_header"),
                   position = position,
-                  font_size = font_size, full_width = full_width) %>%
+                  bootstrap_options = c("striped"),
+                  font_size = font_size,
+                  full_width = full_width) %>%
     row_spec(0,background = col.background, color = "white")
 }
