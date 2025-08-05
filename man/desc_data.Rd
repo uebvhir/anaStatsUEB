@@ -2,7 +2,7 @@
 % Please edit documentation in R/desc_data.R
 \name{desc_data}
 \alias{desc_data}
-\title{A desc_data Function}
+\title{Descriptive Summary Table of a Data Frame}
 \usage{
 desc_data(
   data,
@@ -16,32 +16,31 @@ desc_data(
 )
 }
 \arguments{
-\item{data}{data frame, list or environment (or object coercible by 'as.data.frame' to a data frame) containing the variables in the model. If they are not found in 'data', the variables are taken from 'environment(formula)'.}
+\item{data}{A data frame to summarize.}
 
-\item{format}{a character string; possible values are latex, html, markdown, pandoc, and rst; this will be automatically determined if the function is called within knitr; it can also be set in the global option knitr.table.format; if format is a function, it must return a character string}
+\item{format}{Output format: "html" or "latex". Used for line breaks and rendering style. Default is "html".}
 
-\item{maxlev}{an integer indicating the maximum number of levels of variable. Default value is 7.}
+\item{maxlev}{Maximum number of levels to display for factor variables (default = 7).}
 
-\item{maxNA}{an integer indicating the maximum number of missing data.}
+\item{maxNA}{Threshold (in %) to highlight variables with too many missing values (default = 80).}
 
-\item{size}{A numeric input for table font size}
+\item{size}{Font size in output (for `kable` rendering, default = 13).}
 
-\item{caption}{Character vector containing the table's caption or title. Default value is a summary.}
+\item{caption}{Optional caption text. If `NULL`, a default is generated with variable and observation counts.}
 
-\item{remove_cols}{logical value. Removes all columns from a data that are composed entirely of NA values.}
+\item{remove_cols}{Logical. If `TRUE`, removes empty columns before processing (default = TRUE).}
 
-\item{df}{logical value. return data.frame}
+\item{df}{Logical. If `TRUE`, returns the summary as a data frame. If `FALSE`, returns a formatted table.}
+}
+\value{
+A `kable`-styled summary table or a data frame, depending on `df`.
 }
 \description{
-DESCRIPCIO DE LA FUNCIO
+Generates a summary table of a dataset with key metadata: variable types, labels, number of levels (for factors),
+value ranges (for numerics), and missing data. Optionally highlights problematic variables based on level count or missing values.
 }
 \author{
 Miriam Mota-Foix <mmota.foix@gmail.com>
 # desc_data(data = iris, format = "html")
 # desc_data(airquality, format = "html", maxNA = 20)
 }
-\keyword{clean}
-\keyword{data}
-\keyword{depurate}
-\keyword{read}
-\keyword{summary}
