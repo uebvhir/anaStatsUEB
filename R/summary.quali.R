@@ -207,9 +207,14 @@ summary.quali <- function(data,
       }
 
     if (show.or & (length(levels(yy)) == 2) ) {
-      or_mod <- desc_mod(glm(yy ~xx, family = "binomial"))
-      OR <- paste0(round(or_mod$`Odds Ratio`,nround), "[", round(or_mod$`CI (lower)`,nround), ", ", round(or_mod$`CI (upper)`,nround), "]")
-      OR <- c("Ref.", OR)
+      or_mod <- try(desc_mod(glm(yy ~xx, family = "binomial")), TRUE)
+      if(inherits(or_mod, "try-error")){
+        OR <- "-"
+      }else{
+        OR <- paste0(round(or_mod$`Odds Ratio`,nround), "[", round(or_mod$`CI (lower)`,nround), ", ", round(or_mod$`CI (upper)`,nround), "]")
+        OR <- c("Ref.", OR)
+      }
+
       res_all$OR <- OR
     }else{
       OR <- NULL
