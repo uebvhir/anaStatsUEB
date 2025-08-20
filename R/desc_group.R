@@ -63,6 +63,7 @@ desc_group <- function(data,
                        show.all = TRUE,
                        show.n = TRUE,
                        show.stat = FALSE,
+                       show.or = FALSE,
                        paired = FALSE,
                        idvar = NULL,
                        prep2sum = TRUE,
@@ -147,9 +148,9 @@ desc_group <- function(data,
     list_var[[names(class_data)[i]]] <- switch(class_data[i],
                                                "numeric" = summary.quanti( x = names(class_data)[i] , group = group ,
                                                                            method = method, data = data, prep2sum = prep2sum,
-                                                                           show.pval = show.pval,show.stat = show.stat, paired = paired, idvar = idvar, var.tidy = FALSE, ... ) ,
+                                                                           show.pval = show.pval,show.stat = show.stat, show.or = show.or, paired = paired, idvar = idvar, var.tidy = FALSE, ... ) ,
                                                "factor" = summary.quali( x = names(class_data)[i], group = group ,data = data, byrow = byrow,
-                                                                         show.pval = show.pval,show.stat = show.stat, include.NA = include.NA, patt.NA = patt.NA, var.tidy = FALSE,correct = correct,...),
+                                                                         show.pval = show.pval,show.stat = show.stat, show.or = show.or, include.NA = include.NA, patt.NA = patt.NA, var.tidy = FALSE,correct = correct,...),
                                                "character" = next()
     )
   }
@@ -222,6 +223,9 @@ desc_group <- function(data,
   }
   if (!show.n) {
     results <- results[,!names(results) %in% c("n")]
+  }
+  if (!show.or) {
+    results <- results[,!names(results) %in% c("OR")]
   }
 
   ## Afegim percentatges als titols

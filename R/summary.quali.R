@@ -47,6 +47,7 @@ summary.quali <- function(data,
                           show.all = TRUE,
                           show.n = TRUE,
                           show.stat = FALSE,
+                          show.or = FALSE,
                           byrow = FALSE,
                           sub.ht = TRUE,
                           var.tidy = TRUE,
@@ -196,7 +197,19 @@ summary.quali <- function(data,
       txt_pval <- NULL
     }
 
-    if (show.n)     res_all$n <-  c(sum(table(xx,yy)),rep("",nrow(res_all) - 1))
+    if (show.n)  {
+      res_all$n <-  c(sum(table(xx,yy)),rep("",nrow(res_all) - 1))
+      }
+
+    if (show.or & (length(levels(yy)) == 2) ) {
+      or_mod <- desc_mod(glm(yy ~xx, family = "binomial"))
+      OR <- paste0(round(or_mod$`Odds Ratio`,nround), "[", round(or_mod$`CI (lower)`,nround), ", ", round(or_mod$`CI (upper)`,nround), "]")
+      OR <- c("Ref.", OR)
+      res_all$OR <- OR
+    }else{
+      OR <- NULL
+
+    }
 
   }
 

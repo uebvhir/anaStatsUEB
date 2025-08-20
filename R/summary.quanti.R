@@ -52,6 +52,7 @@ summary.quanti <- function(data,
                            show.all = TRUE,
                            show.n = TRUE,
                            show.stat = FALSE,
+                           show.or = FALSE,
                            prep2sum = FALSE,
                            prep.tab = FALSE,
                            sub.ht = TRUE,
@@ -248,7 +249,21 @@ summary.quanti <- function(data,
 
 
 
-    if (show.n) res_all$n <- sum(complete.cases(xx) & complete.cases(yy))
+    if (show.n) {
+      res_all$n <- sum(complete.cases(xx) & complete.cases(yy))
+    }
+
+
+    if (show.or & (length(levels(yy)) == 2) ) {
+      or_mod <- desc_mod(glm(yy ~xx, family = "binomial"))
+      OR <- paste0(round(or_mod$`Odds Ratio`,nround), "[", round(or_mod$`CI (lower)`,nround), ", ", round(or_mod$`CI (upper)`,nround), "]")
+      res_all$OR <- OR
+    }else{
+      OR <- NULL
+
+    }
+
+
 
     txt_caption = paste0("Summary of results by groups of ",varname_group,txt_descriptive)
 
