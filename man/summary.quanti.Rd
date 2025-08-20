@@ -16,6 +16,7 @@
   show.all = TRUE,
   show.n = TRUE,
   show.stat = FALSE,
+  show.or = FALSE,
   prep2sum = FALSE,
   prep.tab = FALSE,
   sub.ht = TRUE,
@@ -39,11 +40,15 @@
 
 \item{test}{character strin indicating the test to use. Possible values are 'anova','t.test','wilcox','kruskal'. Default value is NULL}
 
-\item{show.pval}{logical indicating whether p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is TRUE.}
+\item{show.pval}{\code{logical}. Si \code{TRUE}, muestra el valor p del test de asociación.}
 
-\item{show.all}{logical indicating whether the 'ALL' column (all data without stratifying by groups) is displayed or not. Default value is FALSE if grouping variable is defined, and FALSE if there are no groups.}
+\item{show.all}{\code{logical}. Si \code{TRUE}, añade columna con resultados globales (sin estratificar).}
 
-\item{show.n}{ogical indicating whether number of individuals analyzed for each row-variable is displayed or not in the 'descr' table. Default value is TRUE.}
+\item{show.n}{\code{logical}. Si \code{TRUE}, añade una columna con el número total de observaciones.}
+
+\item{show.stat}{\code{logical}. Si \code{TRUE}, añade el estadístico de prueba (Chi-cuadrado).}
+
+\item{show.or}{\code{logical}. Si \code{TRUE} y \code{group} tiene exactamente dos niveles,}
 
 \item{prep2sum}{logical value. prepara la taula de sortida per a la funció desc_group. Default value is FALSE}
 

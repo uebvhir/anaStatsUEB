@@ -25,9 +25,15 @@ descGroup(...)
 
 \item{pval_cut}{cut p.value colored. To select}
 
-\item{show.pval}{logical indicating whether p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is TRUE.}
+\item{show.pval}{\code{logical}. Si \code{TRUE}, muestra el valor p del test de asociación.}
 
-\item{show.pval.adj}{logical indicating whether adjust p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is FALSE.}
+\item{show.all}{\code{logical}. Si \code{TRUE}, añade columna con resultados globales (sin estratificar).}
+
+\item{show.n}{\code{logical}. Si \code{TRUE}, añade una columna con el número total de observaciones.}
+
+\item{show.stat}{\code{logical}. Si \code{TRUE}, añade el estadístico de prueba (Chi-cuadrado).}
+
+\item{show.or}{\code{logical}. Si \code{TRUE} y \code{group} tiene exactamente dos niveles,}
 
 \item{caption}{Character vector containing the table's caption or title.}
 

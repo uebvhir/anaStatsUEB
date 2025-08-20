@@ -2,7 +2,7 @@
 % Please edit documentation in R/summary.quali.R
 \name{summary.quali}
 \alias{summary.quali}
-\title{A summary.quali Function}
+\title{Resumen descriptivo de variables cualitativas con comparación entre grupos}
 \usage{
 \method{summary}{quali}(
   data,
@@ -17,6 +17,7 @@
   show.all = TRUE,
   show.n = TRUE,
   show.stat = FALSE,
+  show.or = FALSE,
   byrow = FALSE,
   sub.ht = TRUE,
   var.tidy = TRUE,
@@ -36,16 +37,22 @@
 
 \item{test}{character string indicating the test to use. Possible values are 'Fisher','Chi'. Default value is NULL}
 
-\item{show.pval}{logical indicating whether p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is TRUE.}
+\item{show.pval}{\code{logical}. Si \code{TRUE}, muestra el valor p del test de asociación.}
 
-\item{show.all}{logical indicating whether the 'ALL' column (all data without stratifying by groups) is displayed or not. Default value is FALSE if grouping variable is defined, and FALSE if there are no groups.}
+\item{show.all}{\code{logical}. Si \code{TRUE}, añade columna con resultados globales (sin estratificar).}
 
-\item{show.n}{ogical indicating whether number of individuals analyzed for each row-variable is displayed or not in the 'descr' table. Default value is TRUE.}
+\item{show.n}{\code{logical}. Si \code{TRUE}, añade una columna con el número total de observaciones.}
+
+\item{show.stat}{\code{logical}. Si \code{TRUE}, añade el estadístico de prueba (Chi-cuadrado).}
+
+\item{show.or}{\code{logical}. Si \code{TRUE} y \code{group} tiene exactamente dos niveles,}
 
 \item{byrow}{logical or NA. Percentage of categorical variables must be reported by rows (TRUE), by columns (FALSE) or by columns and rows to sum up 1 (NA). Default value is FALSE, which means that percentages are reported by columns (withing groups).}
 }
 \description{
-DESCRIPCIO DE LA FUNCIO
+Esta función genera un resumen descriptivo para variables cualitativas, con frecuencias, porcentajes,
+intervalos de confianza exactos y opcionalmente valores p de tests estadísticos, estadísticos de prueba
+y odds ratios cuando corresponda. Los resultados pueden devolverse en formato HTML, LaTeX o texto plano.
 }
 \examples{
  # set.seed(1)
