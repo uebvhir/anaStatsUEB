@@ -8,9 +8,11 @@
 #' @param method character string indicating the method to test use; possible values are 'param' or 'nonparam'. Default values is 'param'.
 #' @param test character strin indicating the test to use. Possible values are 'anova','t.test','wilcox','kruskal'. Default value is NULL
 #' @param nround integer indicating the number of decimal places (round) or significant digits (signif) to be used. Negative values are allowed (see ‘Details’). Default value is 2.
-#' @param show.pval logical indicating whether p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is TRUE.
-#' @param show.all logical indicating whether the 'ALL' column (all data without stratifying by groups) is displayed or not. Default value is FALSE if grouping variable is defined, and FALSE if there are no groups.
-#' @param show.n ogical indicating whether number of individuals analyzed for each row-variable is displayed or not in the 'descr' table. Default value is TRUE.
+#' @param show.pval \code{logical}. Si \code{TRUE}, muestra el valor p del test de asociación.
+#' @param show.all \code{logical}. Si \code{TRUE}, añade columna con resultados globales (sin estratificar).
+#' @param show.n \code{logical}. Si \code{TRUE}, añade una columna con el número total de observaciones.
+#' @param show.stat \code{logical}. Si \code{TRUE}, añade el estadístico de prueba (Chi-cuadrado).
+#' @param show.or \code{logical}. Si \code{TRUE} y \code{group} tiene exactamente dos niveles,
 #' @param byrow logical or NA. Percentage of categorical variables must be reported by rows (TRUE), by columns (FALSE) or by columns and rows to sum up 1 (NA). Default value is FALSE, which means that percentages are reported by columns (withing groups).
 #' @param prep2sum logical value. prepara la taula de sortida per a la funció desc_group. Default value is FALSE
 #' @param prep.tab logical value. prepara la taula de sortida per a la funció desc_quanti Default value is FALSE

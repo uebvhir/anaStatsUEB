@@ -10,8 +10,11 @@
 #' @param byrow logical or NA. Percentage of categorical variables must be reported by rows (TRUE), by columns (FALSE) or by columns and rows to sum up 1 (NA). Default value is FALSE, which means that percentages are reported by columns (withing groups).
 #' @param width_lev defines the maximum width of table columns. Default value is 8em
 #' @param pval_cut cut p.value colored. To select
-#' @param show.pval logical indicating whether p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is TRUE.
-#' @param show.pval.adj logical indicating whether adjust p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is FALSE.
+#' @param show.pval \code{logical}. Si \code{TRUE}, muestra el valor p del test de asociación.
+#' @param show.all \code{logical}. Si \code{TRUE}, añade columna con resultados globales (sin estratificar).
+#' @param show.n \code{logical}. Si \code{TRUE}, añade una columna con el número total de observaciones.
+#' @param show.stat \code{logical}. Si \code{TRUE}, añade el estadístico de prueba (Chi-cuadrado).
+#' @param show.or \code{logical}. Si \code{TRUE} y \code{group} tiene exactamente dos niveles,
 #' @param caption Character vector containing the table's caption or title.
 #' @param paired  logical indicating paired data. Default value is FALSE.
 #' @param idvar a character string with name of identifier variable .

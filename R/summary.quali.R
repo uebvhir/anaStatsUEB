@@ -1,15 +1,20 @@
-#' A summary.quali Function
+#' Resumen descriptivo de variables cualitativas con comparación entre grupos
 #'
-#' DESCRIPCIO DE LA FUNCIO
+#' Esta función genera un resumen descriptivo para variables cualitativas, con frecuencias, porcentajes,
+#' intervalos de confianza exactos y opcionalmente valores p de tests estadísticos, estadísticos de prueba
+#' y odds ratios cuando corresponda. Los resultados pueden devolverse en formato HTML, LaTeX o texto plano.
+#'
 #' @param x factor variable.
 #' @param group factor variable. Outcome
 #' @param data data frame, list or environment (or object coercible by 'as.data.frame' to a data frame) containing the variables in the model. If they are not found in 'data', the variables are taken from 'environment(formula)'.
 #' @param format  a character string; possible values are ht, r, no. Default value is "ht".
 #' @param nround integer indicating the number of decimal places (round) or significant digits (signif) to be used. Negative values are allowed (see ‘Details’). Default value is 2.
 #' @param test character string indicating the test to use. Possible values are 'Fisher','Chi'. Default value is NULL
-#' @param show.pval logical indicating whether p-value of overall groups significance ('p.overall' column) is displayed or not. Default value is TRUE.
-#' @param show.all logical indicating whether the 'ALL' column (all data without stratifying by groups) is displayed or not. Default value is FALSE if grouping variable is defined, and FALSE if there are no groups.
-#' @param show.n ogical indicating whether number of individuals analyzed for each row-variable is displayed or not in the 'descr' table. Default value is TRUE.
+#' @param show.pval \code{logical}. Si \code{TRUE}, muestra el valor p del test de asociación.
+#' @param show.all \code{logical}. Si \code{TRUE}, añade columna con resultados globales (sin estratificar).
+#' @param show.n \code{logical}. Si \code{TRUE}, añade una columna con el número total de observaciones.
+#' @param show.stat \code{logical}. Si \code{TRUE}, añade el estadístico de prueba (Chi-cuadrado).
+#' @param show.or \code{logical}. Si \code{TRUE} y \code{group} tiene exactamente dos niveles,
 #' @param byrow logical or NA. Percentage of categorical variables must be reported by rows (TRUE), by columns (FALSE) or by columns and rows to sum up 1 (NA). Default value is FALSE, which means that percentages are reported by columns (withing groups).
 #' @keywords summary ci qualitative txt_descriptive exploratory
 #' @export summary.quali
