@@ -52,15 +52,18 @@ desc_data <- function(data,
 
   mm_lev <- unlist(lapply(data, function(x) {
     class_x <- class(x)[length(class(x))]
-    switch(class_x ,
-           "logical" = unique(x),
-           "factor" = paste("N LEVELS =", length(levels(x)), new_line,
-                            paste(1:min(maxlev, length(levels(x))),":",levels(x)[1:min(maxlev, length(levels(x)))], collapse = new_line)),
-           "numeric" = paste0( "[", min(x, na.rm = T), ", ", max(x, na.rm = T), "]"),
-           "integer" = paste0( "[", min(x, na.rm = T), ", ", max(x, na.rm = T), "]"),
-           "Date" = paste0( "[", min(x, na.rm = T), ", ", max(x, na.rm = T), "]"),
-           "POSIXt" = paste0( "[", min(x, na.rm = T), ", ", max(x, na.rm = T), "]"),
-           "character" = "-") }))
+    switch(class_x,
+           logical = paste(unique(x), collapse = ", "),
+           factor = paste("N LEVELS =", length(levels(x)), new_line,
+                          paste(1:min(maxlev, length(levels(x))),
+                                ":", levels(x)[1:min(maxlev, length(levels(x)))],
+                                collapse = new_line)),
+           numeric = paste0("[", min(x, na.rm = T), ", ", max(x, na.rm = T), "]"),
+           integer = paste0("[", min(x, na.rm = T), ", ", max(x, na.rm = T), "]"),
+           Date = paste0("[", min(x, na.rm = T), ", ", max(x, na.rm = T), "]"),
+           POSIXt = paste0("[", min(x, na.rm = T), ", ", max(x, na.rm = T), "]"),
+           character = "-")
+  }))
 
   compl_mis <- apply(data,2,function(x) paste0(sum(complete.cases(x))," (", round((sum(complete.cases(x))/length(x))*100,3) , "%)", new_line,
                                                sum(is.na(x))," (", round((sum(is.na(x))/length(x))*100,3) , "%)"))
