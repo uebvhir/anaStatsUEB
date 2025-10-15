@@ -6,7 +6,8 @@
 #' @param data data frame, list or environment (or object coercible by 'as.data.frame' to a data frame) containing the variables in the model. If they are not found in 'data', the variables are taken from 'environment(formula)'.
 #' @param format  a character string; possible values are ht, r, no. Default value is "ht".
 #' @param method character string indicating the method to test use; possible values are 'param' or 'nonparam'. Default values is 'param'.
-#' @param test character strin indicating the test to use. Possible values are 'anova','t.test','wilcox','kruskal'. Default value is NULL
+#' @param test character strin indicating the test to use. Possible values are 'Anova','Student's T','Mann–Whitney U','Kruskal-Wallis', 'Paired Student's T', 'Wilcoxon signed-rank test', 'RM-ANOVA'. Default value is NULL
+#' @param paired \code{logical}. Si \code{TRUE}, utilizará tests apareados. Default value is \code{FALSE}.
 #' @param nround integer indicating the number of decimal places (round) or significant digits (signif) to be used. Negative values are allowed (see ‘Details’). Default value is 2.
 #' @param show.pval \code{logical}. Si \code{TRUE}, muestra el valor p del test de asociación.
 #' @param show.all \code{logical}. Si \code{TRUE}, añade columna con resultados globales (sin estratificar).
@@ -82,16 +83,6 @@ summary.quanti <- function(data,
   ## només dades completes
   # if(!is.null(group))   data <- na.omit(data[,c(x,group)])
 
-  if (paired) {
-    show.all = F
-    names(data)[names(data) == idvar] <- "id"
-    idvar <- "id"
-    data_wide <- reshape(data[,c(x,group,idvar)], timevar = group, idvar = idvar, direction = "wide") #, v.names = "x")
-    idcomplete <- na.omit(data_wide)$id
-    data <- data[which(data[,idvar] %in% idcomplete ), ]
-  }
-
-
 
   ## Definicio de parametres
   new_line <- switch(format, "html" = " <br> ", "latex" = " \\\\ " , "R" = " \n ")
@@ -108,6 +99,31 @@ summary.quanti <- function(data,
 
 
 
+  # Preparamos los datos segun si es paired con 2 niveles ...
+  if (paired && length(levels(yy)) == 2) {
+    show.all = F
+    names(data)[names(data) == idvar] <- "id"
+    idvar <- "id"
+    data_wide <- reshape(data[,c(x,group,idvar)], timevar = group, idvar = idvar, direction = "wide") #, v.names = "x")
+    idcomplete <- na.omit(data_wide)$id
+    data <- data[which(data[,idvar] %in% idcomplete ), ]
+  }
+
+  #  o preparamos los datos segun si es paired con más de 2 niveles
+  if (paired && length(levels(yy)) > 2 ) {
+    # Convertir datos a formato largo (requerido por ezANOVA)
+    data_long <- data.frame(
+      id = factor(data[[idvar]]),  # Asegurar que 'id' es factor
+      tiempo = yy,                 # Variable de tiempo (p.e. basal, visita1, visita2)
+      puntuacion = xx              # Variable dependiente
+    )
+    # Eliminar sujetos con NA en cualquier tiempo
+    data_long <- na.omit(data_long)
+    data_long <- data_long %>%
+      group_by(id) %>%
+      filter(n_distinct(tiempo) == length(levels(tiempo))) %>%
+      ungroup()
+  }
 
 
 
@@ -189,23 +205,24 @@ summary.quanti <- function(data,
 
       if (is.null(test) & !paired)    test <- switch(method,
                                                      "param" = ifelse(length(levels(yy)) > 2, "Anova","Student's T"),
-                                                     "non-param" = ifelse(length(levels(yy)) > 2, "Kruska-Wallis","Mann–Whitney U"))
+                                                     "non-param" = ifelse(length(levels(yy)) > 2, "Kruskal-Wallis","Mann–Whitney U"))
 
       if (is.null(test) & paired)    test <- switch(method,
-                                                    "param" = ifelse(length(levels(yy)) > 2, "no implementat","Paired Student's T"),
+                                                    "param" = ifelse(length(levels(yy)) > 2, "RM-ANOVA","Paired Student's T"),
                                                     "non-param" = ifelse(length(levels(yy)) > 2, "no implementat","Wilcoxon signed-rank test"))
 
-
+      ##### Esto se podria juntar para hacerlo mas eficiente y no calcular 2 veces lo mismo
       ## Calculem test
       pval <- try(switch(test,
                          "Student's T" = t.test(xx~yy)$p.va,
                          "Mann–Whitney U" = wilcox.test(xx~yy)$p.va,
                          "Anova" = summary(aov(xx~yy))[[1]][["Pr(>F)"]][1],
-                         "Kruska-Wallis" = kruskal.test(xx~yy)$p.va,
+                         "Kruskal-Wallis" = kruskal.test(xx~yy)$p.va,
                          "Paired Student's T" = t.test(data_wide[,paste0(x,".",levels(yy)[1], collapse = "" )],
                                                        data_wide[,paste0(x,".",levels(yy)[2], collapse = "")], paired = TRUE)$p.va,
                          "Wilcoxon signed-rank test" = wilcox.test(data_wide[,paste0(x,".",levels(yy)[1], collapse = "" )],
                                                                    data_wide[,paste0(x,".",levels(yy)[2], collapse = "")], paired = TRUE)$p.va,
+                         "RM-ANOVA" = ezANOVA(data = data_long, dv = puntuacion, wid = id, within = tiempo, detailed = TRUE)$ANOVA$p[1],
                          "no implementat" = stop("La funció encara no esta preparada per a aquests test!")),TRUE)
       pval <- ifelse(grepl("Error", pval), ".",pval)
       pval_round <- ifelse(grepl("Error", try(round(pval,3), TRUE)), ".", round(pval,3))
@@ -220,11 +237,12 @@ summary.quanti <- function(data,
                            "Student's T" = t.test(xx~yy)$stat,
                            "Mann–Whitney U" = wilcox.test(xx~yy)$stat,
                            "Anova" = summary(aov(xx~yy))[[1]][["F value"]][1],
-                           "Kruska-Wallis" = kruskal.test(xx~yy)$stat,
+                           "Kruskal-Wallis" = kruskal.test(xx~yy)$stat,
                            "Paired Student's T" = t.test(data_wide[,paste0(x,".",levels(yy)[1], collapse = "" )],
                                                          data_wide[,paste0(x,".",levels(yy)[2], collapse = "")], paired = TRUE)$stat,
                            "Wilcoxon signed-rank test" = wilcox.test(data_wide[,paste0(x,".",levels(yy)[1], collapse = "" )],
                                                                      data_wide[,paste0(x,".",levels(yy)[2], collapse = "")], paired = TRUE)$stat,
+                           "RM-ANOVA" = ezANOVA(data = data_long, dv = puntuacion, wid = id, within = tiempo, detailed = TRUE)$ANOVA$F[1],
                            "no implementat" = stop("La funció encara no esta preparada per a aquests test!")),TRUE)
         stat <- ifelse(grepl("Error", stat), ".",stat)
         stat_round <- ifelse(grepl("Error", try(round(pval,3), TRUE)), ".", round(stat,3))
@@ -251,10 +269,7 @@ summary.quanti <- function(data,
 
 
 
-    if (show.n) {
-      res_all$n <- sum(complete.cases(xx) & complete.cases(yy))
-    }
-
+    if (show.n) res_all$n <- sum(complete.cases(xx) & complete.cases(yy))
 
     if (show.or & (length(levels(yy)) == 2) ) {
       or_mod <- desc_mod(glm(yy ~xx, family = "binomial"))
@@ -264,8 +279,6 @@ summary.quanti <- function(data,
       OR <- NULL
 
     }
-
-
 
     txt_caption = paste0("Summary of results by groups of ",varname_group,txt_descriptive)
 
