@@ -73,6 +73,7 @@ desc_group <- function(data,
                        include.NA = FALSE,
                        patt.NA = "No",
                        correct = FALSE,
+                       full_width = FALSE,
                        ...){
 
   message("A partir de mayo de 2025, la prueba chi-cuadrado se ejecuta por defecto con `correct = FALSE` (sin corrección de Yates).
@@ -243,7 +244,7 @@ desc_group <- function(data,
     #                            background = ifelse(condition, "white", "#993489"))) %>%
     kable(escape = F, row.names = F,align = align, caption = caption, format = "html")  %>%
     kable_styling(latex_options = c("striped","hold_position", "repeat_header"),
-                  font_size = font_size, full_width = F, fixed_thead = T) %>%
+                  font_size = font_size, full_width = full_width, fixed_thead = T) %>%
     row_spec(0,background = col.background, color = "white") %>%
     column_spec(which(names(results) == "levels"), width_max = width_lev) %>%
     column_spec(which(names(results) == "variable"), bold = T)   %>%
