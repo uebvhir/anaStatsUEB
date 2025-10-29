@@ -152,7 +152,7 @@ quickCor <- function(dat, x, y,
 
   if (xtab) {
 
-    print(kable_ueb(result, caption = paste("Correlation", x, "whit", y,".", sub)))
+    print(kable_ueb(result, caption = paste("Correlation", namex, "with", namey,".", sub)))
     # }else{
   }
   if (show.res) return( result_list )
