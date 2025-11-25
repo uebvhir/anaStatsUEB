@@ -4,6 +4,9 @@
 #' intervalos de confianza exactos y opcionalmente valores p de tests estadísticos, estadísticos de prueba
 #' y odds ratios cuando corresponda. Los resultados pueden devolverse en formato HTML, LaTeX o texto plano.
 #'
+#' A partir de mayo de 2025, la prueba chi-cuadrado se ejecuta por defecto con `correct = FALSE` (sin corrección de Yates).
+#' Para replicar resultados previos, especifique `correct = TRUE` explícitamente
+#'
 #' @param x factor variable.
 #' @param group factor variable. Outcome
 #' @param data data frame, list or environment (or object coercible by 'as.data.frame' to a data frame) containing the variables in the model. If they are not found in 'data', the variables are taken from 'environment(formula)'.
@@ -58,8 +61,6 @@ summary.quali <- function(data,
                           var.tidy = TRUE,
                           correct = FALSE) {
 
-  message("A partir de mayo de 2025, la prueba chi-cuadrado se ejecuta por defecto con `correct = FALSE` (sin corrección de Yates).
-          Para replicar resultados previos, especifique `correct = TRUE` explícitamente")
 
   if (var.tidy) {
     ## Les 3 seguents linies permeten pasar el nom de la variable com a text o estil tidyverse
