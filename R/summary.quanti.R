@@ -107,6 +107,8 @@ summary.quanti <- function(data,
     data_wide <- reshape(data[,c(x,group,idvar)], timevar = group, idvar = idvar, direction = "wide") #, v.names = "x")
     idcomplete <- na.omit(data_wide)$id
     data <- data[which(data[,idvar] %in% idcomplete ), ]
+    xx <- data[,x]
+    yy <- data[,group]
   }
 
   #  o preparamos los datos segun si es paired con más de 2 niveles
