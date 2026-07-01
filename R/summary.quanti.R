@@ -1,67 +1,22 @@
-#' A summary.quanti Function
-#'
-#' DESCRIPCIO DE LA FUNCIO
-#' @param x numeric or integer variable
-#' @param group factor variable. Outcome
-#' @param data data frame, list or environment (or object coercible by 'as.data.frame' to a data frame) containing the variables in the model. If they are not found in 'data', the variables are taken from 'environment(formula)'.
-#' @param format  a character string; possible values are ht, r, no. Default value is "ht".
-#' @param method character string indicating the method to test use; possible values are 'param' or 'nonparam'. Default values is 'param'.
-#' @param test character strin indicating the test to use. Possible values are 'Anova','Student's T','Mann–Whitney U','Kruskal-Wallis', 'Paired Student's T', 'Wilcoxon signed-rank test', 'RM-ANOVA'. Default value is NULL
-#' @param paired \code{logical}. Si \code{TRUE}, utilizará tests apareados. Default value is \code{FALSE}.
-#' @param nround integer indicating the number of decimal places (round) or significant digits (signif) to be used. Negative values are allowed (see ‘Details’). Default value is 2.
-#' @param show.pval \code{logical}. Si \code{TRUE}, muestra el valor p del test de asociación.
-#' @param show.all \code{logical}. Si \code{TRUE}, añade columna con resultados globales (sin estratificar).
-#' @param show.n \code{logical}. Si \code{TRUE}, añade una columna con el número total de observaciones.
-#' @param show.stat \code{logical}. Si \code{TRUE}, añade el estadístico de prueba (Chi-cuadrado).
-#' @param show.or \code{logical}. Si \code{TRUE} y \code{group} tiene exactamente dos niveles,
-#' @param byrow logical or NA. Percentage of categorical variables must be reported by rows (TRUE), by columns (FALSE) or by columns and rows to sum up 1 (NA). Default value is FALSE, which means that percentages are reported by columns (withing groups).
-#' @param prep2sum logical value. prepara la taula de sortida per a la funció desc_group. Default value is FALSE
-#' @param prep.tab logical value. prepara la taula de sortida per a la funció desc_quanti Default value is FALSE
-#' @keywords summary ci qualitative descriptive exploratory
-#' @author Miriam Mota  \email{miriam.mota@@vhir.org}
-#' @export summary.quanti
-#' @import Publish
-#' @examples
-#'  #  set.seed(1)
-#'  # data <- df <- data.frame(id = c(1:13,1:13), MUT = factor(c(rep("A", 13),rep("B",13))),
-#'  #                          var = rnorm(26))
-#'
-#'  # summary.quanti(x = "var", data = df)
-#'  # tab <- summary.quanti(x = "var",group = "MUT",data = df)
-#'  # tab <- summary.quanti(x = "var",group = "MUT",data = df,method = "non-param")
-#'  # tab <- summary.quanti(x = "var",group = "MUT",data = df, idvar = "id", paired =TRUE)
-#'  # tab <- summary.quanti(x = "var",group = "MUT",data = df, idvar = "id", paired =TRUE,method = "non-param")
-#'  # kable(tab$summary,escape = F, row.names = F,align = "c", caption = c(paste(tab$txt_caption, tab$txt_test)) ) %>%
-#'  #   kable_styling(latex_options = c("striped","hold_position", "repeat_header"), full_width = F, font_size = 14) %>%
-#'  #   row_spec(0,background = "#993489", color = "white")
-#'  # mtc_bis %>% summary.quanti( x = qsec)
-#'  # summary.quanti( mtc_bis, x = qsec)$summary %>% kable_ueb()
-#'  # mtc_bis %>% summary.quanti( x = "qsec")
-#'  # summary.quanti( mtc_bis, x = "qsec")
-#'  # mtc_bis %>% summary.quanti( x = qsec, group = vs)
-#'  # summary.quanti( mtc_bis, x = qsec, group = vs)
-#'  # mtc_bis %>% summary.quanti( x = "qsec", group = "vs")
-#'  # summary.quanti( mtc_bis, x = "qsec", group = "vs")
-
-
-summary.quanti <- function(data,
-                           x,
-                           group = NULL,
-                           method = "param",
-                           format = "html",
-                           nround = 1,
-                           test = NULL,
-                           show.pval = TRUE,
-                           show.all = TRUE,
-                           show.n = TRUE,
-                           show.stat = FALSE,
-                           show.or = FALSE,
-                           prep2sum = FALSE,
-                           prep.tab = FALSE,
-                           sub.ht = TRUE,
-                           paired = FALSE,
-                           idvar = NULL,
-                           var.tidy = TRUE){
+summary.quanti2 <- function(data,
+                            x,
+                            group = NULL,
+                            method = "param",
+                            format = "html",
+                            nround = 1,
+                            test = NULL,
+                            show.pval = TRUE,
+                            show.all = TRUE,
+                            show.n = TRUE,
+                            show.stat = FALSE,
+                            show.or = FALSE,
+                            prep2sum = FALSE,
+                            prep.tab = FALSE,
+                            sub.ht = TRUE,
+                            paired = FALSE,
+                            idvar = NULL,
+                            var.tidy = TRUE)
+{
 
 
   if (var.tidy) {
@@ -97,10 +52,10 @@ summary.quanti <- function(data,
   txt_descriptive <-  "<br> <font size='1'> 2: N <br> mean(sd) <br> [CI95% mean] <br> median[IQR] </font>"
   txt_caption = txt_descriptive
 
+  # si es dato apareado
+  if (paired){
 
-
-  # Preparamos los datos segun si es paired con 2 niveles ...
-  if (paired && length(levels(yy)) == 2) {
+    # estudiamos solo los casos completos
     show.all = F
     names(data)[names(data) == idvar] <- "id"
     idvar <- "id"
@@ -109,26 +64,17 @@ summary.quanti <- function(data,
     data <- data[which(data[,idvar] %in% idcomplete ), ]
     xx <- data[,x]
     yy <- data[,group]
+
+    # si tenemos más de dos niveles
+    if(length(levels(yy)) > 2){
+      # pasar a long (por ser requerimiento de ezANOVA)
+      data_long <- data.frame(
+        id = factor(data[[idvar]]),  # Asegurar que 'id' es factor
+        tiempo = yy,                 # Variable de tiempo (p.e. basal, visita1, visita2)
+        puntuacion = xx              # Variable dependiente
+      )
+     }
   }
-
-  #  o preparamos los datos segun si es paired con más de 2 niveles
-  if (paired && length(levels(yy)) > 2 ) {
-    # Convertir datos a formato largo (requerido por ezANOVA)
-    data_long <- data.frame(
-      id = factor(data[[idvar]]),  # Asegurar que 'id' es factor
-      tiempo = yy,                 # Variable de tiempo (p.e. basal, visita1, visita2)
-      puntuacion = xx              # Variable dependiente
-    )
-    # Eliminar sujetos con NA en cualquier tiempo
-    data_long <- na.omit(data_long)
-    data_long <- data_long %>%
-      group_by(id) %>%
-      filter(n_distinct(tiempo) == length(levels(tiempo))) %>%
-      ungroup()
-  }
-
-
-
 
 
   ## Resum univariat mean(sd) \\ IC mean \\ median[IQR]
@@ -197,10 +143,6 @@ summary.quanti <- function(data,
 
 
 
-
-
-
-
     ### Test
     if (show.pval) {
       ## Decidim test que es realitza
@@ -211,7 +153,7 @@ summary.quanti <- function(data,
 
       if (is.null(test) & paired)    test <- switch(method,
                                                     "param" = ifelse(length(levels(yy)) > 2, "RM-ANOVA","Paired Student's T"),
-                                                    "non-param" = ifelse(length(levels(yy)) > 2, "no implementat","Wilcoxon signed-rank test"))
+                                                    "non-param" = ifelse(length(levels(yy)) > 2, "Friedman","Wilcoxon signed-rank test"))
 
       ##### Esto se podria juntar para hacerlo mas eficiente y no calcular 2 veces lo mismo
       ## Calculem test
@@ -225,7 +167,7 @@ summary.quanti <- function(data,
                          "Wilcoxon signed-rank test" = wilcox.test(data_wide[,paste0(x,".",levels(yy)[1], collapse = "" )],
                                                                    data_wide[,paste0(x,".",levels(yy)[2], collapse = "")], paired = TRUE)$p.va,
                          "RM-ANOVA" = ezANOVA(data = data_long, dv = puntuacion, wid = id, within = tiempo, detailed = TRUE)$ANOVA$p[1],
-                         "no implementat" = stop("La funció encara no esta preparada per a aquests test!")),TRUE)
+                         "Friedman" = friedman.test(puntuacion ~ tiempo | id, data = data_long)$p.value),TRUE)
       pval <- ifelse(grepl("Error", pval), ".",pval)
       pval_round <- ifelse(grepl("Error", try(round(pval,3), TRUE)), ".", round(pval,3))
 
@@ -245,7 +187,7 @@ summary.quanti <- function(data,
                            "Wilcoxon signed-rank test" = wilcox.test(data_wide[,paste0(x,".",levels(yy)[1], collapse = "" )],
                                                                      data_wide[,paste0(x,".",levels(yy)[2], collapse = "")], paired = TRUE)$stat,
                            "RM-ANOVA" = ezANOVA(data = data_long, dv = puntuacion, wid = id, within = tiempo, detailed = TRUE)$ANOVA$F[1],
-                           "no implementat" = stop("La funció encara no esta preparada per a aquests test!")),TRUE)
+                           "Friedman" = friedman.test(puntuacion ~ tiempo | id, data = data_long)$statistic),TRUE)
         stat <- ifelse(grepl("Error", stat), ".",stat)
         stat_round <- ifelse(grepl("Error", try(round(pval,3), TRUE)), ".", round(stat,3))
 
