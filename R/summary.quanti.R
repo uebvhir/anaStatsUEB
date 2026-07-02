@@ -1,4 +1,79 @@
-summary.quanti2 <- function(data,
+#' Resumen Descriptivo y Bivariante de Variables Cuantitativas
+#'
+#' @description
+#' Calcula estadísticos descriptivos (media, desviación estándar, mediana y cuartiles) 
+#' para una variable cuantitativa continua. Los resultados se pueden calcular de manera 
+#' global o estratificada por un factor (grupo), ejecutando automáticamente los tests 
+#' de contraste de hipótesis adecuados (paramétricos o no paramétricos, independientes o apareados).
+#'
+#' @param data Un \code{data.frame}, lista o entorno que contiene las variables del análisis.
+#' @param x Carácter o nombre simbólico (estilo特 tidyverse) de la variable cuantitativa a analizar.
+#' @param group Carácter o nombre simbólico (estilo tidyverse) de la variable factor utilizada para la estratificación (opcional). Por defecto es \code{NULL}.
+#' @param method Carácter. Especifica el tipo de análisis: \code{'param'} (paramétrico, por defecto) o \code{'nonparam'} (no paramétrico).
+#' @param format Carácter. Formato de salida para el resumen: \code{'html'} (por defecto), \code{'r'} o \code{'no'}.
+#' @param nround Entero. Número de decimales utilizado para el redondeo de los valores. Por defecto es \code{1}.
+#' @param test Carácter opcional para forzar un test estadístico específico (ej: 'Anova', 'Student's T', 'Kruskal-Wallis', 'Mann-Whitney U', 'Paired Student's T', 'Wilcoxon signed-rank test', 'RM-ANOVA'). Si es \code{NULL} (por defecto), se elige automáticamente según los datos.
+#' @param show.pval Lógico. Si es \code{TRUE} (por defecto), muestra la columna con el p-valor del test de asociación.
+#' @param show.all Lógico. Si es \code{TRUE} (por defecto), añade una columna con los resultados descriptivos de la muestra total global.
+#' @param show.n Lógico. Si es \code{TRUE} (por defecto), muestra el recuento de la N de la muestra.
+#' @param show.stat Lógico. Si es \code{TRUE}, añade el estadístico del test a la salida. Por defecto es \code{FALSE}.
+#' @param show.or Lógico. Si es \code{TRUE} y el grupo tiene exactamente dos niveles, calcula y muestra las Odds Ratios de un modelo logístico aplicado. Por defecto es \code{FALSE}.
+#' @param prep2sum Lógico. Modifica la estructura interna de la tabla de salida para que se integre correctamente con la función \code{desc_group}. Por defecto es \code{FALSE}.
+#' @param prep.tab Lógico. Modifica la estructura interna de la tabla de salida para que se integre correctamente con la función \code{desc_quanti}. Por defecto es \code{FALSE}.
+#' @param sub.ht Lógico. Si es \code{TRUE} (por defecto), formatea ciertos elementos (como indicadores de grupo o método) como subíndices HTML.
+#' @param paired Lógico. Si es \code{TRUE}, se ejecutarán las versiones de tests estadísticos apareados. Por defecto es \code{FALSE}.
+#' @param idvar Carácter opcional. El nombre de la variable de identificación de sujeto/clúster necesaria si \code{paired = TRUE}. Por defecto es \code{NULL}.
+#' @param var.tidy Lógico. Si es \code{TRUE} (por defecto), permite pasar los nombres de las variables tanto entre comillas (\code{"var"}) como directamente como expresiones sin comillas.
+#'
+#' @return Una lista que contiene los siguientes elementos:
+#' \describe{
+#'   \item{rows}{Nombre de la variable cuantitativa evaluada.}
+#'   \item{txt_test}{Cadena de texto que identifica el test estadístico aplicado.}
+#'   \item{pval}{Valor p de carácter numérico resultante del test.}
+#'   \item{txt_caption}{Cadena con el título generado para la tabla.}
+#'   \item{methods}{Descripción textual del tipo de metodología empleada (paramétrica/no paramétrica).}
+#'   \item{summary}{Un \code{data.frame} estructurado y formateado listo para la visualización final en HTML.}
+#'   \item{df_prep_tab}{Si \code{prep.tab = TRUE}, incluye el dataframe intermedio procesado.}
+#' }
+#'
+#' @keywords summary quanti quantitative descriptive biostatistics
+#'
+#' @author Miriam Mota \email{miriam.mota@@vhir.org}
+#'
+#' @importFrom dplyr %>% select mutate
+#' @importFrom stats glm deparse substitute
+#'
+#' @examples
+#' \dontrun{
+#' library(dplyr)
+#' library(kableExtra)
+#' 
+#' df_prova <- data.frame(
+#'   id = rep(1:13, 2),
+#'   MUT = factor(c(rep("A", 13), rep("B", 13))),
+#'   var = rnorm(26, mean = 10, sd = 2)
+#' )
+#'
+#' # Resumen global simple
+#' summary.quanti(data = df_prova, x = var)
+#' 
+#' # Resumen bivariante estratificado por grupo mutacional
+#' tab <- summary.quanti(data = df_prova, x = "var", group = "MUT")
+#' 
+#' # Resumen utilizando métodos no paramétricos y datos apareados
+#' tab_aparellat <- summary.quanti(
+#'   data = df_prova, x = var, group = MUT, 
+#'   idvar = "id", paired = TRUE, method = "nonparam"
+#' )
+#' 
+#' # Renderizado en una tabla con kableExtra
+#' kable(tab$summary, escape = FALSE, row.names = FALSE, align = "c", 
+#'       caption = paste(tab$txt_caption, tab$txt_test)) %>%
+#'   kable_styling(full_width = FALSE, font_size = 14)
+#' }
+#'
+#' @export
+summary.quanti <- function(data,
                             x,
                             group = NULL,
                             method = "param",

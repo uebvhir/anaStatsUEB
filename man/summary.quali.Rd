@@ -54,6 +54,10 @@ Esta función genera un resumen descriptivo para variables cualitativas, con fre
 intervalos de confianza exactos y opcionalmente valores p de tests estadísticos, estadísticos de prueba
 y odds ratios cuando corresponda. Los resultados pueden devolverse en formato HTML, LaTeX o texto plano.
 }
+\details{
+A partir de mayo de 2025, la prueba chi-cuadrado se ejecuta por defecto con `correct = FALSE` (sin corrección de Yates).
+Para replicar resultados previos, especifique `correct = TRUE` explícitamente
+}
 \examples{
  # set.seed(1)
  # data <- df <- data.frame(MUT = factor(c(rep("A", 12),rep("B",13))),

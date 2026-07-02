@@ -2,7 +2,7 @@
 % Please edit documentation in R/summary.quanti.R
 \name{summary.quanti}
 \alias{summary.quanti}
-\title{A summary.quanti Function}
+\title{Resumen Descriptivo y Bivariante de Variables Cuantitativas}
 \usage{
 \method{summary}{quanti}(
   data,
@@ -26,66 +26,95 @@
 )
 }
 \arguments{
-\item{data}{data frame, list or environment (or object coercible by 'as.data.frame' to a data frame) containing the variables in the model. If they are not found in 'data', the variables are taken from 'environment(formula)'.}
+\item{data}{Un \code{data.frame}, lista o entorno que contiene las variables del análisis.}
 
-\item{x}{numeric or integer variable}
+\item{x}{Carácter o nombre simbólico (estilo特 tidyverse) de la variable cuantitativa a analizar.}
 
-\item{group}{factor variable. Outcome}
+\item{group}{Carácter o nombre simbólico (estilo tidyverse) de la variable factor utilizada para la estratificación (opcional). Por defecto es \code{NULL}.}
 
-\item{method}{character string indicating the method to test use; possible values are 'param' or 'nonparam'. Default values is 'param'.}
+\item{method}{Carácter. Especifica el tipo de análisis: \code{'param'} (paramétrico, por defecto) o \code{'nonparam'} (no paramétrico).}
 
-\item{format}{a character string; possible values are ht, r, no. Default value is "ht".}
+\item{format}{Carácter. Formato de salida para el resumen: \code{'html'} (por defecto), \code{'r'} o \code{'no'}.}
 
-\item{nround}{integer indicating the number of decimal places (round) or significant digits (signif) to be used. Negative values are allowed (see ‘Details’). Default value is 2.}
+\item{nround}{Entero. Número de decimales utilizado para el redondeo de los valores. Por defecto es \code{1}.}
 
-\item{test}{character strin indicating the test to use. Possible values are 'anova','t.test','wilcox','kruskal'. Default value is NULL}
+\item{test}{Carácter opcional para forzar un test estadístico específico (ej: 'Anova', 'Student's T', 'Kruskal-Wallis', 'Mann-Whitney U', 'Paired Student's T', 'Wilcoxon signed-rank test', 'RM-ANOVA'). Si es \code{NULL} (por defecto), se elige automáticamente según los datos.}
 
-\item{show.pval}{\code{logical}. Si \code{TRUE}, muestra el valor p del test de asociación.}
+\item{show.pval}{Lógico. Si es \code{TRUE} (por defecto), muestra la columna con el p-valor del test de asociación.}
 
-\item{show.all}{\code{logical}. Si \code{TRUE}, añade columna con resultados globales (sin estratificar).}
+\item{show.all}{Lógico. Si es \code{TRUE} (por defecto), añade una columna con los resultados descriptivos de la muestra total global.}
 
-\item{show.n}{\code{logical}. Si \code{TRUE}, añade una columna con el número total de observaciones.}
+\item{show.n}{Lógico. Si es \code{TRUE} (por defecto), muestra el recuento de la N de la muestra.}
 
-\item{show.stat}{\code{logical}. Si \code{TRUE}, añade el estadístico de prueba (Chi-cuadrado).}
+\item{show.stat}{Lógico. Si es \code{TRUE}, añade el estadístico del test a la salida. Por defecto es \code{FALSE}.}
 
-\item{show.or}{\code{logical}. Si \code{TRUE} y \code{group} tiene exactamente dos niveles,}
+\item{show.or}{Lógico. Si es \code{TRUE} y el grupo tiene exactamente dos niveles, calcula y muestra las Odds Ratios de un modelo logístico aplicado. Por defecto es \code{FALSE}.}
 
-\item{prep2sum}{logical value. prepara la taula de sortida per a la funció desc_group. Default value is FALSE}
+\item{prep2sum}{Lógico. Modifica la estructura interna de la tabla de salida para que se integre correctamente con la función \code{desc_group}. Por defecto es \code{FALSE}.}
 
-\item{prep.tab}{logical value. prepara la taula de sortida per a la funció desc_quanti Default value is FALSE}
+\item{prep.tab}{Lógico. Modifica la estructura interna de la tabla de salida para que se integre correctamente con la función \code{desc_quanti}. Por defecto es \code{FALSE}.}
 
-\item{byrow}{logical or NA. Percentage of categorical variables must be reported by rows (TRUE), by columns (FALSE) or by columns and rows to sum up 1 (NA). Default value is FALSE, which means that percentages are reported by columns (withing groups).}
+\item{sub.ht}{Lógico. Si es \code{TRUE} (por defecto), formatea ciertos elementos (como indicadores de grupo o método) como subíndices HTML.}
+
+\item{paired}{Lógico. Si es \code{TRUE}, se ejecutarán las versiones de tests estadísticos apareados. Por defecto es \code{FALSE}.}
+
+\item{idvar}{Carácter opcional. El nombre de la variable de identificación de sujeto/clúster necesaria si \code{paired = TRUE}. Por defecto es \code{NULL}.}
+
+\item{var.tidy}{Lógico. Si es \code{TRUE} (por defecto), permite pasar los nombres de las variables tanto entre comillas (\code{"var"}) como directamente como expresiones sin comillas.}
+}
+\value{
+Una lista que contiene los siguientes elementos:
+\describe{
+  \item{rows}{Nombre de la variable cuantitativa evaluada.}
+  \item{txt_test}{Cadena de texto que identifica el test estadístico aplicado.}
+  \item{pval}{Valor p de carácter numérico resultante del test.}
+  \item{txt_caption}{Cadena con el título generado para la tabla.}
+  \item{methods}{Descripción textual del tipo de metodología empleada (paramétrica/no paramétrica).}
+  \item{summary}{Un \code{data.frame} estructurado y formateado listo para la visualización final en HTML.}
+  \item{df_prep_tab}{Si \code{prep.tab = TRUE}, incluye el dataframe intermedio procesado.}
+}
 }
 \description{
-DESCRIPCIO DE LA FUNCIO
+Calcula estadísticos descriptivos (media, desviación estándar, mediana y cuartiles) 
+para una variable cuantitativa continua. Los resultados se pueden calcular de manera 
+global o estratificada por un factor (grupo), ejecutando automáticamente los tests 
+de contraste de hipótesis adecuados (paramétricos o no paramétricos, independientes o apareados).
 }
 \examples{
- #  set.seed(1)
- # data <- df <- data.frame(id = c(1:13,1:13), MUT = factor(c(rep("A", 13),rep("B",13))),
- #                          var = rnorm(26))
+\dontrun{
+library(dplyr)
+library(kableExtra)
 
- # summary.quanti(x = "var", data = df)
- # tab <- summary.quanti(x = "var",group = "MUT",data = df)
- # tab <- summary.quanti(x = "var",group = "MUT",data = df,method = "non-param")
- # tab <- summary.quanti(x = "var",group = "MUT",data = df, idvar = "id", paired =TRUE)
- # tab <- summary.quanti(x = "var",group = "MUT",data = df, idvar = "id", paired =TRUE,method = "non-param")
- # kable(tab$summary,escape = F, row.names = F,align = "c", caption = c(paste(tab$txt_caption, tab$txt_test)) ) \%>\%
- #   kable_styling(latex_options = c("striped","hold_position", "repeat_header"), full_width = F, font_size = 14) \%>\%
- #   row_spec(0,background = "#993489", color = "white")
- # mtc_bis \%>\% summary.quanti( x = qsec)
- # summary.quanti( mtc_bis, x = qsec)$summary \%>\% kable_ueb()
- # mtc_bis \%>\% summary.quanti( x = "qsec")
- # summary.quanti( mtc_bis, x = "qsec")
- # mtc_bis \%>\% summary.quanti( x = qsec, group = vs)
- # summary.quanti( mtc_bis, x = qsec, group = vs)
- # mtc_bis \%>\% summary.quanti( x = "qsec", group = "vs")
- # summary.quanti( mtc_bis, x = "qsec", group = "vs")
+df_prova <- data.frame(
+  id = rep(1:13, 2),
+  MUT = factor(c(rep("A", 13), rep("B", 13))),
+  var = rnorm(26, mean = 10, sd = 2)
+)
+
+# Resumen global simple
+summary.quanti(data = df_prova, x = var)
+
+# Resumen bivariante estratificado por grupo mutacional
+tab <- summary.quanti(data = df_prova, x = "var", group = "MUT")
+
+# Resumen utilizando métodos no paramétricos y datos apareados
+tab_aparellat <- summary.quanti(
+  data = df_prova, x = var, group = MUT, 
+  idvar = "id", paired = TRUE, method = "nonparam"
+)
+
+# Renderizado en una tabla con kableExtra
+kable(tab$summary, escape = FALSE, row.names = FALSE, align = "c", 
+      caption = paste(tab$txt_caption, tab$txt_test)) \%>\%
+  kable_styling(full_width = FALSE, font_size = 14)
+}
+
 }
 \author{
-Miriam Mota  \email{miriam.mota@vhir.org}
+Miriam Mota \email{miriam.mota@vhir.org}
 }
-\keyword{ci}
+\keyword{biostatistics}
 \keyword{descriptive}
-\keyword{exploratory}
-\keyword{qualitative}
+\keyword{quanti}
+\keyword{quantitative}
 \keyword{summary}
