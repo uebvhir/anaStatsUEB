@@ -72,7 +72,7 @@ plot_multinomial_forest <- function(models_list,
     dplyr::mutate(
       y_label = paste0(Variable, "\n", Level),
       
-      OR = `Odds Ratio`,
+      OR = `Relative Risk Ratio`,
       OR_lower = Lower95,
       OR_upper = Upper95,
       
@@ -167,8 +167,8 @@ plot_multinomial_forest <- function(models_list,
     
     labs(
       title = "Forest Plot en Modelos Multinomiales",
-      subtitle = "Odds Ratios con IC95%",
-      x = "Odds Ratio",
+      subtitle = "Relative Risk Ratio con IC95%",
+      x = "Relative Risk Ratio",
       y = "Variable / Nivel"
     ) +
     
