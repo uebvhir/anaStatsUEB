@@ -56,3 +56,6 @@ para cada modelo en la leyenda y proporciona una indicación de los niveles de c
  # )
 
 }
+\author{
+Marcos Esteve \email{marcos.esteve@vhir.org}
+}

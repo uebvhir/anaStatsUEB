@@ -80,10 +80,9 @@
 #' @keywords lasso glmnet regularization variable-selection prediction
 #'
 #' @author
-#' Marcos Esteve
+#' Miquel Vazquez
 #'
-#' @export
-#' @rdname desc_plot_lasso
+#' @export desc_plot_lasso
 desc_plot_lasso <- function(res, nresponse = 1) {
 
   fit <- res$model

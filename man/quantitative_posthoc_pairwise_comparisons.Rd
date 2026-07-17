@@ -51,3 +51,6 @@ dat <- data.frame(
 quantitative_posthoc_pairwise_comparisons(covariates = c("x", "z"), data = dat, group = "grupo")$kable
 }
 }
+\author{
+Marcos Esteve \email{marcos.esteve@vhir.org}
+}
