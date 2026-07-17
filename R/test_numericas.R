@@ -40,9 +40,6 @@
 #' test_numericas(data_pareada, "Momento", "Medida", parametrico = TRUE, paired = TRUE)
 #'
 #' @export
-
-
-
 test_numericas <- function(data, factor_col, numerica_col, parametrico = FALSE, paired = FALSE) {
   # Extraer las columnas
   factor <- data[[factor_col]]

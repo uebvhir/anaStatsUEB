@@ -12,7 +12,7 @@
 #' @return No devuelve un objeto en R, sino que guarda los gráficos en un archivo PDF en el directorio de trabajo.
 #'
 #' @import ggplot2 gridExtra
-#' @export
+#' @export ggplot_to_pdf
 #'
 #' @examples
 #' \dontrun{

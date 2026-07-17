@@ -21,7 +21,7 @@
 #' - `test`: el nombre de la prueba aplicada ("Chi-squared test", "Fisher's exact test" o "McNemar's test").
 #'
 #' @import stats
-#' @export
+#' @export test_categoricas
 #'
 #' @examples
 #' # Ejemplo con datos no apareados (Chi-cuadrado o Fisher)

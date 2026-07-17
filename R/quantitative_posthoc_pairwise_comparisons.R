@@ -21,6 +21,8 @@
 #' - Las variables deben ser numéricas. Las variables categóricas o no numéricas serán ignoradas.
 #' - Los p-valores < 0.05 se muestran resaltados. Valores < 0.001 aparecen como "<0.001".
 #'
+#' @author Marcos Esteve \email{marcos.esteve@@vhir.org}
+#'
 #' @export quantitative_posthoc_pairwise_comparisons
 #' @importFrom dunn.test dunn.test
 #' @importFrom Hmisc label

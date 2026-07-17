@@ -18,7 +18,6 @@
 #'
 #' @import openxlsx
 #' @export
-#'
 export_clean_excel <- function(df, file = "resultats_nets.xlsx", sheet = "Resultats") {
   # Limpieza de contenido HTML en celdas
 

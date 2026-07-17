@@ -84,17 +84,17 @@
 #'
 #' @export
 #' @rdname desc_plot_lasso
-plot_desc_lasso <- function(res, nresponse = 1) {
- 
+desc_plot_lasso <- function(res, nresponse = 1) {
+
   fit <- res$model
   lambda <- res$lambda
- 
+
   if (!requireNamespace("plotmo", quietly = TRUE)) {
- 
+
     plot(fit, xvar = "lambda", label = TRUE)
- 
+
   } else {
- 
+
     plotmo::plot_glmnet(
       fit,
       xvar = "lambda",
@@ -103,6 +103,6 @@ plot_desc_lasso <- function(res, nresponse = 1) {
       nresponse = nresponse
     )
   }
- 
+
   abline(v = log(lambda), col = "#993489", lty = 2)
 }

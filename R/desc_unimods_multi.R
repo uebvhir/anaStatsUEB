@@ -89,6 +89,7 @@
 #' @importFrom kableExtra kable_styling add_header_above row_spec
 #'   column_spec add_footnote cell_spec
 #'
+#' @export desc_unimods_multi
 #' @author Àlex Martí Barrera, Miquel Vazquez-Santiago, Alba García Zarzoso, Miriam Mota
 #'
 #' @examples

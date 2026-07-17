@@ -15,7 +15,6 @@
 #'
 #' @import sjPlot
 #' @export
-#'
 tab_model_segmented <- function(mod_segm,show.df = F) {
 
   # Obtener el resumen del modelo segmentado

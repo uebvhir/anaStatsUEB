@@ -21,6 +21,8 @@
 #'
 #' @return No retorna nada. La función genera un gráfico de las curvas ROC en el dispositivo gráfico de R.
 #'
+#' @author Marcos Esteve \email{marcos.esteve@@vhir.org}
+#'
 #' @examples
 #' # Cargar librerías necesarias
 #' # library(pROC)
