@@ -1,9 +1,9 @@
 #' Resumen Descriptivo y Bivariante de Variables Cuantitativas
 #'
 #' @description
-#' Calcula estadísticos descriptivos (media, desviación estándar, mediana y cuartiles) 
-#' para una variable cuantitativa continua. Los resultados se pueden calcular de manera 
-#' global o estratificada por un factor (grupo), ejecutando automáticamente los tests 
+#' Calcula estadísticos descriptivos (media, desviación estándar, mediana y cuartiles)
+#' para una variable cuantitativa continua. Los resultados se pueden calcular de manera
+#' global o estratificada por un factor (grupo), ejecutando automáticamente los tests
 #' de contraste de hipótesis adecuados (paramétricos o no paramétricos, independientes o apareados).
 #'
 #' @param data Un \code{data.frame}, lista o entorno que contiene las variables del análisis.
@@ -35,19 +35,20 @@
 #'   \item{summary}{Un \code{data.frame} estructurado y formateado listo para la visualización final en HTML.}
 #'   \item{df_prep_tab}{Si \code{prep.tab = TRUE}, incluye el dataframe intermedio procesado.}
 #' }
+#' @export summary.quanti
 #'
 #' @keywords summary quanti quantitative descriptive biostatistics
 #'
 #' @author Miriam Mota \email{miriam.mota@@vhir.org}
 #'
 #' @importFrom dplyr %>% select mutate
-#' @importFrom stats glm deparse substitute
+#' @importFrom stats glm
 #'
 #' @examples
 #' \dontrun{
 #' library(dplyr)
 #' library(kableExtra)
-#' 
+#'
 #' df_prova <- data.frame(
 #'   id = rep(1:13, 2),
 #'   MUT = factor(c(rep("A", 13), rep("B", 13))),
@@ -56,23 +57,22 @@
 #'
 #' # Resumen global simple
 #' summary.quanti(data = df_prova, x = var)
-#' 
+#'
 #' # Resumen bivariante estratificado por grupo mutacional
 #' tab <- summary.quanti(data = df_prova, x = "var", group = "MUT")
-#' 
+#'
 #' # Resumen utilizando métodos no paramétricos y datos apareados
 #' tab_aparellat <- summary.quanti(
-#'   data = df_prova, x = var, group = MUT, 
+#'   data = df_prova, x = var, group = MUT,
 #'   idvar = "id", paired = TRUE, method = "nonparam"
 #' )
-#' 
+#'
 #' # Renderizado en una tabla con kableExtra
-#' kable(tab$summary, escape = FALSE, row.names = FALSE, align = "c", 
+#' kable(tab$summary, escape = FALSE, row.names = FALSE, align = "c",
 #'       caption = paste(tab$txt_caption, tab$txt_test)) %>%
 #'   kable_styling(full_width = FALSE, font_size = 14)
 #' }
 #'
-#' @export
 summary.quanti <- function(data,
                             x,
                             group = NULL,

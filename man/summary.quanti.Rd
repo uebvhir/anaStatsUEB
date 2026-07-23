@@ -75,9 +75,9 @@ Una lista que contiene los siguientes elementos:
 }
 }
 \description{
-Calcula estadísticos descriptivos (media, desviación estándar, mediana y cuartiles) 
-para una variable cuantitativa continua. Los resultados se pueden calcular de manera 
-global o estratificada por un factor (grupo), ejecutando automáticamente los tests 
+Calcula estadísticos descriptivos (media, desviación estándar, mediana y cuartiles)
+para una variable cuantitativa continua. Los resultados se pueden calcular de manera
+global o estratificada por un factor (grupo), ejecutando automáticamente los tests
 de contraste de hipótesis adecuados (paramétricos o no paramétricos, independientes o apareados).
 }
 \examples{
@@ -99,12 +99,12 @@ tab <- summary.quanti(data = df_prova, x = "var", group = "MUT")
 
 # Resumen utilizando métodos no paramétricos y datos apareados
 tab_aparellat <- summary.quanti(
-  data = df_prova, x = var, group = MUT, 
+  data = df_prova, x = var, group = MUT,
   idvar = "id", paired = TRUE, method = "nonparam"
 )
 
 # Renderizado en una tabla con kableExtra
-kable(tab$summary, escape = FALSE, row.names = FALSE, align = "c", 
+kable(tab$summary, escape = FALSE, row.names = FALSE, align = "c",
       caption = paste(tab$txt_caption, tab$txt_test)) \%>\%
   kable_styling(full_width = FALSE, font_size = 14)
 }
