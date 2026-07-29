@@ -40,3 +40,13 @@ formatted as:
 Parsed category mappings are stored as an attribute (\code{"var_levels"})
 for downstream use (e.g., with \code{factor_ueb()}).
 }
+\author{
+Miquel Vázquez-Santiago \email{miquel.vazquez@vhir.org}
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR)
+
+Modificaciones y mantenimiento:
+Biomedical Data Intelligence Unit (BIDU) 
+Vall d'Hebron Research Institute (VHIR) | 
+Vall d'Hebron Barcelona Hospital Campus.
+}

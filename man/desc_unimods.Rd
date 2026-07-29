@@ -9,6 +9,7 @@ desc_unimods(
   var2test,
   data,
   type = NULL,
+  adjust_vars = NULL,
   size = 8.5,
   format = "html",
   caption = NULL,
@@ -26,6 +27,8 @@ desc_unimods(
 \item{data}{Data.frame. Conjunto de datos con las variables.}
 
 \item{type}{Character. Tipo de modelo: "logistic" para regresión logística binaria, "linear" para regresión lineal.}
+
+\item{adjust_vars}{Character vector o `NULL`. Variables de ajuste que se incluirán en todos los modelos además de cada variable de `var2test`. Por defecto `NULL`, en cuyo caso se ajustan modelos estrictamente univariados.}
 
 \item{size}{Numeric. Tamaño de fuente para la tabla HTML generada (por defecto 8.5).}
 
@@ -51,32 +54,57 @@ Lista con tres elementos:
 }
 \description{
 Esta función ajusta modelos univariados para una variable dependiente 'y' y un conjunto
-de variables explicativas `var2test`. Puede trabajar con modelos lineales, logísticos y
-modelos mixtos con efectos aleatorios.
+de variables explicativas `var2test`. Opcionalmente, cada modelo puede ajustarse por un
+conjunto de covariables especificadas mediante `adjust_vars`. Puede trabajar con modelos
+lineales, logísticos y modelos mixtos con efectos aleatorios.
 }
 \details{
 Incluye la opción de calcular p-valores globales para variables categóricas (solo para modelos sin efectos aleatorios),
 generar tablas con resultados formateados en HTML y remarcar variables con p-valores significativos.
 
 
-- Si 'random_effect' no es 'NULL' y 'show.p.global = TRUE', la función da error porque el p-valor global no está implementado para modelos mixtos.
-- El p-valor global se añade solo a la primera fila de cada variable para evitar redundancia en niveles múltiples.
-- Se remarcan todas las filas de las variables que tengan al menos un nivel con p-valor significativo (<= 0.05).
-- Se soportan modelos ajustados con 'glm', 'lm', 'glmer' o 'lmer' según los parámetros.
+- Si `adjust_vars` no es `NULL`, cada modelo incluye la variable de interés y todas las covariables de ajuste especificadas.
+- Cuando `show.p.global = TRUE` y existen variables de ajuste, el p-valor global de la variable de interés se obtiene comparando el modelo completo frente a un modelo reducido que contiene únicamente las covariables de ajuste (test de razón de verosimilitudes para modelos logísticos).
+- Si `random_effect` no es `NULL` y `show.p.global = TRUE`, la función produce un error porque el p-valor global no está implementado para modelos mixtos.
+- El p-valor global se añade solo a la primera fila de cada variable para evitar redundancia en variables con múltiples niveles.
+- Se remarcan todas las filas de las variables que tengan al menos un nivel con p-valor significativo (≤ 0.05).
+- Se soportan modelos ajustados con `glm`, `lm`, `glmer` o `lmer` según los parámetros especificados.
 }
 \examples{
 \dontrun{
 library(lme4)
 data(iris)
+
 iris$Species_bin <- ifelse(iris$Species == "setosa", "setosa", "others")
 iris$Species_bin <- factor(iris$Species_bin)
 
-# Modelo logístico simple sin efecto aleatorio
-res <- desc_unimods("Species_bin", c("Sepal.Length", "Petal.Width"), data = iris, type = "logistic")
+# Modelo logístico simple
+res <- desc_unimods(
+  y = "Species_bin",
+  var2test = c("Sepal.Length", "Petal.Width"),
+  data = iris,
+  type = "logistic"
+)
+
+# Modelo logístico ajustado por covariables
+res_adj <- desc_unimods(
+  y = "Species_bin",
+  var2test = c("Petal.Width"),
+  adjust_vars = c("Sepal.Length", "Sepal.Width"),
+  data = iris,
+  type = "logistic"
+)
 
 # Modelo lineal mixto con efecto aleatorio
 # Suponiendo que "Group" es el efecto aleatorio
-# res2 <- desc_unimods("Sepal.Length", c("Petal.Width"), data = iris, type = "linear", random_effect = "Group")
+# res_mix <- desc_unimods(
+#   y = "Sepal.Length",
+#   var2test = c("Petal.Width"),
+#   adjust_vars = c("Sepal.Width"),
+#   data = iris,
+#   type = "linear",
+#   random_effect = "Group"
+# )
 }
 
 }

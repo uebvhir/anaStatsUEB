@@ -2,11 +2,12 @@
 % Please edit documentation in R/desc_unimods_multi.R
 \name{desc_unimods_multi}
 \alias{desc_unimods_multi}
-\title{Multinomial univariate models for multiple predictors}
+\title{Multinomial univariate and adjusted models for multiple predictors}
 \usage{
 desc_unimods_multi(
   var_out,
   var_comp,
+  adjust_vars = NULL,
   data,
   col.background = "#993489",
   align = NULL,
@@ -17,14 +18,18 @@ desc_unimods_multi(
   width_lev = 25,
   conf_level = 0.95,
   footnote = NULL,
-  caption = "Modelos Univariados"
+  caption = NULL
 )
 }
 \arguments{
 \item{var_out}{Character string indicating the multinomial outcome variable.}
 
 \item{var_comp}{Character vector containing the predictor variables to be
-evaluated in separate univariate multinomial models.}
+evaluated. One multinomial regression model is fitted for each predictor.}
+
+\item{adjust_vars}{Character vector or \code{NULL}. Covariates included in all
+fitted models in addition to each predictor in \code{var_comp}. By default,
+\code{NULL}, corresponding to strictly univariate models.}
 
 \item{data}{Data frame containing the study variables.}
 
@@ -64,8 +69,8 @@ confidence interval estimation. Default is \code{0.95}.}
 \item{footnote}{Optional character vector containing footnotes to be added
 to the table.}
 
-\item{caption}{Character string specifying the table caption. Default is
-\code{"Modelos Univariados"}.}
+\item{caption}{Character string specifying the table caption. If
+\code{NULL}, a default caption is generated automatically.}
 }
 \value{
 A list containing:
@@ -79,12 +84,14 @@ A list containing:
 }
 }
 \description{
-Fits a series of univariate multinomial logistic regression models using
+Fits a series of multinomial logistic regression models using
 \code{\link[nnet]{multinom}} and summarizes the results in a formatted HTML
-table. For each predictor, relative risk ratios (RRR), confidence intervals,
-and p-values are calculated for each outcome category relative to the
-reference category. Significant associations can be highlighted either at
-the row level or directly within p-value cells.
+table. Each predictor in \code{var_comp} is evaluated in a separate model and
+may optionally be adjusted for a common set of covariates specified through
+\code{adjust_vars}. Relative risk ratios (RRR), confidence intervals, and
+p-values are calculated for each outcome category relative to the reference
+category. Significant associations can be highlighted either at the row level
+or directly within p-value cells.
 }
 \details{
 The function returns both a formatted table suitable for reporting and the
@@ -92,9 +99,14 @@ underlying model results, including fitted models and coefficients.
 
 
 For each predictor in \code{var_comp}, a multinomial logistic regression
-model is fitted using:
+model is fitted. If \code{adjust_vars} is \code{NULL}, the fitted model is:
 
 \deqn{Outcome \sim Predictor}
+
+Otherwise, each model includes the predictor of interest together with all
+adjustment covariates:
+
+\deqn{Outcome \sim Predictor + Covariates}
 
 Relative risk ratios are obtained by exponentiating regression coefficients.
 Confidence intervals are calculated using the normal approximation:

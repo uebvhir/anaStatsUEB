@@ -1,18 +1,23 @@
-#' Multinomial univariate models for multiple predictors
+#' Multinomial univariate and adjusted models for multiple predictors
 #'
-#' Fits a series of univariate multinomial logistic regression models using
+#' Fits a series of multinomial logistic regression models using
 #' \code{\link[nnet]{multinom}} and summarizes the results in a formatted HTML
-#' table. For each predictor, relative risk ratios (RRR), confidence intervals,
-#' and p-values are calculated for each outcome category relative to the
-#' reference category. Significant associations can be highlighted either at
-#' the row level or directly within p-value cells.
+#' table. Each predictor in \code{var_comp} is evaluated in a separate model and
+#' may optionally be adjusted for a common set of covariates specified through
+#' \code{adjust_vars}. Relative risk ratios (RRR), confidence intervals, and
+#' p-values are calculated for each outcome category relative to the reference
+#' category. Significant associations can be highlighted either at the row level
+#' or directly within p-value cells.
 #'
 #' The function returns both a formatted table suitable for reporting and the
 #' underlying model results, including fitted models and coefficients.
 #'
 #' @param var_out Character string indicating the multinomial outcome variable.
 #' @param var_comp Character vector containing the predictor variables to be
-#'   evaluated in separate univariate multinomial models.
+#'   evaluated. One multinomial regression model is fitted for each predictor.
+#' @param adjust_vars Character vector or \code{NULL}. Covariates included in all
+#'   fitted models in addition to each predictor in \code{var_comp}. By default,
+#'   \code{NULL}, corresponding to strictly univariate models.
 #' @param data Data frame containing the study variables.
 #' @param col.background Character string specifying the background color used
 #'   for table headers. Default is \code{"#993489"}.
@@ -41,8 +46,8 @@
 #'   confidence interval estimation. Default is \code{0.95}.
 #' @param footnote Optional character vector containing footnotes to be added
 #'   to the table.
-#' @param caption Character string specifying the table caption. Default is
-#'   \code{"Modelos Univariados"}.
+#' @param caption Character string specifying the table caption. If
+#'   \code{NULL}, a default caption is generated automatically.
 #'
 #' @return A list containing:
 #' \describe{
@@ -56,9 +61,14 @@
 #'
 #' @details
 #' For each predictor in \code{var_comp}, a multinomial logistic regression
-#' model is fitted using:
+#' model is fitted. If \code{adjust_vars} is \code{NULL}, the fitted model is:
 #'
 #' \deqn{Outcome \sim Predictor}
+#'
+#' Otherwise, each model includes the predictor of interest together with all
+#' adjustment covariates:
+#'
+#' \deqn{Outcome \sim Predictor + Covariates}
 #'
 #' Relative risk ratios are obtained by exponentiating regression coefficients.
 #' Confidence intervals are calculated using the normal approximation:
@@ -139,6 +149,7 @@
 desc_unimods_multi <- function(
     var_out,
     var_comp,
+    adjust_vars = NULL,
     data,
     col.background = "#993489",
     align = NULL,
@@ -149,7 +160,7 @@ desc_unimods_multi <- function(
     width_lev = 25,
     conf_level = 0.95,
     footnote = NULL,
-    caption = "Modelos Univariados"
+    caption = NULL
 ){
   require(nnet)
   # Lògica d'interacció: si s'activa color a la cel·la, es desactiva la fila
@@ -190,14 +201,22 @@ desc_unimods_multi <- function(
   n_list<-list()
 
   for(i in seq_along(var_comp)){
-    frm <- as.formula(paste0(var_out, " ~ ", var_comp[i]))
+    vars_model <- unique(c(var_comp[i], adjust_vars))
+    frm <- reformulate(
+      termlabels = vars_model,
+      response = var_out
+    )
+
     mod <- multinom(frm, data = data, trace = FALSE)
     model_list[[var_comp[i]]] <- mod
     n_list[[var_comp[i]]] <- nrow(model.frame(mod))
     sm <- summary(mod)
 
-    coef_mat <- sm$coefficients[, -1, drop = FALSE]
-    se_mat   <- sm$standard.errors[, -1, drop = FALSE]
+    coef_names <- colnames(sm$coefficients)
+    keep <- startsWith(coef_names, var_comp[i])
+    coef_mat <- sm$coefficients[, keep, drop = FALSE]
+    se_mat   <- sm$standard.errors[, keep, drop = FALSE]
+
 
     z_mat <- coef_mat / se_mat
     p_mat <- 2 * (1 - pnorm(abs(z_mat)))
@@ -353,7 +372,6 @@ desc_unimods_multi <- function(
 
 
   # Cabecera agrupada
-
   cols_data <- names(df_tabla)[!names(df_tabla) %in% c("Variable", "Nivel")]
   cols_stat <- setdiff(cols_data, "N")
   strat_names <- sub("_.*$", "", cols_stat)
@@ -369,12 +387,16 @@ desc_unimods_multi <- function(
 
 
   # Alineación
-
   if(is.null(align)){ align <- rep("c", ncol(df_tabla)) }
 
+  # Caption
+  if (is.null(caption)) {
+    caption <- paste0(
+      "Univariate multinomial regression (", get_lab_nam(data,y), ")."
+    )
+  }
 
   # Tabla final
-
   tabla <- df_tabla |>
     kable(
       escape = FALSE,

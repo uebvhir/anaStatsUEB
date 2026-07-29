@@ -12,7 +12,9 @@ read_df_ueb(
   skip_rows = 0,
   user_na = TRUE,
   na_strings = NULL,
-  clean_names = TRUE
+  clean_names = TRUE,
+  rm_x_cols = FALSE,
+  id_col = NULL
 )
 }
 \arguments{
@@ -37,6 +39,10 @@ Applies to CSV and optionally to SAV files.}
 
 \item{clean_names}{Logical. If \code{TRUE}, column names are cleaned using
 \code{janitor::clean_names()} and empty columns are removed.}
+
+\item{rm_x_cols}{Logical. If \code{FALSE}, columns names starts with 'x_' or 'X' are erased automàticaly.}
+
+\item{id_col}{Character vector. Detects 'id' columns in the datasets list and creates a column 'id'. Default is \code{NULL}.}
 }
 \value{
 A list of data frames. For Excel files, each sheet is returned as a separate element.
@@ -70,4 +76,12 @@ read_df(files, type_file = "csv", sep = ",", dec = ".")
 read_df(files, type_file = "sav", user_na = TRUE)
 }
 
+}
+\author{
+Miquel Vázquez-Santiago \email{miquel.vazquez@vhir.org}
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR)
+
+Modificaciones y mantenimiento:
+Biomedical Data Intelligence Unit (BIDU) - Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }

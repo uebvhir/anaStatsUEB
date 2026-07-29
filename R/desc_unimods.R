@@ -1,8 +1,9 @@
 #' Descripción de modelos univariados (regresión logística o lineal), con soporte para efectos aleatorios
 #'
 #' Esta función ajusta modelos univariados para una variable dependiente 'y' y un conjunto
-#' de variables explicativas `var2test`. Puede trabajar con modelos lineales, logísticos y
-#' modelos mixtos con efectos aleatorios.
+#' de variables explicativas `var2test`. Opcionalmente, cada modelo puede ajustarse por un
+#' conjunto de covariables especificadas mediante `adjust_vars`. Puede trabajar con modelos
+#' lineales, logísticos y modelos mixtos con efectos aleatorios.
 #'
 #' Incluye la opción de calcular p-valores globales para variables categóricas (solo para modelos sin efectos aleatorios),
 #' generar tablas con resultados formateados en HTML y remarcar variables con p-valores significativos.
@@ -11,6 +12,7 @@
 #' @param var2test Character vector. Nombres de las variables explicativas a testear univariadamente.
 #' @param data Data.frame. Conjunto de datos con las variables.
 #' @param type Character. Tipo de modelo: "logistic" para regresión logística binaria, "linear" para regresión lineal.
+#' @param adjust_vars Character vector o `NULL`. Variables de ajuste que se incluirán en todos los modelos además de cada variable de `var2test`. Por defecto `NULL`, en cuyo caso se ajustan modelos estrictamente univariados.
 #' @param size Numeric. Tamaño de fuente para la tabla HTML generada (por defecto 8.5).
 #' @param format Character. Formato de salida para la tabla (por defecto "html").
 #' @param caption Character. Texto para el título (caption) de la tabla. Si 'NULL', se genera automáticamente.
@@ -20,10 +22,12 @@
 #' @param random_effect Character or NULL. Nombre de la variable para el efecto aleatorio (si se desea un modelo mixto). Si 'NULL', se ajusta modelo clásico.
 #'
 #' @details
-#' - Si 'random_effect' no es 'NULL' y 'show.p.global = TRUE', la función da error porque el p-valor global no está implementado para modelos mixtos.
-#' - El p-valor global se añade solo a la primera fila de cada variable para evitar redundancia en niveles múltiples.
-#' - Se remarcan todas las filas de las variables que tengan al menos un nivel con p-valor significativo (<= 0.05).
-#' - Se soportan modelos ajustados con 'glm', 'lm', 'glmer' o 'lmer' según los parámetros.
+#' - Si `adjust_vars` no es `NULL`, cada modelo incluye la variable de interés y todas las covariables de ajuste especificadas.
+#' - Cuando `show.p.global = TRUE` y existen variables de ajuste, el p-valor global de la variable de interés se obtiene comparando el modelo completo frente a un modelo reducido que contiene únicamente las covariables de ajuste (test de razón de verosimilitudes para modelos logísticos).
+#' - Si `random_effect` no es `NULL` y `show.p.global = TRUE`, la función produce un error porque el p-valor global no está implementado para modelos mixtos.
+#' - El p-valor global se añade solo a la primera fila de cada variable para evitar redundancia en variables con múltiples niveles.
+#' - Se remarcan todas las filas de las variables que tengan al menos un nivel con p-valor significativo (≤ 0.05).
+#' - Se soportan modelos ajustados con `glm`, `lm`, `glmer` o `lmer` según los parámetros especificados.
 #'
 #' @return Lista con tres elementos:
 #' \describe{
@@ -36,15 +40,37 @@
 #' \dontrun{
 #' library(lme4)
 #' data(iris)
+#'
 #' iris$Species_bin <- ifelse(iris$Species == "setosa", "setosa", "others")
 #' iris$Species_bin <- factor(iris$Species_bin)
 #'
-#' # Modelo logístico simple sin efecto aleatorio
-#' res <- desc_unimods("Species_bin", c("Sepal.Length", "Petal.Width"), data = iris, type = "logistic")
+#' # Modelo logístico simple
+#' res <- desc_unimods(
+#'   y = "Species_bin",
+#'   var2test = c("Sepal.Length", "Petal.Width"),
+#'   data = iris,
+#'   type = "logistic"
+#' )
+#'
+#' # Modelo logístico ajustado por covariables
+#' res_adj <- desc_unimods(
+#'   y = "Species_bin",
+#'   var2test = c("Petal.Width"),
+#'   adjust_vars = c("Sepal.Length", "Sepal.Width"),
+#'   data = iris,
+#'   type = "logistic"
+#' )
 #'
 #' # Modelo lineal mixto con efecto aleatorio
 #' # Suponiendo que "Group" es el efecto aleatorio
-#' # res2 <- desc_unimods("Sepal.Length", c("Petal.Width"), data = iris, type = "linear", random_effect = "Group")
+#' # res_mix <- desc_unimods(
+#' #   y = "Sepal.Length",
+#' #   var2test = c("Petal.Width"),
+#' #   adjust_vars = c("Sepal.Width"),
+#' #   data = iris,
+#' #   type = "linear",
+#' #   random_effect = "Group"
+#' # )
 #' }
 #'
 #' @importFrom stats glm lm anova
@@ -55,6 +81,7 @@
 #'
 #' @export
 desc_unimods <- function(y, var2test, data, type = NULL,
+                         adjust_vars = NULL,
                          size = 8.5,
                          format = "html",
                          caption = NULL,
@@ -76,7 +103,7 @@ desc_unimods <- function(y, var2test, data, type = NULL,
       else ""
     )
   }
-    if (!is.null(random_effect) && show.p.global) {
+  if (!is.null(random_effect) && show.p.global) {
     stop("Cálculo de p-valor global no está implementado para modelos mixtos (con efectos aleatorios).")
   }
 
@@ -87,12 +114,28 @@ desc_unimods <- function(y, var2test, data, type = NULL,
 
   for (i in seq_along(var2test)) {
     data <- data_or # cada iteración con los datos originales
+
+    # Por si hay variables de ajuste
+    rhs <- c(var2test[i], adjust_vars)
+    rhs <- rhs[!is.na(rhs)]
+    rhs <- unique(rhs)
+
     # Construir fórmula con o sin efecto aleatorio
     if (is.null(random_effect)) {
-      frml <- as.formula(paste0(y, " ~ ", var2test[i]))
+      frml <- as.formula(
+        paste0(y, " ~ ", paste(rhs, collapse = " + "))
+      )
     } else {
-      # Con efecto aleatorio
-      frml <- as.formula(paste0(y, " ~ ", var2test[i], " + (1 | ", random_effect, ")"))
+      frml <- as.formula(
+        paste0(
+          y,
+          " ~ ",
+          paste(rhs, collapse = " + "),
+          " + (1 | ",
+          random_effect,
+          ")"
+        )
+      )
     }
 
     mod[[var2test[i]]] <- switch(type,
@@ -110,21 +153,48 @@ desc_unimods <- function(y, var2test, data, type = NULL,
     )
 
     if (show.p.global){
+
       vars <- all.vars(frml)
       data <- data[complete.cases(data[, vars]), ]
       var_label <- get_lab_nam(data[[var2test[i]]], var2test[i])
+
       # Calcular p-valor global
       if(type == "linear"){
         global_pvals[[var_label]] <- anova(mod[[var2test[i]]])$`Pr(>F)`[1]
       } else if(type == "logistic"){
-        mod_null <- glm(as.formula(paste0(y, " ~ 1")), data = data, family = "binomial")
+
+        if(is.null(adjust_vars)){ # si es univariado, comparamos con el modelo sin covars
+          mod_null <- glm(
+            as.formula(paste0(y, " ~ 1")),
+            data = data,
+            family = "binomial"
+          )
+        } else { # Si hay adjust_vars, el pvalor global correcto es el comparado con el modelo sin la var2test pero con las covars de ajuste
+          mod_null <- glm(
+            as.formula(
+              paste0(
+                y,
+                " ~ ",
+                paste(adjust_vars, collapse = " + ")
+              )
+            ),
+            data = data,
+            family = "binomial"
+          )
+        }
+
         global_pvals[[var_label]] <- anova(mod_null, mod[[var2test[i]]], test = "LRT")$`Pr(>Chi)`[2]
       }
+
     }
 
-    unimod_df <- rbind(unimod_df, desc_mod(mod[[var2test[i]]],show.pretty = T))
+    # Aqui nos quedamos solo con el resultado de la var2test, por si hay vars de ajuste
+    tmp <- desc_mod(mod[[var2test[i]]], show.pretty = TRUE)
+    tmp <- tmp[tmp$vars == get_lab_nam(data,var2test[i]), ]
+    unimod_df <- rbind(unimod_df, tmp)
 
   }
+
   # Si mostramos show.p.global, añadimos la columna
   if (show.p.global) {
     unimod_df$p.global <- NA  # Inicializamos la columna

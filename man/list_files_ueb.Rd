@@ -23,3 +23,13 @@ Una llista d'arxius estructurada per 'carpetes' anomenades.
 \description{
 Llista arxius de diferents carpetes de dades donat un 'home_folder'.
 }
+\author{
+Miquel Vázquez-Santiago \email{miquel.vazquez@vhir.org}
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR)
+
+Modificaciones y mantenimiento:
+Biomedical Data Intelligence Unit (BIDU) 
+Vall d'Hebron Research Institute (VHIR) | 
+Vall d'Hebron Barcelona Hospital Campus.
+}
