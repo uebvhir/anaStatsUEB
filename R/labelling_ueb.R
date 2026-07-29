@@ -23,6 +23,17 @@
 #' }
 #'
 #' @importFrom Hmisc label
+#'
+#' @author Miquel Vázquez-Santiago \email{miquel.vazquez@vhir.org}
+#' Biomedical Data Intelligence Unit (BIDU)
+#' Vall d'Hebron Research Institute (VHIR)
+#' 
+#' Modificaciones y mantenimiento:
+#' Biomedical Data Intelligence Unit (BIDU) 
+#' Vall d'Hebron Research Institute (VHIR) | 
+#' Vall d'Hebron Barcelona Hospital Campus.
+#'
+#' @rdname labelling_ueb
 #' @export
 labelling_ueb <- function(
   df,
