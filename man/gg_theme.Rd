@@ -15,13 +15,18 @@ gg_theme(
   size_legend = 10,
   rotate_x = FALSE,
   aspect_ratio = NULL,
-  border = TRUE
+  border = TRUE,
+  grid_major_y = FALSE,
+  grid_major_y_color = NULL,
+  remove_minor_grid = FALSE
 )
 }
 \arguments{
-\item{base_theme}{Tema base de ggplot2.}
+\item{base_theme}{Tema base de ggplot2: uno de \code{"minimal"},
+\code{"classic"}, \code{"bw"}, \code{"light"} o \code{"linedraw"}.}
 
-\item{legend_position}{Posición de la leyenda.}
+\item{legend_position}{Posición de la leyenda: \code{"bottom"},
+\code{"right"} o \code{"none"}.}
 
 \item{font_family}{Familia tipográfica.}
 
@@ -38,6 +43,17 @@ gg_theme(
 \item{rotate_x}{Etiquetas del eje X inclinadas 45 grados.}
 
 \item{aspect_ratio}{Relación ancho/alto del panel.}
+
+\item{border}{Lógico. Si es \code{FALSE}, elimina \code{panel.border}
+cuando \code{base_theme} es \code{"bw"}, \code{"light"} o
+\code{"linedraw"} (no tiene efecto con \code{"minimal"}/\code{"classic"},
+que no dibujan borde de panel).}
+
+\item{grid_major_y}{Lógico. Por defecto \code{FALSE}. Modifica original 'panel.grid.major.y'}
+
+\item{grid_major_y_color}{Por defecto \code{NULL}. Modifica color del 'panel.grid.major.y'}
+
+\item{remove_minor_grid}{Lógico. Por defecto \code{FALSE}. Canvia 'element_line()' por 'element_blank()'.}
 }
 \value{
 Un objeto de clase \code{theme} que puede añadirse a cualquier gráfico
@@ -48,16 +64,42 @@ Tema gráfico corporativo basado en ggplot2 para homogeneizar la apariencia
 visual de los gráficos generados por el paquete.
 
 Está diseñado para gráficos descriptivos, forest plots, curvas ROC,
-curvas de supervivencia y otros gráficos estadísticos.
+curvas de supervivencia y otros gráficos estadísticos. Se aplica igual
+que cualquier tema de ggplot2, con el operador \code{+} al final de la
+cadena de capas.
+}
+\details{
+\strong{Limitaciones}
+\itemize{
+  \item No implementa "zebra striping" (bandas alternas de color de fondo
+  por fila/categoría): al ser un tema, no tiene acceso a los datos del
+  gráfico, así que ese efecto debe añadirse en la propia función de
+  ploteo (p. ej. con \code{geom_rect()} antes de aplicar el tema).
+  \item \code{aspect_ratio} fuerza una relación de aspecto fija del panel;
+  combinado con \code{coord_cartesian(clip = "off")} (habitual en los
+  forest plots del paquete) puede recortar anotaciones de texto situadas
+  fuera del panel. Si se usan ambas cosas a la vez, revisar el resultado
+  visualmente.
+  \item \code{match.arg()} exige que \code{base_theme} y
+  \code{legend_position} sean exactamente uno de los valores permitidos
+  (no distingue mayúsculas/minúsculas de forma flexible); un valor no
+  reconocido produce error en lugar de usar un valor por defecto
+  silencioso.
+}
 }
 \examples{
-\dontrun{
 library(ggplot2)
 
-ggplot(mtcars, aes(mpg, hp)) +
-  geom_point() +
-  gg_theme_ueb()
-}
+mtcars_na <- mtcars
+mtcars_na$hp[c(2, 10, 15)] <- NA
+
+ggplot(mtcars_na, aes(mpg, hp, colour = factor(cyl))) +
+  geom_point(na.rm = TRUE) +
+  gg_theme(base_theme = "classic", legend_position = "bottom")
+
+ggplot(mtcars_na, aes(mpg, hp)) +
+  geom_point(na.rm = TRUE) +
+  gg_theme(base_theme = "bw", border = FALSE, rotate_x = TRUE)
 
 }
 \author{

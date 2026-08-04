@@ -16,16 +16,12 @@
 #' @importFrom Hmisc label
 #' @importFrom kableExtra cell_spec kable kable_styling
 #' @importFrom janitor remove_empty
-#' @export
-#' @author
-#' Miriam Mota-Foix <mmota.foix@gmail.com>
+#'
+#' @author Miriam Mota-Foix <mmota.foix@gmail.com>
 #' # desc_data(data = iris, format = "html")
 #' # desc_data(airquality, format = "html", maxNA = 20)
-
-
-
-
-
+#' 
+#' @export
 desc_data <- function(data,
                 format = "html",
                 maxlev = 7,

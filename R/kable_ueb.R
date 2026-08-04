@@ -16,9 +16,6 @@
 #' kable_ueb(aa)
 #' kable_ueb(aa, digits = 2, row.names = TRUE, position = "left")
 #' kable_ueb(aa, digits = 2, row.names = TRUE, format = "latex")
-
-
-
 kable_ueb <- function(tab,
                       caption = NULL,
                       font_size = 13,

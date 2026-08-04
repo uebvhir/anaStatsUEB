@@ -96,11 +96,13 @@
 #' @importFrom dplyr bind_rows mutate filter select
 #' @importFrom tidyr pivot_longer pivot_wider unite
 #' @importFrom purrr map
-#' @importFrom kableExtra kable_styling add_header_above row_spec
-#'   column_spec add_footnote cell_spec
+#' @importFrom kableExtra kable_styling add_header_above row_spec column_spec add_footnote cell_spec
 #'
-#' @export desc_unimods_multi
-#' @author Àlex Martí Barrera, Miquel Vazquez-Santiago, Alba García Zarzoso, Miriam Mota
+#' @author Àlex Martí Barrera, Miquel Vázquez-Santiago, Alba García Zarzoso, Miriam Mota
+#'
+#' Modificaciones y mantenimiento:
+#' Biomedical Data Intelligence Unit (BIDU)
+#' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 #'
 #' @examples
 #'
@@ -145,7 +147,8 @@
 #'
 #' names(result$models)
 #'
-
+#' @rdname  desc_unimods_multi 
+#' @export
 desc_unimods_multi <- function(
     var_out,
     var_comp,
@@ -423,11 +426,30 @@ desc_unimods_multi <- function(
     row_spec(0, background = col.background, color = "white") |>
     add_footnote(footnote, escape = FALSE, notation = "symbol")
 
-  return(
-    list(
+  # Coger etiquetas de variables y niveles de variables factor
+    var_labels <- sapply(var_comp, get_var_label, data = data, simplify = TRUE)
+
+    level_labels <- purrr::map(var_comp, function(v){
+      if (is.factor(data[[v]])) {
+        # droplevels() garanteix que només es guarden els nivells amb
+        # observacions realment presents a 'data' (ex.: després d'aplicar
+        # filter_sparse_levels()), independentment de si l'atribut
+        # levels() del factor ja s'havia netejat aigües amunt o no.
+        lv <- levels(droplevels(data[[v]]))
+        stats::setNames(lv, lv)
+      } else {
+        NULL
+      }
+    })
+
+    names(level_labels) <- var_comp
+    names(var_labels) <- var_comp
+
+    return(list(
       table = tabla,
       results = results_df,
-      models = model_list
-    )
-  )
-}
+      models = model_list,
+      lbls_vars = var_labels,
+      lbls_levels = level_labels
+    ))
+  }

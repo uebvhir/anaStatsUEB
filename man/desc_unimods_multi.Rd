@@ -172,5 +172,9 @@ names(result$models)
 
 }
 \author{
-Àlex Martí Barrera, Miquel Vazquez-Santiago, Alba García Zarzoso, Miriam Mota
+Àlex Martí Barrera, Miquel Vázquez-Santiago, Alba García Zarzoso, Miriam Mota
+
+Modificaciones y mantenimiento:
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }

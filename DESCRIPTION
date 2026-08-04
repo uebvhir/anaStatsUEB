@@ -1,16 +1,65 @@
 Package: anaStatsUEB
-Title: Statistical analysis function, Statistics and Bioinformatics Unit (UEB, VHIR)
+Title: Statistical Analysis Functions for the Statistics and Bioinformatics Unit (UEB, VHIR)
 Version: 0.0.0.9000
-Authors@R: person("Mota", "Miriam", email = "miriam.mota@vhir.org", role = c("aut", "cre"))
-Description: Statistical analysis function - Statistics and Bioinformatics Unit (UEB - VHIR)
+Authors@R:
+    c(
+      person(
+        given = "Miriam",
+        family = "Mota",
+        email = "miriam.mota@vhir.org",
+        role = c("aut", "cre")
+      ),
+      person(
+        given = "Marcos",
+        family = "Esteve Hernandez",
+        email = "marcos.esteve@vhir.org",
+        role = "aut"
+      ),
+      person(
+        given = "Alba",
+        family = "Garcia Zarzoso",
+        email = "alba.garcia.zarzoso@vhir.org",
+        role = "aut"
+      ),
+      person(
+        given = "Miquel",
+        family = "Vazquez-Santiago",
+        email = "miquel.vazquez@vhir.org",
+        role = "aut"
+      )
+    )
+Description: Statistical analysis, reporting and visualization functions
+    developed by the Statistics and Bioinformatics Unit (UEB) of the Vall
+    d'Hebron Research Institute (VHIR). The package includes tools for
+    descriptive statistics, regression modelling, survival analysis,
+    epidemiological studies, biomarker evaluation, data management,
+    graphical visualization and reporting. Maintenance and continuous
+    development are carried out by the Biomedical Data Intelligence Unit
+    (BIDU), Vall d'Hebron Research Institute (VHIR), Vall d'Hebron
+    Barcelona Hospital Campus.
 Depends:
-    R (>= 3.3.2), formula.tools, xtable, mada, knitr, kableExtra, Hmisc, dplyr, Publish, survival, binom, janitor, magrittr, purrr,openxlsx, dunn.test, tidyr
-License: MIT
-Encoding: UTF-8
-LazyData: true
-Imports: 
-     xtable (>= 1.8-2)
+    R (>= 4.1.0),
+    formula.tools,
+    xtable,
+    mada,
+    knitr,
+    kableExtra,
+    Hmisc,
+    dplyr,
+    Publish,
+    survival,
+    binom,
+    janitor,
+    magrittr,
+    purrr,
+    openxlsx,
+    dunn.test,
+    tidyr
+Imports:
+    xtable (>= 1.8-2)
 Suggests:
     survminer
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
 Config/roxygen2/version: 8.0.0
-RoxygenNote: 7.3.3
