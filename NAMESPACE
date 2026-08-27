@@ -15,6 +15,7 @@ export(desc_group_rep)
 export(desc_group_strat)
 export(desc_lasso)
 export(desc_mod)
+export(desc_multimod)
 export(desc_plot_lasso)
 export(desc_unimods)
 export(desc_unimods_multi)
@@ -39,6 +40,7 @@ export(makeTransparent)
 export(message_ueb)
 export(plot_evolucion)
 export(plot_forest_multimods)
+export(plot_forest_multimods_multi)
 export(plot_forest_unimods)
 export(plot_multi_roc)
 export(plot_multinomial_forest)
@@ -92,65 +94,89 @@ import(tidyr)
 import(xtable)
 importFrom(Hmisc,label)
 importFrom(data.table,fread)
-importFrom(dplyr,"%>%")
-importFrom(dplyr,across)
-importFrom(dplyr,all_of)
-importFrom(dplyr,arrange)
-importFrom(dplyr,as_tibble)
-importFrom(dplyr,bind_rows)
-importFrom(dplyr,distinct)
-importFrom(dplyr,filter)
-importFrom(dplyr,full_join)
-importFrom(dplyr,mutate)
-importFrom(dplyr,select)
+importFrom(dplyr,
+  "%>%",
+  across,
+  all_of,
+  arrange,
+  as_tibble,
+  bind_rows,
+  distinct,
+  filter,
+  full_join,
+  mutate,
+  select
+)
 importFrom(dunn.test,dunn.test)
-importFrom(ggplot2,aes)
-importFrom(ggplot2,element_text)
-importFrom(ggplot2,facet_grid)
-importFrom(ggplot2,geom_errorbarh)
-importFrom(ggplot2,geom_point)
-importFrom(ggplot2,geom_vline)
-importFrom(ggplot2,ggplot)
-importFrom(ggplot2,labs)
-importFrom(ggplot2,scale_color_brewer)
-importFrom(ggplot2,scale_shape_manual)
-importFrom(ggplot2,scale_x_log10)
-importFrom(ggplot2,scale_y_continuous)
-importFrom(ggplot2,theme)
-importFrom(ggplot2,theme_minimal)
-importFrom(ggplot2,unit)
+importFrom(ggplot2,
+  aes,
+  element_text,
+  facet_grid,
+  geom_errorbarh,
+  geom_point,
+  geom_vline,
+  ggplot,
+  labs,
+  scale_color_brewer,
+  scale_shape_manual,
+  scale_x_log10,
+  scale_y_continuous,
+  theme,
+  theme_minimal,
+  unit
+)
 importFrom(ggtext,geom_richtext)
-importFrom(glmnet,cv.glmnet)
-importFrom(glmnet,glmnet)
+importFrom(glmnet,
+  cv.glmnet,
+  glmnet
+)
 importFrom(haven,read_sav)
-importFrom(janitor,clean_names)
-importFrom(janitor,remove_empty)
-importFrom(janitor,remove_empty_cols)
-importFrom(kableExtra,add_footnote)
-importFrom(kableExtra,add_header_above)
-importFrom(kableExtra,cell_spec)
-importFrom(kableExtra,column_spec)
-importFrom(kableExtra,kable)
-importFrom(kableExtra,kable_styling)
-importFrom(kableExtra,row_spec)
-importFrom(lme4,glmer)
-importFrom(lme4,lmer)
+importFrom(janitor,
+  clean_names,
+  remove_empty,
+  remove_empty_cols
+)
+importFrom(kableExtra,
+  add_footnote,
+  add_header_above,
+  cell_spec,
+  column_spec,
+  kable,
+  kable_styling,
+  row_spec
+)
+importFrom(lme4,
+  glmer,
+  lmer
+)
 importFrom(nnet,multinom)
-importFrom(pROC,auc)
-importFrom(pROC,roc)
+importFrom(pROC,
+  auc,
+  roc
+)
 importFrom(plotmo,plot_glmnet)
-importFrom(purrr,map)
-importFrom(purrr,reduce)
-importFrom(readxl,excel_sheets)
-importFrom(readxl,read_excel)
-importFrom(stats,anova)
-importFrom(stats,as.formula)
-importFrom(stats,glm)
-importFrom(stats,lm)
-importFrom(stats,pnorm)
-importFrom(stats,qnorm)
-importFrom(tibble,rownames_to_column)
-importFrom(tibble,tibble)
-importFrom(tidyr,pivot_longer)
-importFrom(tidyr,pivot_wider)
-importFrom(tidyr,unite)
+importFrom(purrr,
+  map,
+  reduce
+)
+importFrom(readxl,
+  excel_sheets,
+  read_excel
+)
+importFrom(stats,
+  anova,
+  as.formula,
+  glm,
+  lm,
+  pnorm,
+  qnorm
+)
+importFrom(tibble,
+  rownames_to_column,
+  tibble
+)
+importFrom(tidyr,
+  pivot_longer,
+  pivot_wider,
+  unite
+)
