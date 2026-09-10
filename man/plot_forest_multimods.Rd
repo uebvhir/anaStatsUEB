@@ -70,6 +70,9 @@ variables categóricas. Para variables continuas puede dejarse en
 \item{header.est.text}{Etiqueta de VISUALIZACIÓN para la medida de
 efecto en la cabecera (por defecto \code{"RRR"}).}
 
+\item{header.ic.text}{Etiqueta de VISUALIZACIÓN para el intervalo de
+confianza en la cabecera (por defecto \code{"IC95\%"}).}
+
 \item{header.pval.text}{Etiqueta de VISUALIZACIÓN para el p-valor en la
 cabecera (por defecto \code{"P.value"}).}
 
@@ -203,7 +206,7 @@ el aviso \code{"Removed N rows containing missing values"}.
   (\code{'black'}); el color/forma por outcome se aplica solo a puntos y
   barras de error.
   \item \code{'text_size'} acepta valores inferiores a 3.75 sin solapamientos
-  en etiquetas. 
+  en etiquetas.
 }
 }
 \examples{

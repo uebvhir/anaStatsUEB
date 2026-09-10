@@ -60,6 +60,9 @@ variable (\code{NA} en variables continuas).}
 \item{header.est.text}{Etiqueta de VISUALIZACIÓN para la medida de
 efecto en la cabecera (por defecto \code{"OR"}).}
 
+\item{header.ic.text}{Etiqueta de VISUALIZACIÓN para el intervalo de
+confianza en la cabecera (por defecto \code{"IC95\%"}).}
+
 \item{header.pval.text}{Etiqueta de VISUALIZACIÓN para el p-valor en la
 cabecera (por defecto \code{"P.value"}).}
 
@@ -165,7 +168,7 @@ el aviso \code{"Removed N rows containing missing values"}.
   \item El color del texto de la columna es fijo (\code{'black'}); el
   color por variable se aplica solo a puntos y barras de error.
   \item \code{'text_size'} acepta valores inferiores a 3.75 sin solapamientos
-  en etiquetas. 
+  en etiquetas.
 }sa
 }
 \examples{

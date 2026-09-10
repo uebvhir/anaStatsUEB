@@ -75,7 +75,7 @@
 #'   (\code{'black'}); el color/forma por outcome se aplica solo a puntos y
 #'   barras de error.
 #'   \item \code{'text_size'} acepta valores inferiores a 3.75 sin solapamientos
-#'   en etiquetas. 
+#'   en etiquetas.
 #' }
 #'
 #' @param results_df Data frame con los resultados multinomiales (una fila
@@ -97,7 +97,7 @@
 #' @param header.est.text Etiqueta de VISUALIZACIÓN para la medida de
 #'   efecto en la cabecera (por defecto \code{"RRR"}).
 #' @param header.ic.text Etiqueta de VISUALIZACIÓN para el intervalo de
-#'   confianza en la cabecera (por defecto \code{"IC95%"}).
+#'   confianza en la cabecera (por defecto \code{"IC95\%"}).
 #' @param header.pval.text Etiqueta de VISUALIZACIÓN para el p-valor en la
 #'   cabecera (por defecto \code{"P.value"}).
 #' @param text_sep Separador entre la parte de efecto/IC y la de p-valor,

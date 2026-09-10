@@ -8,7 +8,7 @@
 #' \code{plot_forest_multimods()}.
 #'
 #' @details
-#' 
+#'
 #' \strong{Columnas de datos frente a etiquetas de visualización}: los
 #' argumentos \code{estimate}, \code{lower}, \code{upper}, \code{p},
 #' \code{variable} y \code{level} son \strong{nombres de columna}: deben
@@ -45,7 +45,7 @@
 #' los resultados no significativos. Al ser un \code{NA} intencionado,
 #' \code{geom_richtext()} se llama con \code{na.rm = TRUE} para no generar
 #' el aviso \code{"Removed N rows containing missing values"}.
-#' 
+#'
 #' \strong{Limitaciones}
 #' \itemize{
 #'   \item \code{estimate}, \code{lower} y \code{upper} deben ser
@@ -59,7 +59,7 @@
 #'   \item El color del texto de la columna es fijo (\code{'black'}); el
 #'   color por variable se aplica solo a puntos y barras de error.
 #'   \item \code{'text_size'} acepta valores inferiores a 3.75 sin solapamientos
-#'   en etiquetas. 
+#'   en etiquetas.
 #' }sa
 #'
 #' @param results_df Data frame con los resultados del modelo binomial (una
@@ -75,7 +75,7 @@
 #' @param header.est.text Etiqueta de VISUALIZACIÓN para la medida de
 #'   efecto en la cabecera (por defecto \code{"OR"}).
 #' @param header.ic.text Etiqueta de VISUALIZACIÓN para el intervalo de
-#'   confianza en la cabecera (por defecto \code{"IC95%"}).
+#'   confianza en la cabecera (por defecto \code{"IC95\%"}).
 #' @param header.pval.text Etiqueta de VISUALIZACIÓN para el p-valor en la
 #'   cabecera (por defecto \code{"P.value"}).
 #' @param text_sep Separador entre la parte de efecto/IC y la de p-valor,
