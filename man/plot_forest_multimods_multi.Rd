@@ -132,7 +132,7 @@ aparecía con el enfoque de columna común.
 }
 \seealso{
 \code{\link{plot_forest_multimods}},
-  \code{\link{plot_forest_uniimods}}
+  \code{\link{plot_forest_unimods}}
 }
 \author{
 Miquel Vázquez-Santiago \email{miquel.vazquez@vhir.org}

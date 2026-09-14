@@ -22,7 +22,8 @@
 #' @param col.background Character string specifying the background color used
 #'   for table headers. Default is \code{"#993489"}.
 #' @param align Character vector specifying column alignment in the output
-#'   table. If \code{NULL}, all columns are centered.
+#'   table. If \code{NULL}, the level column is left aligned and the remaining
+#'   columns are centered.
 #' @param pval_cut Numeric value indicating the significance threshold used
 #'   for highlighting results. Default is \code{0.05}.
 #' @param col.varsel Character string specifying the background color used to
@@ -40,10 +41,22 @@
 #'   }
 #' @param font_size Numeric value specifying the font size of the output table.
 #'   Default is \code{12}.
-#' @param width_lev Numeric value controlling the width of the level column.
-#'   Default is \code{25}.
+#' @param width_lev Numeric value kept for backward compatibility with previous
+#'   versions of the function. It is currently not used.
 #' @param conf_level Numeric value indicating the confidence level used for
 #'   confidence interval estimation. Default is \code{0.95}.
+#' @param group Logical. If \code{TRUE} (default), rows are grouped by variable
+#'   using \code{\link[kableExtra]{group_rows}}, so that each variable label is
+#'   shown as a group header row and the first column contains only the level,
+#'   exactly as in \code{\link{desc_unimods}}. If \code{FALSE}, no group headers
+#'   are added and only the level column is shown.
+#' @param fixed_thead Logical. Passed to \code{\link[kableExtra]{kable_styling}}.
+#'   Defaults to \code{FALSE}: because the table has two header rows (the
+#'   outcome categories added by \code{add_header_above()} and the column
+#'   names), \code{TRUE} makes kableExtra fix both with
+#'   \code{position: sticky; top: 0}, so they overlap while scrolling and the
+#'   outcome row is hidden behind the column-name row. Set it to \code{TRUE}
+#'   only if the table is short enough not to scroll.
 #' @param footnote Optional character vector containing footnotes to be added
 #'   to the table.
 #' @param caption Character string specifying the table caption. If
@@ -57,6 +70,9 @@
 #'   intervals, standard errors, and p-values for each predictor and outcome
 #'   category.}
 #'   \item{models}{A named list of fitted multinomial regression models.}
+#'   \item{lbls_vars}{Named character vector with the label of each predictor.}
+#'   \item{lbls_levels}{Named list with the observed levels of each factor
+#'   predictor.}
 #' }
 #'
 #' @details
@@ -77,13 +93,18 @@
 #'
 #' where \eqn{SE} is the standard error of the coefficient estimate.
 #'
-#' The resulting table groups estimates by outcome category and includes:
+#' \strong{Table layout.} The table follows the same row structure as
+#' \code{\link{desc_unimods}}: the first column (\code{levs}) contains only the
+#' level of the predictor, preceded by \code{": "}, and each variable is shown
+#' as a group header row (see \code{group}). Continuous predictors have an empty
+#' level cell. Above the level column, one grouped header per outcome category
+#' holds the columns:
 #' \itemize{
-#'   \item Relative Risk Ratio (RRR)
-#'   \item Confidence interval
+#'   \item Relative Risk Ratio (RRR) with its confidence interval
 #'   \item p-value
-#'   \item Sample size used in each model
 #' }
+#' plus a final \code{N} column with the sample size of each model, shown once
+#' per variable.
 #'
 #' Significant predictors may be highlighted according to \code{pval_cut}.
 #' If both \code{col.varsel} and \code{col.varsel_pval} are specified, cell-level
@@ -96,13 +117,15 @@
 #' @importFrom dplyr bind_rows mutate filter select
 #' @importFrom tidyr pivot_longer pivot_wider unite
 #' @importFrom purrr map
-#' @importFrom kableExtra kable_styling add_header_above row_spec column_spec add_footnote cell_spec
+#' @importFrom kableExtra kable_styling add_header_above row_spec column_spec add_footnote cell_spec group_rows
 #'
 #' @author Àlex Martí Barrera, Miquel Vázquez-Santiago, Alba García Zarzoso, Miriam Mota
 #'
 #' Modificaciones y mantenimiento:
 #' Biomedical Data Intelligence Unit (BIDU)
 #' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
+#'
+#' @seealso \code{\link{desc_unimods}}, \code{\link{plot_forest_multimods}}
 #'
 #' @examples
 #'
@@ -147,7 +170,7 @@
 #'
 #' names(result$models)
 #'
-#' @rdname  desc_unimods_multi 
+#' @rdname  desc_unimods_multi
 #' @export
 desc_unimods_multi <- function(
     var_out,
@@ -162,10 +185,17 @@ desc_unimods_multi <- function(
     font_size = 12,
     width_lev = 25,
     conf_level = 0.95,
+    group = TRUE,
+    fixed_thead = FALSE,
     footnote = NULL,
     caption = NULL
 ){
-  require(nnet)
+
+  if (!requireNamespace("nnet", quietly = TRUE)) {
+    stop("El paquete 'nnet' es necesario para ajustar modelos multinomiales.",
+         call. = FALSE)
+  }
+
   # Lògica d'interacció: si s'activa color a la cel·la, es desactiva la fila
   if (!is.null(col.varsel_pval) && !is.null(col.varsel) && col.varsel == "#ebe0e9") {
     col.varsel <- NULL
@@ -210,7 +240,7 @@ desc_unimods_multi <- function(
       response = var_out
     )
 
-    mod <- multinom(frm, data = data, trace = FALSE)
+    mod <- nnet::multinom(frm, data = data, trace = FALSE)
     model_list[[var_comp[i]]] <- mod
     n_list[[var_comp[i]]] <- nrow(model.frame(mod))
     sm <- summary(mod)
@@ -242,7 +272,7 @@ desc_unimods_multi <- function(
     results_df <- dplyr::bind_rows(results_df, coef_long)
 
 
-    #Lo pasamos a ODDS RATIO Y INTERVALO DE CONFIANZA DE ODDS RATIO
+    # Exponenciamos coeficientes e intervalos: RRR e IC95% de la RRR
 
     coef_list[[i]] <- round(exp(coef_mat), 3)
     p_list[[i]]    <- round(p_mat, 3)
@@ -295,6 +325,10 @@ desc_unimods_multi <- function(
 
 
   # Limpieza niveles
+  # El nombre del coeficiente es 'variable + nivel': se elimina el prefijo de
+  # la variable para quedarse solo con el nivel. En variables continuas el
+  # nombre del coeficiente coincide con la variable, por lo que el nivel
+  # resultante queda vacio.
 
   df_clean$Nivel <- ifelse(
     df_clean$Nivel == "base",
@@ -314,6 +348,7 @@ desc_unimods_multi <- function(
 
 
   # Etiquetas variables
+  # 'N' se muestra una sola vez por variable (primera fila)
 
   df_clean$N <- unlist(n_list[df_clean$Variable], use.names = FALSE)
   df_clean$N[duplicated(df_clean$Variable)] <- ""
@@ -371,31 +406,52 @@ desc_unimods_multi <- function(
   }
 
   sig_rows <- which(df_clean$Variable %in% sig_vars)
-  df_tabla$Variable[duplicated(df_tabla$Variable)] <- ""
 
 
-  # Cabecera agrupada
-  cols_data <- names(df_tabla)[!names(df_tabla) %in% c("Variable", "Nivel")]
+  # Estructura de filas al estilo 'desc_unimods()'
+  # - Columna 'levs': solo el nivel, precedido de ': ' (vacia si es continua)
+  # - Etiqueta de variable: cabecera de grupo ('group_rows'), no columna
+
+  vars_label_rows <- as.character(df_clean$Variable)
+
+  levs_col <- ifelse(
+    is.na(df_tabla$Nivel) | !nzchar(df_tabla$Nivel),
+    "",
+    paste0(": ", df_tabla$Nivel)
+  )
+
+  cols_data <- setdiff(names(df_tabla), c("Variable", "Nivel"))
   cols_stat <- setdiff(cols_data, "N")
+
+  df_tabla <- data.frame(
+    levs = levs_col,
+    df_tabla[, cols_data, drop = FALSE],
+    check.names = FALSE,
+    stringsAsFactors = FALSE
+  )
+
+
+  # Cabecera agrupada: 1 columna de nivel + 2 columnas por categoria + N
+
   strat_names <- sub("_.*$", "", cols_stat)
   tab_header <- table(factor(strat_names, levels = unique(strat_names)))
 
-  header_vector <- c(" " = 2, as.numeric(tab_header))
+  header_vector <- c(" " = 1, as.numeric(tab_header))
   names(header_vector)[-1] <- names(tab_header)
   if("N" %in% cols_data){
     header_vector <- c(header_vector, " " = 1)
   }
 
-  names(df_tabla) <- c(names(df_tabla)[1:2], sub("^[^_]+_", "", names(df_tabla)[-c(1:2)]))
+  names(df_tabla) <- c("levs", sub("^[^_]+_", "", cols_data))
 
 
-  # Alineación
-  if(is.null(align)){ align <- rep("c", ncol(df_tabla)) }
+  # Alineación: nivel a la izquierda, resultados centrados
+  if(is.null(align)){ align <- c("l", rep("c", ncol(df_tabla) - 1)) }
 
   # Caption
   if (is.null(caption)) {
     caption <- paste0(
-      "Univariate multinomial regression (", get_lab_nam(data,y), ")."
+      "Univariate multinomial regression (", get_lab_nam(data, var_out), ")."
     )
   }
 
@@ -410,9 +466,24 @@ desc_unimods_multi <- function(
       table.attr = 'class="table-with-group-header"'
     )
 
+  # Cabecera de grupo por variable (mismo comportamiento que 'desc_unimods()')
+  if(isTRUE(group)){
+    tabla <- tabla |>
+      kableExtra::group_rows(
+        index = table(factor(vars_label_rows, levels = unique(vars_label_rows)))
+      )
+  }
+
   if(!is.null(col.varsel) && length(sig_rows) > 0){
     tabla <- tabla |> row_spec(sig_rows, background = col.varsel)
   }
+
+  # 'fixed_thead' y cabeceras de dos filas
+  # Con 'add_header_above()' la tabla tiene DOS filas de cabecera. Si
+  # 'fixed_thead = TRUE', kableExtra fija ambas con 'position: sticky;
+  # top: 0', de modo que al desplazarse se superponen en la misma posicion
+  # y la fila de categorias del outcome queda tapada por la de nombres de
+  # columna. Por eso el valor por defecto es FALSE.
 
   tabla <- tabla |>
     add_header_above(header_vector, background = col.background, color = "white", bold = TRUE) |>
@@ -420,9 +491,8 @@ desc_unimods_multi <- function(
       latex_options = c("striped", "hold_position", "repeat_header"),
       font_size = font_size,
       full_width = FALSE,
-      fixed_thead = TRUE
+      fixed_thead = fixed_thead
     ) |>
-    column_spec(1, bold = TRUE) |>
     row_spec(0, background = col.background, color = "white") |>
     add_footnote(footnote, escape = FALSE, notation = "symbol")
 

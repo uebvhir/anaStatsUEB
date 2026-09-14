@@ -1,37 +1,31 @@
-#' @title Forest plot para modelos multinomiales multivariables
+#' @title Forest plot para modelos binomiales multivariables
 #'
 #' @description
-#' Genera un forest plot (Relative Risk Ratio con IC95%) para un modelo
-#' de regresión multinomial multivariable, con un panel por cada nivel
-#' de la variable de resultado (\code{Outcome}), mediante
-#' \code{ggplot2::facet_grid()}. La estimación puntual y, opcionalmente,
-#' el intervalo de confianza y el p-valor se muestran como una etiqueta
-#' de texto anclada directamente sobre cada punto, ligeramente
-#' desplazada hacia arriba y a la derecha (al estilo de
-#' \code{sjPlot::plot_model()}), en lugar de una columna de texto
-#' alineada aparte. Este anclaje por punto evita el problema de recorte
-#' o solapamiento de texto entre paneles que aparece cuando el texto se
-#' sitúa en una columna común a una posición fija del eje X (ver
-#' \code{Details}).
-#'
-#' El subtítulo incorpora la categoría de referencia de la variable
-#' resultado (\code{show.ref.outcome}), imprescindible para interpretar
-#' las RRR: cada panel compara su categoría frente a esa referencia, que
-#' por definición no tiene panel propio.
+#' Genera un forest plot (Odds Ratio con IC95%) para un modelo de
+#' regresión logística binomial multivariable. La estimación puntual y,
+#' opcionalmente, el intervalo de confianza y el p-valor se muestran
+#' como una etiqueta de texto anclada directamente sobre cada punto,
+#' ligeramente desplazada hacia arriba y a la derecha, siguiendo el
+#' mismo estilo que \code{\link{plot_forest_multimods_multi}}. A
+#' diferencia de esta última, al tratarse de un modelo con una única
+#' categoría de resultado no se generan paneles por \code{Outcome}.
 #'
 #' @param x Lista resultante de \code{summarise_multivariable_model()}
-#'   para un modelo multinomial (\code{x$model_type == "multinomial"}).
-#'   Debe contener, como mínimo, un data.frame \code{x$results} con las
-#'   columnas \code{Outcome}, \code{Variable}, \code{Level},
-#'   \code{Relative Risk Ratio}, \code{Lower95}, \code{Upper95} y
-#'   \code{P.value}.
+#'   para un modelo binomial (\code{x$model_type == "binomial"}). Debe
+#'   contener, como mínimo, un data.frame \code{x$results} con las
+#'   columnas \code{Variable}, \code{Level}, \code{Odds Ratio},
+#'   \code{CI (lower)}, \code{CI (upper)} y \code{Pr(>|z|)}.
 #' @param title Título principal del gráfico.
 #' @param subtitle Subtítulo del gráfico.
-#' @param xlab Etiqueta del eje X (RRR).
-#' @param palette Paleta de colores. \code{"okabe"}/\code{"okabe_ito"}
-#'   usa la paleta Okabe-Ito; \code{NULL} usa \code{gg_color()}; o bien
-#'   un vector de colores igual o superior en longitud al número de
-#'   niveles de \code{Outcome}.
+#' @param xlab Etiqueta del eje X.
+#' @param palette Color de los puntos e intervalos. Acepta
+#'   \code{"okabe"}/\code{"okabe_ito"} (se usa un único color fijo de
+#'   la paleta Okabe-Ito), \code{NULL} (color por defecto de
+#'   \pkg{ggplot2}), o un vector de color del que se toma el primer
+#'   elemento. A diferencia de
+#'   \code{\link{plot_forest_multimods_multi}}, aquí no existe una
+#'   variable de agrupación (\code{Outcome}), por lo que solo se
+#'   utiliza un único color para todo el gráfico.
 #' @param point_size Tamaño de los puntos de estimación.
 #' @param text_size Tamaño de letra de la etiqueta anclada a cada punto.
 #' @param show.effect.column Lógico. Si es \code{TRUE}, la etiqueta
@@ -52,16 +46,17 @@
 #' @param text_sep Separador entre el bloque de estimación/IC y el
 #'   p-valor dentro de la etiqueta.
 #' @param label_dx Factor multiplicativo aplicado sobre el valor de
-#'   \code{Relative Risk Ratio} de cada fila para desplazar la etiqueta
+#'   \code{Odds Ratio} de cada fila para desplazar la etiqueta
 #'   ligeramente a la derecha del punto (la escala del eje X es log10,
 #'   por lo que el desplazamiento debe ser multiplicativo, no
 #'   aditivo). Debe ser mayor que 1.
 #' @param label_dy Desplazamiento aditivo, en unidades de \code{y}
 #'   (posiciones discretas de variable/nivel), aplicado para situar la
 #'   etiqueta por encima del punto.
-#' @param x_limit_mult Factor multiplicativo sobre \code{x_plot_max}
-#'   que determina el límite derecho del eje X, dejando margen para
-#'   que las etiquetas de los puntos más extremos no queden cortadas.
+#' @param x_limit_mult Factor multiplicativo sobre el máximo de la
+#'   escala que determina el límite derecho del eje X, dejando margen
+#'   para que las etiquetas de los puntos más extremos no queden
+#'   cortadas.
 #' @param show.null.band Lógico. Si es \code{TRUE}, se dibuja una banda
 #'   sombreada alrededor del valor nulo (\code{null_band}).
 #' @param null_band Vector numérico de longitud 2 con los límites
@@ -69,38 +64,24 @@
 #' @param show.model.info Lógico. Si es \code{TRUE}, se añade un pie de
 #'   página (\code{caption}) con la información del modelo (N, R2 de
 #'   McFadden y R2 de McFadden ajustado).
-#' @param show.ref.outcome Lógico. Si es \code{TRUE} (por defecto), el
-#'   subtítulo indica la categoría de referencia de la variable
-#'   resultado, frente a la cual se interpretan todas las RRR de los
-#'   paneles.
-#' @param ref_outcome Categoría de referencia de la variable resultado.
-#'   Si es \code{NULL} (por defecto), se obtiene automáticamente del
-#'   modelo almacenado en \code{x$model} (\code{model$lev[1]} para
-#'   objetos \code{nnet::multinom}; en su defecto, el primer nivel de la
-#'   variable respuesta del \code{model.frame()}). Indíquela
-#'   explícitamente solo si la detección automática no es posible.
-#' @param ref_outcome_label Texto que precede a la categoría de
-#'   referencia en el subtítulo.
 #'
-#' @return Un objeto \code{ggplot} con un panel por cada nivel de
-#'   \code{Outcome} (mediante \code{facet_grid()}), eje X en escala
-#'   log10 y etiquetas de texto ancladas a cada punto.
+#' @return Un objeto \code{ggplot} con eje X en escala log10 y
+#'   etiquetas de texto ancladas a cada punto.
 #'
 #' @details
-#' A diferencia de una columna de texto alineada a una posición fija
-#' del eje X (idéntica para todas las filas de un panel), aquí cada
-#' etiqueta se ancla a las coordenadas \code{(Relative Risk Ratio, y)}
-#' de su propia fila, con un pequeño desplazamiento
-#' (\code{label_dx}, \code{label_dy}) hacia arriba y a la derecha. Al
-#' depender del valor de dato de cada fila y no de una posición
-#' compartida entre todas las filas de un panel, la etiqueta queda
-#' dentro del rango de datos representado en su propio panel con
-#' independencia del ancho físico que \code{facet_grid()} le asigne,
-#' evitando así el recorte o solapamiento con el panel contiguo que
-#' aparecía con el enfoque de columna común.
+#' Esta función comparte la lógica de etiquetado de
+#' \code{\link{plot_forest_multivariable_multi}}: cada etiqueta se
+#' ancla a las coordenadas \code{(Odds Ratio, y)} de su propia fila,
+#' con un pequeño desplazamiento (\code{label_dx}, \code{label_dy})
+#' hacia arriba y a la derecha, en lugar de usar una columna de texto
+#' común a una posición fija del eje X. Al no existir una variable
+#' \code{Outcome} en un modelo binomial, no se utiliza
+#' \code{ggplot2::facet_grid()} y todo el gráfico se representa en un
+#' único panel.
 #'
-#' @seealso \code{\link{plot_forest_multimods}},
-#'   \code{\link{plot_forest_unimods}}
+#' @seealso \code{\link{plot_forest_multimods_multi}},
+#'   \code{\link{plot_forest_multimods}},
+#'   \code{\link{plot_forest_uniimods}}
 #'
 #' @author
 #' Miquel Vázquez-Santiago \email{miquel.vazquez@vhir.org}
@@ -109,18 +90,18 @@
 #' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 #'
 #' @export
-plot_forest_multimods_multi <- function(
+plot_forest_multimods_binom <- function(
     x,
-    title = "Modelo multinomial multivariable",
-    subtitle = "Relative Risk Ratio (IC95%)",
-    xlab = "RRR",
+    title = "Modelo binomial multivariable",
+    subtitle = "Odds Ratio (IC95%)",
+    xlab = "OR",
     palette = "okabe",
     point_size = 2.8,
     text_size = 3,
     show.effect.column = TRUE,
     show.p = TRUE,
     show.p.label = TRUE,
-    hide.ns = TRUE,
+    hide.ns = FALSE,
     shape.label = TRUE,
     pval_cut = 0.05,
     text_sep = "; ",
@@ -129,19 +110,17 @@ plot_forest_multimods_multi <- function(
     x_limit_mult = 1.8,
     show.null.band = TRUE,
     null_band = c(0.95, 1.05),
-    show.model.info = FALSE,
-    show.ref.outcome = TRUE,
-    ref_outcome = NULL,
-    ref_outcome_label = "Categoría de referencia") {
+    show.model.info = TRUE
+) {
 
   # -----------------------------------------------------------------------
   # 1. Validaciones
   # -----------------------------------------------------------------------
 
-  if (!is.list(x) || !identical(x$model_type, "multinomial")) {
+  if (!is.list(x) || !identical(x$model_type, "binomial")) {
     stop(
-      "'x' debe ser el resultado de desc_multimod() ",
-      "para un modelo multinomial.",
+      "'x' debe ser el resultado de summarise_multivariable_model() ",
+      "para un modelo binomial.",
       call. = FALSE
     )
   }
@@ -155,13 +134,12 @@ plot_forest_multimods_multi <- function(
   }
 
   required_columns <- c(
-    "Outcome",
     "Variable",
     "Level",
-    "Relative Risk Ratio",
-    "Lower95",
-    "Upper95",
-    "P.value"
+    "Odds Ratio",
+    "CI (lower)",
+    "CI (upper)",
+    "Pr(>|z|)"
   )
 
   missing_columns <- setdiff(
@@ -185,8 +163,7 @@ plot_forest_multimods_multi <- function(
     hide.ns = hide.ns,
     shape.label = shape.label,
     show.null.band = show.null.band,
-    show.model.info = show.model.info,
-    show.ref.outcome = show.ref.outcome
+    show.model.info = show.model.info
   )
 
   invalid_logical <- names(logical_arguments)[
@@ -273,10 +250,10 @@ plot_forest_multimods_multi <- function(
   # -----------------------------------------------------------------------
 
   numeric_columns <- c(
-    "Relative Risk Ratio",
-    "Lower95",
-    "Upper95",
-    "P.value"
+    "Odds Ratio",
+    "CI (lower)",
+    "CI (upper)",
+    "Pr(>|z|)"
   )
 
   dat <- x$results
@@ -320,11 +297,9 @@ plot_forest_multimods_multi <- function(
 
   dat <- dat |>
     dplyr::mutate(
-      Outcome = as.character(.data$Outcome),
-
       significant =
-        !is.na(.data$P.value) &
-        .data$P.value < pval_cut,
+        !is.na(.data$`Pr(>|z|)`) &
+        .data$`Pr(>|z|)` < pval_cut,
 
       sig_shape = factor(
         ifelse(
@@ -340,19 +315,19 @@ plot_forest_multimods_multi <- function(
 
       label_effect = sprintf(
         "%.2f (%.2f, %.2f)",
-        .data$`Relative Risk Ratio`,
-        .data$Lower95,
-        .data$Upper95
+        .data$`Odds Ratio`,
+        .data$`CI (lower)`,
+        .data$`CI (upper)`
       ),
 
       label_p = dplyr::case_when(
-        is.na(.data$P.value) ~ "",
+        is.na(.data$`Pr(>|z|)`) ~ "",
 
         show.p.label &
-          .data$P.value >= pval_cut ~ "NS",
+          .data$`Pr(>|z|)` >= pval_cut ~ "NS",
 
         TRUE ~ format.pval(
-          .data$P.value,
+          .data$`Pr(>|z|)`,
           digits = 3,
           eps = 0.001
         )
@@ -398,18 +373,18 @@ plot_forest_multimods_multi <- function(
 
   valid_x <- with(
     dat,
-    is.finite(`Relative Risk Ratio`) &
-      `Relative Risk Ratio` > 0 &
-      is.finite(Lower95) &
-      Lower95 > 0 &
-      is.finite(Upper95) &
-      Upper95 > 0
+    is.finite(`Odds Ratio`) &
+      `Odds Ratio` > 0 &
+      is.finite(`CI (lower)`) &
+      `CI (lower)` > 0 &
+      is.finite(`CI (upper)`) &
+      `CI (upper)` > 0
   )
 
   if (!all(valid_x)) {
     warning(
       sum(!valid_x),
-      " filas con RRR o IC no positivos o no finitos ",
+      " filas con OR o IC no positivos o no finitos ",
       "se han excluido del gráfico.",
       call. = FALSE
     )
@@ -457,10 +432,8 @@ plot_forest_multimods_multi <- function(
     )
 
   # -----------------------------------------------------------------------
-  # 6. Paleta de colores
+  # 6. Color (único, sin agrupación por Outcome)
   # -----------------------------------------------------------------------
-
-  outcomes <- unique(dat$Outcome)
 
   okabe_ito <- c(
     "#E69F00",
@@ -473,11 +446,9 @@ plot_forest_multimods_multi <- function(
     "#999999"
   )
 
-  if (is.null(palette)) {
+  point_colour <- if (is.null(palette)) {
 
-    colors <- gg_color(
-      length(outcomes)
-    )
+    scales::hue_pal()(1)
 
   } else if (
     is.character(palette) &&
@@ -488,10 +459,7 @@ plot_forest_multimods_multi <- function(
     )
   ) {
 
-    colors <- rep_len(
-      okabe_ito,
-      length(outcomes)
-    )
+    okabe_ito[5]
 
   } else {
 
@@ -506,25 +474,17 @@ plot_forest_multimods_multi <- function(
       )
     }
 
-    colors <- rep_len(
-      palette,
-      length(outcomes)
-    )
+    palette[1]
   }
-
-  colors <- stats::setNames(
-    colors,
-    outcomes
-  )
 
   # -----------------------------------------------------------------------
   # 7. Límites y marcas del eje X
   # -----------------------------------------------------------------------
 
   x_values <- c(
-    dat$`Relative Risk Ratio`,
-    dat$Lower95,
-    dat$Upper95
+    dat$`Odds Ratio`,
+    dat$`CI (lower)`,
+    dat$`CI (upper)`
   )
 
   x_values <- x_values[
@@ -543,8 +503,6 @@ plot_forest_multimods_multi <- function(
     log10(x_data_max)
   )
 
-  # El límite derecho reserva margen para que la etiqueta del punto
-  # más extremo (desplazada label_dx a la derecha) no quede cortada.
   x_limit <- x_plot_max * x_limit_mult
 
   candidate_breaks <- 10^seq(
@@ -609,86 +567,7 @@ plot_forest_multimods_multi <- function(
   }
 
   # -----------------------------------------------------------------------
-  # 9. Categoría de referencia del outcome (subtítulo)
-  # -----------------------------------------------------------------------
-  # Todas las RRR de los paneles se interpretan frente a esta categoría,
-  # que por definición no aparece como panel. Se obtiene del modelo
-  # ajustado guardado en 'x$model'; si no es posible, del conjunto de
-  # categorías ausentes en 'x$results$Outcome'.
-
-  get_ref_outcome <- function(x, outcomes) {
-
-    model <- x$model
-
-    if (
-      !is.null(model) &&
-      !is.null(model$lev) &&
-      length(model$lev) > 0L
-    ) {
-      return(as.character(model$lev)[1])
-    }
-
-    if (!is.null(model)) {
-
-      model_frame <- tryCatch(
-        stats::model.frame(model),
-        error = function(e) NULL
-      )
-
-      if (
-        !is.null(model_frame) &&
-        ncol(model_frame) > 0L
-      ) {
-
-        response <- model_frame[[1]]
-
-        response_levels <- if (is.factor(response)) {
-          levels(droplevels(response))
-        } else {
-          as.character(sort(unique(stats::na.omit(response))))
-        }
-
-        missing_level <- setdiff(response_levels, outcomes)
-
-        if (length(missing_level) == 1L) {
-          return(missing_level)
-        }
-
-        if (length(response_levels) > 0L) {
-          return(response_levels[1])
-        }
-      }
-    }
-
-    NULL
-  }
-
-  if (isTRUE(show.ref.outcome)) {
-
-    if (is.null(ref_outcome)) {
-      ref_outcome <- get_ref_outcome(x, outcomes)
-    }
-
-    ref_outcome <- as.character(ref_outcome)[1]
-
-    if (
-      !is.na(ref_outcome) &&
-      length(ref_outcome) == 1L &&
-      nzchar(ref_outcome)
-    ) {
-
-      ref_text <- paste0(ref_outcome_label, ": ", ref_outcome)
-
-      subtitle <- if (is.null(subtitle) || !nzchar(subtitle)) {
-        ref_text
-      } else {
-        paste0(subtitle, " | ", ref_text)
-      }
-    }
-  }
-
-  # -----------------------------------------------------------------------
-  # 10. Información del modelo
+  # 9. Información del modelo
   # -----------------------------------------------------------------------
 
   model_caption <- NULL
@@ -754,15 +633,14 @@ plot_forest_multimods_multi <- function(
   }
 
   # -----------------------------------------------------------------------
-  # 11. Construcción del gráfico
+  # 10. Construcción del gráfico
   # -----------------------------------------------------------------------
 
   p <- ggplot2::ggplot(
     dat,
     ggplot2::aes(
-      x = .data$`Relative Risk Ratio`,
+      x = .data$`Odds Ratio`,
       y = .data$y,
-      colour = .data$Outcome,
       shape = .data$sig_shape
     )
   )
@@ -789,21 +667,22 @@ plot_forest_multimods_multi <- function(
     ) +
     ggplot2::geom_errorbar(
       ggplot2::aes(
-        xmin = .data$Lower95,
-        xmax = .data$Upper95
+        xmin = .data$`CI (lower)`,
+        xmax = .data$`CI (upper)`
       ),
       width = 0.15,
-      orientation = "y",
       linewidth = 0.5,
+      colour = point_colour,
       na.rm = TRUE
     ) +
     ggplot2::geom_point(
       size = point_size,
+      colour = point_colour,
       na.rm = TRUE
     )
 
   # -----------------------------------------------------------------------
-  # 12. Etiqueta anclada a cada punto (arriba y a la derecha)
+  # 11. Etiqueta anclada a cada punto (arriba y a la derecha)
   # -----------------------------------------------------------------------
 
   text_data <- dat |>
@@ -818,7 +697,7 @@ plot_forest_multimods_multi <- function(
       ggtext::geom_richtext(
         data = text_data,
         ggplot2::aes(
-          x = .data$`Relative Risk Ratio` * label_dx,
+          x = .data$`Odds Ratio` * label_dx,
           y = .data$y + label_dy,
           label = .data$label_html
         ),
@@ -839,19 +718,10 @@ plot_forest_multimods_multi <- function(
   }
 
   # -----------------------------------------------------------------------
-  # 13. Facetas, escalas y tema
+  # 12. Escalas y tema
   # -----------------------------------------------------------------------
 
   p +
-    ggplot2::facet_grid(
-      cols = ggplot2::vars(Outcome),
-      scales = "fixed",
-      space = "fixed"
-    ) +
-    ggplot2::scale_colour_manual(
-      values = colors,
-      drop = FALSE
-    ) +
     ggplot2::scale_shape_manual(
       values = shape_values,
       drop = FALSE
@@ -885,12 +755,10 @@ plot_forest_multimods_multi <- function(
       subtitle = subtitle,
       x = xlab,
       y = NULL,
-      colour = "Outcome",
       shape = "Significación",
       caption = model_caption
     ) +
     ggplot2::guides(
-      colour = "none",
       shape = shape_guide
     ) +
     ggplot2::coord_cartesian(
@@ -907,17 +775,6 @@ plot_forest_multimods_multi <- function(
         ggplot2::element_line(
           colour = "grey90",
           linewidth = 0.3
-        ),
-
-      strip.background =
-        ggplot2::element_rect(
-          fill = "grey85",
-          colour = "grey40"
-        ),
-
-      strip.text =
-        ggplot2::element_text(
-          face = "bold"
         ),
 
       axis.text.y =

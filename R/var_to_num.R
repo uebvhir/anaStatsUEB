@@ -4,7 +4,6 @@
 #' @param x   a character variable with numbers
 #' @param pat a string or strings with pattern to delete
 #' @param rep a string or strings witg pattern to replace
-#' @export var_to_num
 #' @import magrittr purrr
 #' @author Miriam Mota  \email{miriam.mota@@vhir.org}
 #'
@@ -16,16 +15,29 @@
 #'  df %>% mutate(edad_mod = structure(var_to_num(edad), label = Hmisc::label(edad)))
 #'  df %>% mutate(edad_mod2 = structure(var_to_num(edad, pat = c(">", "pct"),rep = c("","")), label = Hmisc::label(edad)))
 #' @keywords numeric character class change warnings
-
-
-
-
-var_to_num <- function( x ,pat = NULL, rep = NULL){
+#'
+#' @rdname var_to_num
+#' @export
+var_to_num <- function(
+  x ,
+  pat = NULL, 
+  rep = NULL){
+  
+### ---0. Inicio ---
   txt_col <- deparse(substitute(x))
   orig <- x  #variable original
-  x_new <-  as.numeric(trimws(reduce2(fixed(c(",", "%", pat)), fixed(c(".", "",rep)), .init = x, str_replace)))
+
+### --- 1. Modificación ---
+### Substitución ',' y '.'
+### Eliminación de '%'
+  x_new <-  as.numeric(trimws(reduce2(fixed(c(',', '%', pat)), fixed(c('.', '',rep)), .init = x, str_replace)))
+
   na_value <-   na.omit(unique(orig[is.na(x_new)]))
+
+### --- 2. Conserva etiquetas ---
   Hmisc::label(x_new) <- Hmisc::label(orig)
+
+### --- 3. Registro y aviso de valores 'NA' ---
   if(length(na_value) >0){
     mss <- paste0("Los valores '", paste0(na_value, collapse = "', '"), "' de la variable '",txt_col,
                   "' han sido considerados datos faltantes")
