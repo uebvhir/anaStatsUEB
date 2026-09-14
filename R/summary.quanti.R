@@ -43,6 +43,7 @@
 #'
 #' @importFrom dplyr %>% select mutate
 #' @importFrom stats glm
+#' @importFrom Publish ci.mean
 #'
 #' @examples
 #' \dontrun{

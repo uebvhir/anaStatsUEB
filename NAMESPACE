@@ -94,6 +94,7 @@ import(tibble)
 import(tidyr)
 import(xtable)
 importFrom(Hmisc,label)
+importFrom(Publish,ci.mean)
 importFrom(data.table,fread)
 importFrom(dplyr,
   "%>%",
@@ -142,6 +143,7 @@ importFrom(kableExtra,
   add_header_above,
   cell_spec,
   column_spec,
+  group_rows,
   kable,
   kable_styling,
   row_spec

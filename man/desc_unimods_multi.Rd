@@ -17,6 +17,8 @@ desc_unimods_multi(
   font_size = 12,
   width_lev = 25,
   conf_level = 0.95,
+  group = TRUE,
+  fixed_thead = FALSE,
   footnote = NULL,
   caption = NULL
 )
@@ -37,7 +39,8 @@ fitted models in addition to each predictor in \code{var_comp}. By default,
 for table headers. Default is \code{"#993489"}.}
 
 \item{align}{Character vector specifying column alignment in the output
-table. If \code{NULL}, all columns are centered.}
+table. If \code{NULL}, the level column is left aligned and the remaining
+columns are centered.}
 
 \item{pval_cut}{Numeric value indicating the significance threshold used
 for highlighting results. Default is \code{0.05}.}
@@ -60,11 +63,25 @@ p-value cells. Can be:
 \item{font_size}{Numeric value specifying the font size of the output table.
 Default is \code{12}.}
 
-\item{width_lev}{Numeric value controlling the width of the level column.
-Default is \code{25}.}
+\item{width_lev}{Numeric value kept for backward compatibility with previous
+versions of the function. It is currently not used.}
 
 \item{conf_level}{Numeric value indicating the confidence level used for
 confidence interval estimation. Default is \code{0.95}.}
+
+\item{group}{Logical. If \code{TRUE} (default), rows are grouped by variable
+using \code{\link[kableExtra]{group_rows}}, so that each variable label is
+shown as a group header row and the first column contains only the level,
+exactly as in \code{\link{desc_unimods}}. If \code{FALSE}, no group headers
+are added and only the level column is shown.}
+
+\item{fixed_thead}{Logical. Passed to \code{\link[kableExtra]{kable_styling}}.
+Defaults to \code{FALSE}: because the table has two header rows (the
+outcome categories added by \code{add_header_above()} and the column
+names), \code{TRUE} makes kableExtra fix both with
+\code{position: sticky; top: 0}, so they overlap while scrolling and the
+outcome row is hidden behind the column-name row. Set it to \code{TRUE}
+only if the table is short enough not to scroll.}
 
 \item{footnote}{Optional character vector containing footnotes to be added
 to the table.}
@@ -81,6 +98,9 @@ A list containing:
   intervals, standard errors, and p-values for each predictor and outcome
   category.}
   \item{models}{A named list of fitted multinomial regression models.}
+  \item{lbls_vars}{Named character vector with the label of each predictor.}
+  \item{lbls_levels}{Named list with the observed levels of each factor
+  predictor.}
 }
 }
 \description{
@@ -115,13 +135,18 @@ Confidence intervals are calculated using the normal approximation:
 
 where \eqn{SE} is the standard error of the coefficient estimate.
 
-The resulting table groups estimates by outcome category and includes:
+\strong{Table layout.} The table follows the same row structure as
+\code{\link{desc_unimods}}: the first column (\code{levs}) contains only the
+level of the predictor, preceded by \code{": "}, and each variable is shown
+as a group header row (see \code{group}). Continuous predictors have an empty
+level cell. Above the level column, one grouped header per outcome category
+holds the columns:
 \itemize{
-  \item Relative Risk Ratio (RRR)
-  \item Confidence interval
+  \item Relative Risk Ratio (RRR) with its confidence interval
   \item p-value
-  \item Sample size used in each model
 }
+plus a final \code{N} column with the sample size of each model, shown once
+per variable.
 
 Significant predictors may be highlighted according to \code{pval_cut}.
 If both \code{col.varsel} and \code{col.varsel_pval} are specified, cell-level
@@ -170,6 +195,9 @@ head(result$results)
 
 names(result$models)
 
+}
+\seealso{
+\code{\link{desc_unimods}}, \code{\link{plot_forest_multimods}}
 }
 \author{
 Àlex Martí Barrera, Miquel Vázquez-Santiago, Alba García Zarzoso, Miriam Mota

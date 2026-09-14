@@ -24,7 +24,10 @@ plot_forest_multimods_multi(
   x_limit_mult = 1.8,
   show.null.band = TRUE,
   null_band = c(0.95, 1.05),
-  show.model.info = FALSE
+  show.model.info = FALSE,
+  show.ref.outcome = TRUE,
+  ref_outcome = NULL,
+  ref_outcome_label = "Categoría de referencia"
 )
 }
 \arguments{
@@ -97,6 +100,21 @@ inferior y superior de la banda del valor nulo.}
 \item{show.model.info}{Lógico. Si es \code{TRUE}, se añade un pie de
 página (\code{caption}) con la información del modelo (N, R2 de
 McFadden y R2 de McFadden ajustado).}
+
+\item{show.ref.outcome}{Lógico. Si es \code{TRUE} (por defecto), el
+subtítulo indica la categoría de referencia de la variable
+resultado, frente a la cual se interpretan todas las RRR de los
+paneles.}
+
+\item{ref_outcome}{Categoría de referencia de la variable resultado.
+Si es \code{NULL} (por defecto), se obtiene automáticamente del
+modelo almacenado en \code{x$model} (\code{model$lev[1]} para
+objetos \code{nnet::multinom}; en su defecto, el primer nivel de la
+variable respuesta del \code{model.frame()}). Indíquela
+explícitamente solo si la detección automática no es posible.}
+
+\item{ref_outcome_label}{Texto que precede a la categoría de
+referencia en el subtítulo.}
 }
 \value{
 Un objeto \code{ggplot} con un panel por cada nivel de
@@ -116,6 +134,11 @@ alineada aparte. Este anclaje por punto evita el problema de recorte
 o solapamiento de texto entre paneles que aparece cuando el texto se
 sitúa en una columna común a una posición fija del eje X (ver
 \code{Details}).
+
+El subtítulo incorpora la categoría de referencia de la variable
+resultado (\code{show.ref.outcome}), imprescindible para interpretar
+las RRR: cada panel compara su categoría frente a esa referencia, que
+por definición no tiene panel propio.
 }
 \details{
 A diferencia de una columna de texto alineada a una posición fija
