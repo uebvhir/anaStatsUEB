@@ -246,7 +246,7 @@ doROC <- function(frml, x , group  , dat,
 
   results[[method.cutoff]] <- clasRes[[method.cutoff]]$Global$optimal.criterion
   results$auc <- results$res_sum[[method.cutoff]]$Global$measures.acc$AUC
-  results$table <- table(Group = results$dat[,group], predict = results$dat$outcome.predict)
+  results$table <- table(Group = results$dat[[group]], predict = results$dat$outcome.predict)
   results$tag.healthy <- tag.healthy
 
   # missatge canvi de nom a output
