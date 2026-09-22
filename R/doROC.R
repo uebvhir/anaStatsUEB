@@ -136,7 +136,7 @@ doROC <- function(frml, x , group  , dat,
   if (is.null(title)) title <- paste(group, "-",paste0(x, collapse = "+"))
   if (is.null(tag.healthy)) tag.healthy <- levels(dat[,group])[1]
 
-  dat[,group] <- relevel(dat[,group], ref = tag.healthy)
+  dat[[group]] <- relevel(dat[[group]], ref = tag.healthy)
 
   results <- list()
 
