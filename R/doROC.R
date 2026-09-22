@@ -130,11 +130,11 @@ doROC <- function(frml, x , group  , dat,
   if ((missing(x) | missing(group)) & missing(frml))  stop("'x' and 'group' argument required, or 'frml' argument required", call. = FALSE)
 
   # if (missing(x)) x <- strsplit(as.character(frml), "~", fixed = T)[[3]]
-  if (missing(x)) x <-  rhs.vars(frml)
+  if (missing(x)) x <-  rhs_vars(frml)
   if (missing(frml)) frml <- as.formula(paste(group, "~", paste0(x, collapse = " + ")))
-  if (missing(group)) group <- lhs.vars(frml)
+  if (missing(group)) group <- lhs_vars(frml)
   if (is.null(title)) title <- paste(group, "-",paste0(x, collapse = "+"))
-  if (is.null(tag.healthy)) tag.healthy <- levels(dat[,group])[1]
+  if (is.null(tag.healthy)) tag.healthy <- levels(dat[[group]])[1]
 
   dat[[group]] <- relevel(dat[[group]], ref = tag.healthy)
 
@@ -146,7 +146,7 @@ doROC <- function(frml, x , group  , dat,
     results$mod <- mod
     pred <- predict(mod, type = "response")
     dat$pred <- NA
-    dat[names(pred),]$pred <- pred
+    dat[names(pred), "pred"] <- pred
     x <- "pred"
   }
   results$dat <- dat
@@ -162,10 +162,10 @@ doROC <- function(frml, x , group  , dat,
     control.cutpoints()  # default
   )
 
-
-
   # calcul corba ROC, punt optim amb index de youden i mesures de clasificacio
-  positive.class <- levels(dat[,group])[levels(dat[,group]) != tag.healthy]
+  positive.class <- levels(dat[[group]])[levels(dat[[group]]) != tag.healthy]
+
+  dat <- as.data.frame(dat)
 
   clasRes <- optimal.cutpoints(
     X = x,
