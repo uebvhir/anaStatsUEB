@@ -18,7 +18,6 @@
 #'
 #' @importFrom Hmisc label
 #' @export
-
 get_lab_nam <- function(data, variable_names) {
   # Aplicar la lógica a cada variable en la lista
   labels <- sapply(variable_names, function(var) {
