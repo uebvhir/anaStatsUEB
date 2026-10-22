@@ -16,14 +16,10 @@
 #' @export tabOR_lr
 #' @export desc_mod
 #' @import xtable dplyr papeR
-#'
-#'
-
 tabOR_lr <- function(...) {
   .Deprecated("desc_mod") #include a package argument, too
   desc_mod(...)
 }
-
 desc_mod <- function(mod,
                      xtab = FALSE,
                      title = "Model summary",

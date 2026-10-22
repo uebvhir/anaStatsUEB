@@ -19,11 +19,20 @@
 #'   in SPSS files are returned as \code{labelled_spss()} objects. If \code{FALSE},
 #'   user-defined missing values are converted to \code{NA}.
 #' @param na_strings Character vector of strings to interpret as missing values.
-#'   Applies to CSV and optionally to SAV files.
+#'   Applies to Excel and CSV, and optionally to SAV files. For Excel, if \code{NULL}
+#'   only empty cells are read as missing (\code{readxl} default).
 #' @param clean_names Logical. If \code{TRUE}, column names are cleaned using
 #'   \code{janitor::clean_names()} and empty columns are removed.
 #' @param rm_x_cols Logical. If \code{FALSE}, columns names starts with 'x_' or 'X' are erased automàticaly.
 #' @param id_col Character vector. Detects 'id' columns in the datasets list and creates a column 'id'. Default is \code{NULL}.
+#' @param id_sheet Logical. If \code{TRUE}, homogenises the 'id' column across the
+#'   list of data frames (e.g. Excel sheets): the id of the i-th element is offset by
+#'   \code{i * id_step} when it is lower than that value, and the element (sheet) name
+#'   is added to the identifier (\code{id_<sheet>_<id>}). Creates the columns
+#'   \code{id_orig}, \code{id_num} and \code{id_sheet}. Requires \code{id_col}.
+#'   Default is \code{FALSE} (previous behaviour unchanged).
+#' @param id_step Numeric. Offset step used when \code{id_sheet = TRUE}. Default is \code{100}
+#'   (1st element: 101..., 2nd element: 201...).
 #' 
 #' @return
 #' A list of data frames. For Excel files, each sheet is returned as a separate element.
@@ -72,7 +81,9 @@ read_df_ueb <- function(
   na_strings = NULL,
   clean_names = TRUE,
   rm_x_cols = FALSE,
-  id_col = NULL)
+  id_col = NULL,
+  id_sheet = FALSE,
+  id_step = 100)
 {
 
 ### 1st double check
@@ -95,7 +106,8 @@ read_df_ueb <- function(
         l_sheet <- readxl::excel_sheets(l_files[[i]])
 
         df <- lapply(l_sheet, 
-          function(x) readxl::read_excel(l_files[[i]], sheet = x, skip = skip_rows))
+          function(x) readxl::read_excel(l_files[[i]], sheet = x, skip = skip_rows,
+            na = if(is.null(na_strings)) '' else na_strings))
 
       ### Assigna noms a les matrius
         names(df) <- l_sheet
@@ -160,6 +172,37 @@ read_df_ueb <- function(
     }
   }
 
+### apply 'id_sheet'
+  if(isTRUE(id_sheet)) {
+
+    if(is.null(id_col)) stop("'id_sheet = TRUE' necessita 'id_col'.")
+
+  ### noms de fulla (fallback per a csv/sav, que no en tenen)
+    sheet_nm <- names(l_df)
+    if(is.null(sheet_nm)) sheet_nm <- rep('', length(l_df))
+    sheet_nm[sheet_nm == ''] <- paste0('df', seq_along(l_df))[sheet_nm == '']
+    sheet_nm <- janitor::make_clean_names(sheet_nm)
+
+    for(i in seq_along(l_df)){
+
+      col_found <- match(tolower(id_col), tolower(names(l_df[[i]])))
+      first_idx <- na.omit(col_found)[1]
+      col_found <- names(l_df[[i]])[first_idx]
+
+      if(!is.na(col_found)) {
+
+        offset <- id_step * i
+        id_num <- suppressWarnings(as.numeric(l_df[[i]][[col_found]]))
+
+        l_df[[i]] <- l_df[[i]] |>
+          dplyr::mutate(
+            id_orig  = .data[[col_found]],
+            id_num   = ifelse(id_num < offset, id_num + offset, id_num),
+            id_sheet = sheet_nm[i])
+      }
+    }
+  }
+
 ### apply 'id_cols'
   if(!is.null(id_col)) {
 
@@ -171,16 +214,20 @@ read_df_ueb <- function(
 
       if(!is.na(col_found)) {
 
-        max_value  <- max(as.numeric(l_df[[i]][[col_found]]), na.rm = TRUE) 
+      ### amb 'id_sheet' es fa servir l'id homogeneïtzat i el nom de fulla
+        col_use <- if(isTRUE(id_sheet)) 'id_num' else col_found
+        prefix  <- if(isTRUE(id_sheet)) paste0('id_', sheet_nm[i], '_') else 'id_'
+
+        max_value  <- max(as.numeric(l_df[[i]][[col_use]]), na.rm = TRUE) 
         n_digits <- if(is.infinite(max_value) || is.na(max_value)) 3 else nchar(as.character(max_value))
 
       l_df[[i]] <- l_df[[i]] |> 
         dplyr::group_by(
-          .data[[col_found]]) |>
+          .data[[col_use]]) |>
         dplyr::mutate(
           .sufix = stringi::stri_pad(as.character(dplyr::row_number()), width = 2, side = 'left', pad = '0'),
         id = paste0(
-          'id_', stringi::stri_pad(as.character(.data[[col_found]]), width = n_digits, side = 'left', pad = '0'), '_', .sufix)) |> 
+          prefix, stringi::stri_pad(as.character(.data[[col_use]]), width = n_digits, side = 'left', pad = '0'), '_', .sufix)) |> 
         dplyr::ungroup() |> 
         dplyr::select(-.sufix) |> 
         tidyr::separate(

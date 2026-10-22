@@ -14,7 +14,9 @@ read_df_ueb(
   na_strings = NULL,
   clean_names = TRUE,
   rm_x_cols = FALSE,
-  id_col = NULL
+  id_col = NULL,
+  id_sheet = FALSE,
+  id_step = 100
 )
 }
 \arguments{
@@ -35,7 +37,8 @@ in SPSS files are returned as \code{labelled_spss()} objects. If \code{FALSE},
 user-defined missing values are converted to \code{NA}.}
 
 \item{na_strings}{Character vector of strings to interpret as missing values.
-Applies to CSV and optionally to SAV files.}
+Applies to Excel and CSV, and optionally to SAV files. For Excel, if \code{NULL}
+only empty cells are read as missing (\code{readxl} default).}
 
 \item{clean_names}{Logical. If \code{TRUE}, column names are cleaned using
 \code{janitor::clean_names()} and empty columns are removed.}
@@ -43,6 +46,16 @@ Applies to CSV and optionally to SAV files.}
 \item{rm_x_cols}{Logical. If \code{FALSE}, columns names starts with 'x_' or 'X' are erased automàticaly.}
 
 \item{id_col}{Character vector. Detects 'id' columns in the datasets list and creates a column 'id'. Default is \code{NULL}.}
+
+\item{id_sheet}{Logical. If \code{TRUE}, homogenises the 'id' column across the
+list of data frames (e.g. Excel sheets): the id of the i-th element is offset by
+\code{i * id_step} when it is lower than that value, and the element (sheet) name
+is added to the identifier (\code{id_<sheet>_<id>}). Creates the columns
+\code{id_orig}, \code{id_num} and \code{id_sheet}. Requires \code{id_col}.
+Default is \code{FALSE} (previous behaviour unchanged).}
+
+\item{id_step}{Numeric. Offset step used when \code{id_sheet = TRUE}. Default is \code{100}
+(1st element: 101..., 2nd element: 201...).}
 }
 \value{
 A list of data frames. For Excel files, each sheet is returned as a separate element.
