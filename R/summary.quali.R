@@ -11,7 +11,8 @@
 #' @param group factor variable. Outcome
 #' @param data data frame, list or environment (or object coercible by 'as.data.frame' to a data frame) containing the variables in the model. If they are not found in 'data', the variables are taken from 'environment(formula)'.
 #' @param format  a character string; possible values are ht, r, no. Default value is "ht".
-#' @param nround integer indicating the number of decimal places (round) or significant digits (signif) to be used. Negative values are allowed (see ‘Details’). Default value is 2.
+#' @param nround Entero. Numero de decimales de los porcentajes y sus IC. Por defecto \code{1}.
+#'   Si llega \code{"auto"} (p. ej. via \code{desc_group(...)}) se usa 1 decimal.
 #' @param test character string indicating the test to use. Possible values are 'Fisher','Chi'. Default value is NULL
 #' @param show.pval \code{logical}. Si \code{TRUE}, muestra el valor p del test de asociación.
 #' @param show.all \code{logical}. Si \code{TRUE}, añade columna con resultados globales (sin estratificar).
@@ -60,6 +61,9 @@ summary.quali <- function(data,
                           sub.ht = TRUE,
                           var.tidy = TRUE,
                           correct = FALSE) {
+
+  ## nround = "auto" llega via desc_group(...); los porcentajes mantienen 1 decimal
+  if (identical(nround, "auto")) nround <- 1
 
 
   if (var.tidy) {

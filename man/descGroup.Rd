@@ -7,6 +7,9 @@
 descGroup(...)
 }
 \arguments{
+\item{...}{Argumentos adicionales para \code{summary.quanti} y \code{summary.quali} (p. ej. \code{nround}).
+Con \code{nround = "auto"} las variables cuantitativas usan decimales dinamicos; las cualitativas, 1 decimal.}
+
 \item{frml}{Right side of ~ must have the terms in an additive way, and left side of ~ must contain the name of the grouping variable or can be left in blank (in this latter case descriptives for whole sample are calculated and no test is performed).}
 
 \item{covariates}{a character string with names of variables.}

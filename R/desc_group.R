@@ -18,6 +18,8 @@
 #' @param caption Character vector containing the table's caption or title.
 #' @param paired  logical indicating paired data. Default value is FALSE.
 #' @param idvar a character string with name of identifier variable .
+#' @param ... Argumentos adicionales para \code{summary.quanti} y \code{summary.quali} (p. ej. \code{nround}).
+#'   Con \code{nround = "auto"} las variables cuantitativas usan decimales dinamicos; las cualitativas, 1 decimal.
 #' @keywords summary ci qualitative descriptive exploratory
 #' @export desc_group
 #' @export descGroup

@@ -7,11 +7,14 @@
 #' de contraste de hipótesis adecuados (paramétricos o no paramétricos, independientes o apareados).
 #'
 #' @param data Un \code{data.frame}, lista o entorno que contiene las variables del análisis.
-#' @param x Carácter o nombre simbólico (estilo特 tidyverse) de la variable cuantitativa a analizar.
+#' @param x Carácter o nombre simbólico (estilo tidyverse) de la variable cuantitativa a analizar.
 #' @param group Carácter o nombre simbólico (estilo tidyverse) de la variable factor utilizada para la estratificación (opcional). Por defecto es \code{NULL}.
 #' @param method Carácter. Especifica el tipo de análisis: \code{'param'} (paramétrico, por defecto) o \code{'nonparam'} (no paramétrico).
 #' @param format Carácter. Formato de salida para el resumen: \code{'html'} (por defecto), \code{'r'} o \code{'no'}.
-#' @param nround Entero. Número de decimales utilizado para el redondeo de los valores. Por defecto es \code{1}.
+#' @param nround Entero o \code{"auto"}. Numero de decimales para el redondeo. Por defecto \code{1}.
+#'   Con \code{"auto"} los decimales se calculan por variable (regla de Hopkins/Cole: decimales
+#'   suficientes para que la SD tenga 2 cifras significativas), acotados a 1-3 y comunes a todas las
+#'   columnas (grupos y ALL). Los OR usan 2 decimales. Un valor numerico no cambia el comportamiento previo.
 #' @param test Carácter opcional para forzar un test estadístico específico (ej: 'Anova', 'Student's T', 'Kruskal-Wallis', 'Mann-Whitney U', 'Paired Student's T', 'Wilcoxon signed-rank test', 'RM-ANOVA'). Si es \code{NULL} (por defecto), se elige automáticamente según los datos.
 #' @param show.pval Lógico. Si es \code{TRUE} (por defecto), muestra la columna con el p-valor del test de asociación.
 #' @param show.all Lógico. Si es \code{TRUE} (por defecto), añade una columna con los resultados descriptivos de la muestra total global.
@@ -153,6 +156,10 @@ summary.quanti <- function(data,
   }
 
 
+  ## Decimales dinamicos: nround = "auto" (si nround es numerico no cambia nada)
+  nround_or <- if (is.numeric(nround)) nround else 2   # el OR tiene otra escala que la variable
+  nround <- summary.nround(xx, nround)
+
   ## Resum univariat mean(sd) \\ IC mean \\ median[IQR]
   ci_uni <- ci.mean(xx)
   mn_sd <- paste0(round(mean(xx,na.rm = T),nround), " (", round(sd(xx,na.rm = T),nround), ")")
@@ -293,7 +300,7 @@ summary.quanti <- function(data,
 
     if (show.or & (length(levels(yy)) == 2) ) {
       or_mod <- desc_mod(glm(yy ~xx, family = "binomial"))
-      OR <- paste0(round(or_mod$`Odds Ratio`,nround), "[", round(or_mod$`CI (lower)`,nround), ", ", round(or_mod$`CI (upper)`,nround), "]")
+      OR <- paste0(round(or_mod$`Odds Ratio`,nround_or), "[", round(or_mod$`CI (lower)`,nround_or), ", ", round(or_mod$`CI (upper)`,nround_or), "]")
       res_all$OR <- OR
     }else{
       OR <- NULL

@@ -33,7 +33,8 @@
 
 \item{format}{a character string; possible values are ht, r, no. Default value is "ht".}
 
-\item{nround}{integer indicating the number of decimal places (round) or significant digits (signif) to be used. Negative values are allowed (see ‘Details’). Default value is 2.}
+\item{nround}{Entero. Numero de decimales de los porcentajes y sus IC. Por defecto \code{1}.
+Si llega \code{"auto"} (p. ej. via \code{desc_group(...)}) se usa 1 decimal.}
 
 \item{test}{character string indicating the test to use. Possible values are 'Fisher','Chi'. Default value is NULL}
 

@@ -1,0 +1,14 @@
+# Finals de línia: LF al repositori i a la carpeta de treball (també a Windows).
+# Evita l'avís "This file uses LF line endings, but Git is configured to convert them to CRLF".
+* text=auto eol=lf
+
+# Fitxers binaris: no tocar mai
+*.rda   binary
+*.RData binary
+*.rds   binary
+*.xlsx  binary
+*.xls   binary
+*.png   binary
+*.jpg   binary
+*.pdf   binary
+*.docx  binary

@@ -28,7 +28,7 @@
 \arguments{
 \item{data}{Un \code{data.frame}, lista o entorno que contiene las variables del análisis.}
 
-\item{x}{Carácter o nombre simbólico (estilo特 tidyverse) de la variable cuantitativa a analizar.}
+\item{x}{Carácter o nombre simbólico (estilo tidyverse) de la variable cuantitativa a analizar.}
 
 \item{group}{Carácter o nombre simbólico (estilo tidyverse) de la variable factor utilizada para la estratificación (opcional). Por defecto es \code{NULL}.}
 
@@ -36,7 +36,10 @@
 
 \item{format}{Carácter. Formato de salida para el resumen: \code{'html'} (por defecto), \code{'r'} o \code{'no'}.}
 
-\item{nround}{Entero. Número de decimales utilizado para el redondeo de los valores. Por defecto es \code{1}.}
+\item{nround}{Entero o \code{"auto"}. Numero de decimales para el redondeo. Por defecto \code{1}.
+Con \code{"auto"} los decimales se calculan por variable (regla de Hopkins/Cole: decimales
+suficientes para que la SD tenga 2 cifras significativas), acotados a 1-3 y comunes a todas las
+columnas (grupos y ALL). Los OR usan 2 decimales. Un valor numerico no cambia el comportamiento previo.}
 
 \item{test}{Carácter opcional para forzar un test estadístico específico (ej: 'Anova', 'Student's T', 'Kruskal-Wallis', 'Mann-Whitney U', 'Paired Student's T', 'Wilcoxon signed-rank test', 'RM-ANOVA'). Si es \code{NULL} (por defecto), se elige automáticamente según los datos.}
 
