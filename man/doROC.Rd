@@ -11,143 +11,207 @@ doROC(
   dat,
   tag.healthy = NULL,
   title = NULL,
+  model.name = NULL,
   modGLM = NULL,
   method.cutoff = "Youden",
   sens_target = 0.9,
   spec_target = NULL,
+  n.boot = NULL,
   doPlot = TRUE,
+  show.boxplot = FALSE,
+  show.tables = TRUE,
   cex.main = 2,
   cex.text = 1.4,
   cex.sub = 0.9,
   cex = 0.5,
   show.lg = TRUE,
   show.cascon = TRUE,
-  show.detail = TRUE,
   xtab = FALSE,
-  xtab.type = "latex",
   direction = c("<", ">"),
   ...
 )
 }
 \arguments{
-\item{frml}{A model formula. The left-hand side must be the binary outcome
-and the right-hand side one or more predictor variables.}
+\item{frml}{Formula specifying the logistic regression model. Required when
+`modGLM = TRUE`.}
 
-\item{x}{Character string indicating the quantitative predictor. Ignored
-when `modGLM = TRUE`.}
+\item{x}{Character string specifying the predictor variable used for the
+ROC analysis. When `modGLM = TRUE`, this variable must be included in
+`frml`.}
 
-\item{group}{Character string indicating the binary outcome variable.}
+\item{group}{Character string specifying the binary outcome variable.}
 
-\item{dat}{A data frame containing the variables.}
+\item{dat}{Data frame containing the variables used in the analysis.}
 
-\item{tag.healthy}{Character string indicating the reference (healthy)
-category of the outcome. By default, the first factor level is used.}
+\item{tag.healthy}{Optional character string specifying the label of the
+healthy/control group in `group`. If `NULL`, the function uses the
+default group identification.}
 
-\item{title}{Character string used as the plot title.}
+\item{title}{Optional character string specifying the title displayed in
+the plots and diagnostic tables.}
+
+\item{model.name}{Optional character string specifying the model name
+displayed in the results. If `NULL`, the formula is used as the model
+name.}
 
 \item{modGLM}{Logical. If `TRUE`, a logistic regression model is fitted
-before computing the ROC curve using the predicted probabilities.}
+using `frml`, and its predicted probabilities are used as the marker
+for the ROC analysis. If `FALSE`, the original predictor specified by
+`x` is used directly.}
 
-\item{method.cutoff}{Character string indicating the criterion used to
-determine the optimal cut-off. Passed to
-`OptimalCutpoints::optimal.cutpoints()`. Common options include:
-`"Youden"`, `"MinValueSe"`, `"ValueSe"`, `"MinValueSp"`,
-`"ValueSp"` and `"MinValueSpSe"`.}
+\item{method.cutoff}{Character string specifying the criterion used to
+determine the optimal cut-off point. See
+`OptimalCutpoints::optimal.cutpoints()` for the available criteria.
+Defaults to `"Youden"`.}
 
-\item{sens_target}{Target sensitivity when required by the selected
-cut-off method.}
+\item{sens_target}{Numeric value specifying the target sensitivity when
+using a sensitivity-based cut-off criterion. Defaults to `0.90`.}
 
-\item{spec_target}{Target specificity when required by the selected
-cut-off method.}
+\item{spec_target}{Numeric value specifying the target specificity when
+using a specificity-based cut-off criterion. Defaults to `NULL`.}
 
-\item{doPlot}{Logical indicating whether the ROC curve should be plotted.}
+\item{n.boot}{Optional integer specifying the number of bootstrap
+resamples used to estimate the confidence interval for the AUC.
+If `NULL`, bootstrap estimation is not performed.}
 
-\item{cex.main}{Numeric. Expansion factor for the main title.}
+\item{doPlot}{Logical. If `TRUE`, the ROC curve is displayed.}
 
-\item{cex.text}{Numeric. Expansion factor for the annotation text.}
+\item{show.boxplot}{Logical. If `TRUE`, a boxplot of the original predictor
+according to the outcome group is displayed when applicable.}
 
-\item{cex.sub}{Numeric. Expansion factor for the subtitle.}
+\item{show.tables}{Logical. If `TRUE`, diagnostic tables for the optimal
+cut-off points are generated.}
 
-\item{cex}{Numeric. General graphical expansion factor.}
+\item{cex.main}{Numeric value specifying the relative size of plot titles.}
 
-\item{show.lg}{Logical indicating whether the legend should be displayed.}
+\item{cex.text}{Numeric value specifying the relative size of plot text.}
 
-\item{show.cascon}{Logical indicating whether the number of cases and
-controls should be displayed on the plot.}
+\item{cex.sub}{Numeric value specifying the relative size of plot subtitles.}
 
-\item{show.detail}{Logical indicating whether the detailed table of
-cut-off performance should be returned.}
+\item{cex}{Numeric value specifying the relative size of additional plot
+elements.}
 
-\item{xtab}{Logical indicating whether the summary results should be
-formatted using `kable()`.}
+\item{show.lg}{Logical. If `TRUE`, the legend is displayed in the ROC plot.}
 
-\item{xtab.type}{Output format passed to `knitr::kable()`.}
+\item{show.cascon}{Logical. If `TRUE`, the number of cases and controls is
+displayed in the ROC plot.}
 
-\item{direction}{Character indicating the direction of the comparison.
-Either `"<"` or `">"`. Passed to
+\item{xtab}{Logical. If `TRUE`, an additional diagnostic table is generated
+using `kable_ueb()`.}
+
+\item{direction}{Character vector specifying the direction of the ROC
+analysis. Defaults to `c("<", ">")`.}
+
+\item{...}{Additional arguments passed to
 `OptimalCutpoints::optimal.cutpoints()`.}
-
-\item{...}{Additional graphical parameters passed to `plot()`.}
 }
 \value{
-A list containing:
+A list containing the following elements:
 \describe{
-  \item{mod}{Fitted logistic regression model (`modGLM = TRUE`).}
-  \item{dat}{Original data including predicted probabilities and predicted
-    classes.}
-  \item{res_sum}{Summary returned by
-    `OptimalCutpoints::summary()`.}
-  \item{res_detail}{Detailed table of cut-offs, sensitivity,
-    specificity, LR+ and LR-. Returned only if
-    `show.detail = TRUE`.}
-  \item{cutoff.probability}{Optimal probability threshold when
-    `modGLM = TRUE`.}
-  \item{cutoff.variable}{Optimal cut-off for the original predictor, when
-    available.}
-  \item{auc}{Area under the ROC curve (AUC).}
-  \item{table}{Confusion matrix based on the selected cut-off.}
-  \item{tag.healthy}{Reference category used as healthy controls.}
-  \item{xtab}{Formatted summary table (if `xtab = TRUE`).}
+  \item{mod}{Fitted logistic regression model, when `modGLM = TRUE`.}
+  \item{dat}{Analysis data frame, including predicted probabilities and
+  classifications when applicable.}
+  \item{res_sum}{Summary results returned by
+  `OptimalCutpoints::optimal.cutpoints()`.}
+  \item{cutoff.probability}{Optimal cut-off point(s) on the predicted
+  probability scale, when applicable.}
+  \item{cutoff.prediction}{Optimal cut-off point(s) on the prediction
+  scale, when applicable.}
+  \item{cutoff.variable}{Optimal cut-off point(s) expressed on the original
+  predictor scale, when this conversion is possible.}
+  \item{cutoff.type}{Character string indicating the scale of the reported
+  cut-off point(s): original predictor scale or predicted probability
+  scale.}
+  \item{classifications}{Classification results for each optimal cut-off
+  point.}
+  \item{table}{Confusion matrices for each optimal cut-off point.}
+  \item{diagnostics}{Diagnostic measures across all evaluated cut-off
+  points.}
+  \item{diagnostics_ci}{Diagnostic measures and their confidence intervals
+  across all evaluated cut-off points.}
+  \item{Criterion}{Optimal value(s) of the selected criterion specified by
+  `method.cutoff`.}
+  \item{auc}{AUC estimate and its confidence interval.}
+  \item{tag.healthy}{Label identifying the healthy/control group.}
+  \item{kable_tables}{Diagnostic tables for the optimal cut-off point(s), when
+  `show.tables = TRUE`.}
+  \item{boxplot}{Boxplot of the original predictor, when generated.}
+  \item{bootstrap}{Bootstrap results, when `n.boot` is specified. Includes
+  the number of valid and failed resamples, bootstrap AUC estimates,
+  standard error and percentile confidence interval.}
+  \item{metrics}{Data frame containing one row per optimal cut-off point,
+  with the model name, number of observations, AUC and confidence
+  intervals, bootstrap confidence interval when available, selected
+  criterion value, sensitivity, specificity, positive and negative
+  predictive values, positive and negative diagnostic likelihood ratios,
+  accuracy and the corresponding cut-off point and its scale.}
+  \item{xtab}{Additional diagnostic table generated when `xtab = TRUE`.}
 }
 }
 \description{
 Performs ROC curve analysis for a continuous marker or for the predicted
-probabilities of a logistic regression model. The function estimates the
-optimal cut-off according to different criteria (e.g. Youden index, minimum
-sensitivity or specificity), computes diagnostic accuracy measures and
-optionally displays the ROC curve.
+probabilities from a logistic regression model. The function estimates
+optimal cut-off points according to different criteria, computes diagnostic
+accuracy measures and optionally displays the ROC curve, diagnostic tables
+and boxplots.
 }
 \details{
-If `modGLM = TRUE`, a logistic regression model is first fitted using
-`frml`, and the ROC analysis is performed on the predicted probabilities.
+Bootstrap confidence intervals for the AUC can also be estimated using
+stratified resampling. When a logistic regression model is specified, the
+model is refitted in each bootstrap sample.
 
 
-The function is a wrapper around
-`OptimalCutpoints::optimal.cutpoints()`. It allows ROC analyses to be
-performed directly on a biomarker or on the predicted probabilities from
-a logistic regression model. Confidence intervals for the ROC statistics
-are computed by the underlying package.
+When `modGLM = FALSE`, the ROC analysis is performed directly using the
+predictor specified by `x`. When `modGLM = TRUE`, a logistic regression
+model is fitted and the predicted probabilities are used as the marker.
+
+For univariable logistic regression models with a continuous predictor,
+the probability cut-off can be transformed back to the original predictor
+scale. For multivariable models, or when this transformation is not
+possible, the cut-off is reported on the predicted probability scale.
+
+The `diagnostics` and `diagnostics_ci` elements contain diagnostic
+measures across all evaluated cut-off points. In contrast, `metrics`
+provides a compact summary restricted to the optimal cut-off point(s)
+selected according to `method.cutoff`.
+
+Accuracy confidence intervals in `metrics` are calculated using the
+exact binomial method based on the corresponding confusion matrix.
+
+When bootstrap estimation is requested, stratified resampling is used
+to preserve the number of cases and controls in each resample. For
+logistic regression models, the model is refitted in each bootstrap
+sample. The resulting percentile confidence interval describes the
+bootstrap distribution of the AUC; it does not correct for optimism
+or replace external validation.
+
+Multiple optimal cut-off points may be returned when several values
+achieve the same optimal criterion.
 }
 \examples{
-## ROC from a single biomarker
+\dontrun{
+# ROC analysis using a continuous predictor
 res <- doROC(
   x = "marker",
-  group = "status",
-  dat = mydata,
+  group = "outcome",
+  dat = data,
   modGLM = FALSE
 )
 
-## ROC from a logistic regression model
+# ROC analysis using predicted probabilities from a logistic model
 res <- doROC(
-  frml = status ~ age + marker,
-  dat = mydata,
-  modGLM = TRUE
+  frml = outcome ~ marker + age,
+  x = "marker",
+  group = "outcome",
+  dat = data,
+  modGLM = TRUE,
+  n.boot = 1000
 )
+}
 
 }
 \seealso{
-\code{\link[OptimalCutpoints]{optimal.cutpoints}},
-\code{\link[stats]{glm}}
+\code{\link[OptimalCutpoints]{optimal.cutpoints}}
 }
 \author{
 Marcos Esteve, Miriam Mota
