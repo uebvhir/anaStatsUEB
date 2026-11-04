@@ -60,6 +60,9 @@
 #' @param ... Additional arguments passed to
 #'   `OptimalCutpoints::optimal.cutpoints()`.
 #'
+#' @importFrom OptimalCutpoints optimal.cutpoints
+#' @import BMisc
+#'
 #' @return A list containing the following elements:
 #' \describe{
 #'   \item{mod}{Fitted logistic regression model, when `modGLM = TRUE`.}
@@ -208,6 +211,13 @@ doROC <- function(frml, x, group, dat,
   direction <- match.arg(direction)
 
   ## Asignación de variables
+  if (!missing(frml)) {
+    if (is.character(frml)) {
+      frml <- stats::as.formula(frml)
+    } else if (!inherits(frml, "formula")) {
+      stop("'frml' must be a formula or a character string representing a formula.", call. = FALSE)
+    }
+  }
   if (missing(x)) x <- all.vars(delete.response(terms(frml)))
   if (missing(frml)) frml <- as.formula(paste(group, "~", paste(x, collapse = " + ")))
   if (missing(group)) group <- all.vars(frml)[1]

@@ -1,33 +1,13 @@
 Package: anaStatsUEB
-Title: Statistical Analysis Functions for the Statistics and Bioinformatics Unit (UEB, VHIR)
+Title: Statistical Analysis Functions for the Statistics and
+    Bioinformatics Unit (UEB, VHIR)
 Version: 0.0.0.9000
-Authors@R:
-    c(
-      person(
-        given = "Miriam",
-        family = "Mota",
-        email = "miriam.mota@vhir.org",
-        role = c("aut", "cre")
-      ),
-      person(
-        given = "Marcos",
-        family = "Esteve Hernandez",
-        email = "marcos.esteve@vhir.org",
-        role = "aut"
-      ),
-      person(
-        given = "Alba",
-        family = "Garcia Zarzoso",
-        email = "alba.garcia.zarzoso@vhir.org",
-        role = "aut"
-      ),
-      person(
-        given = "Miquel",
-        family = "Vazquez-Santiago",
-        email = "miquel.vazquez@vhir.org",
-        role = "aut"
-      )
-    )
+Authors@R:c(
+    person("Miriam", "Mota", , "miriam.mota@vhir.org", role = c("aut", "cre")),
+    person("Marcos", "Esteve Hernandez", , "marcos.esteve@vhir.org", role = "aut"),
+    person("Alba", "Garcia Zarzoso", , "alba.garcia.zarzoso@vhir.org", role = "aut"),
+    person("Miquel", "Vazquez-Santiago", , "miquel.vazquez@vhir.org", role = "aut")
+  )
 Description: Statistical analysis, reporting and visualization functions
     developed by the Statistics and Bioinformatics Unit (UEB) of the Vall
     d'Hebron Research Institute (VHIR). The package includes tools for
@@ -37,17 +17,17 @@ Description: Statistical analysis, reporting and visualization functions
     development are carried out by the Biomedical Data Intelligence Unit
     (BIDU), Vall d'Hebron Research Institute (VHIR), Vall d'Hebron
     Barcelona Hospital Campus.
+License: MIT + file LICENSE
 Depends:
-    R (>= 4.1.0),
     binom,
-    dplyr
+    dplyr,
+    R (>= 4.1.0)
 Imports:
-    DescTools,
-    RColorBrewer,
     broom,
     car,
     caret,
     data.table,
+    DescTools,
     dunn.test,
     e1071,
     epiR,
@@ -55,6 +35,8 @@ Imports:
     ggplot2,
     ggtext,
     glmnet,
+    grDevices,
+    grid,
     gridExtra,
     haven,
     Hmisc,
@@ -62,8 +44,8 @@ Imports:
     kableExtra,
     knitr,
     lme4,
-    magrittr,
     mada,
+    magrittr,
     nlme,
     nnet,
     openxlsx,
@@ -74,19 +56,19 @@ Imports:
     pROC,
     Publish,
     purrr,
+    RColorBrewer,
     readxl,
     rstatix,
     scales,
     sjPlot,
     stargazer,
+    stats,
+    stringi,
     stringr,
     survival,
     tibble,
     tidyr,
     xtable (>= 1.8-2)
-Suggests:
-    survminer
-License: MIT + file LICENSE
+Config/roxygen2/version: 8.1.1
 Encoding: UTF-8
 LazyData: true
-Config/roxygen2/version: 8.1.1
