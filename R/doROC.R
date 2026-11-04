@@ -506,7 +506,7 @@ doROC <- function(frml, x, group, dat,
       kb1 <- kable_ueb(
         tab_class,
         caption = paste0(
-          "Cut-off = ", cutoff_label,
+          "Cut-off (", method.cutoff, ") = ", cutoff_label,
           "<br>Columns: Real value <br> Rows: Predicted value"
         )
       )
@@ -560,7 +560,7 @@ doROC <- function(frml, x, group, dat,
         col.names = "Values",
         row.names = TRUE,
         caption = paste0(
-          "Cut-off = ", cutoff_label,
+          "Cut-off (", method.cutoff, ") = ", cutoff_label,
           "<br>Reference class = ", tag.healthy,
           "<br>Positive class = ", positive.class
         ),
@@ -617,7 +617,7 @@ doROC <- function(frml, x, group, dat,
           ggplot2::aes(yintercept = cutoff, linetype = label),
           color = "#993489"
         ) +
-        ggplot2::scale_linetype_discrete(name = NULL) +
+        ggplot2::scale_linetype_discrete(name = method.cutoff) +
         ggplot2::labs(
           title = title,
           x = group,
@@ -792,7 +792,7 @@ doROC <- function(frml, x, group, dat,
       n_boot_valid = n_boot_valid,
       n_boot = n_boot,
 
-      Criterion = criterion[i],
+      setNames(data.frame(criterion[i]), paste0("Criterion (", method.cutoff, ")")),
 
       Sensitivity = ma$Se[idx, "Value"],
       Sensitivity_CI_low = ma$Se[idx, "ll"],
