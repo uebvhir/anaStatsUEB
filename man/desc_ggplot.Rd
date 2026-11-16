@@ -9,6 +9,7 @@ desc_ggplot(
   covariates = NULL,
   frml = NULL,
   y = NULL,
+  method = "non-param",
   nameFile = "descriptive_plots.pdf",
   topdf = FALSE,
   list.plots = FALSE,
@@ -25,6 +26,11 @@ desc_ggplot(
   show.na = FALSE,
   legend.position = "right",
   angle_x = "horizontal",
+  idvar = NULL,
+  outlier.method = "sd",
+  outlier.k = 3,
+  outlier.max = 10,
+  size.outlier = 2.5,
   ...
 )
 }
@@ -36,6 +42,9 @@ desc_ggplot(
 \item{frml}{Fórmula del tipo \code{y ~ x1 + x2 + ...} para definir la variable dependiente y las independientes.}
 
 \item{y}{Variable de agrupación (dependiente) para análisis bivariado. Ignorado si se usa \code{frml}.}
+
+\item{method}{\code{'param'} o \code{'non-param'} (también \code{'nonparam'}). Test del p-valor cuando
+\code{show.pval = TRUE}; debe ser el mismo que en \code{desc_group()}. Default value is 'non-param'.}
 
 \item{nameFile}{Nombre del archivo PDF de salida si \code{topdf = TRUE}.}
 
@@ -69,10 +78,26 @@ desc_ggplot(
 
 \item{angle_x}{Define la orientación de las etiquetas del eje X: puede ser \code{"horizontal"} (por defecto), \code{"vertical"} o \code{"diagonal"}.}
 
+\item{idvar}{Nombre de la variable identificadora (texto). Si se indica, en los boxplots bivariados
+(\code{y} informado) se etiquetan con \code{ggrepel} los \emph{outliers} de cada grupo. Por defecto
+\code{NULL}: sin etiquetas y sin ningún cambio en el gráfico.}
+
+\item{outlier.method}{Criterio para definir \emph{outlier}, calculado dentro de cada grupo:
+\code{'sd'} (media +/- k SD, por defecto), \code{'iqr'} (Q1 - k IQR, Q3 + k IQR; con k = 1.5 coincide
+con los bigotes del boxplot) o \code{'mad'} (mediana +/- k MAD).}
+
+\item{outlier.k}{Número de SD (o de IQR / MAD). Por defecto 3.}
+
+\item{outlier.max}{Número máximo de etiquetas por gráfico (los más extremos). Por defecto 10.}
+
+\item{size.outlier}{Tamaño del texto de las etiquetas.}
+
 \item{...}{Argumentos adicionales (no usados actualmente).}
 }
 \value{
 Por defecto imprime los gráficos. Si \code{list.plots = TRUE}, retorna una lista de objetos ggplot.
+Con \code{idvar}, la lista lleva el atributo \code{"outliers"} (\code{attr(res, "outliers")}): un data.frame
+con \code{variable, group, id, value, lower, upper, method, k}.
 Si \code{topdf = TRUE}, guarda los gráficos en un archivo PDF.
 }
 \description{
@@ -86,6 +111,10 @@ La función selecciona automáticamente el tipo de gráfico según el tipo de va
 - Variables \code{Date} o \code{POSIXt}: histograma por fechas.
 
 Variables de tipo \code{character} son ignoradas con una advertencia.
+
+El p-valor (\code{show.pval = TRUE}) se calcula con \code{summary.quanti()} / \code{summary.quali()},
+las mismas funciones que usa \code{desc_group()}, por lo que coincide con la tabla. Para un gráfico
+con el test completo y el post-hoc, ver \code{desc_ggstats()}.
 }
 \examples{
 \dontrun{
