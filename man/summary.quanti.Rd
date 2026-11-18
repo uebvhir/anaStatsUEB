@@ -2,7 +2,7 @@
 % Please edit documentation in R/summary.quanti.R
 \name{summary.quanti}
 \alias{summary.quanti}
-\title{Resumen Descriptivo y Bivariante de Variables Cuantitativas}
+\title{Resumen descriptivo y bivariante de variables cuantitativas}
 \usage{
 \method{summary}{quanti}(
   data,
@@ -26,95 +26,165 @@
 )
 }
 \arguments{
-\item{data}{Un \code{data.frame}, lista o entorno que contiene las variables del análisis.}
+\item{data}{Data frame con las variables del análisis (no se admite un tibble).}
 
-\item{x}{Carácter o nombre simbólico (estilo tidyverse) de la variable cuantitativa a analizar.}
+\item{x}{Variable cuantitativa a analizar: nombre de columna, con o sin comillas
+(si \code{var.tidy = TRUE}).}
 
-\item{group}{Carácter o nombre simbólico (estilo tidyverse) de la variable factor utilizada para la estratificación (opcional). Por defecto es \code{NULL}.}
+\item{group}{Variable de agrupación (un factor), en el mismo formato que
+\code{x}. Si no es un factor, se convierte en uno con un aviso. Por defecto,
+\code{NULL} (solo resumen global).}
 
-\item{method}{Carácter. Especifica el tipo de análisis: \code{'param'} (paramétrico, por defecto) o \code{'nonparam'} (no paramétrico).}
+\item{method}{Tipo de análisis: \code{"param"} (paramétrico, por defecto) o
+\code{"non-param"} (no paramétrico, con guión). Cualquier otro valor
+(por ejemplo, \code{"nonparam"}) no calcula ningún test y el p-valor aparece
+como \code{"."}.}
 
-\item{format}{Carácter. Formato de salida para el resumen: \code{'html'} (por defecto), \code{'r'} o \code{'no'}.}
+\item{format}{Formato de los saltos de línea de las celdas: \code{"html"} (por
+defecto), \code{"latex"} o \code{"R"}. Cualquier otro valor elimina los saltos
+de línea.}
 
-\item{nround}{Entero o \code{"auto"}. Numero de decimales para el redondeo. Por defecto \code{1}.
-Con \code{"auto"} los decimales se calculan por variable (regla de Hopkins/Cole: decimales
-suficientes para que la SD tenga 2 cifras significativas), acotados a 1-3 y comunes a todas las
-columnas (grupos y ALL). Los OR usan 2 decimales. Un valor numerico no cambia el comportamiento previo.}
+\item{nround}{Número de decimales (por defecto, 1) o \code{"auto"}. Con
+\code{"auto"} los decimales se calculan por variable (regla de Hopkins/Cole:
+los necesarios para que la SD tenga 2 cifras significativas), acotados a 1-3
+y comunes a todas las columnas (grupos y \code{ALL}); véase
+\code{\link{summary.nround}}. Las odds ratio usan 2 decimales con
+\code{"auto"}; con un valor numérico, ese mismo valor.}
 
-\item{test}{Carácter opcional para forzar un test estadístico específico (ej: 'Anova', 'Student's T', 'Kruskal-Wallis', 'Mann-Whitney U', 'Paired Student's T', 'Wilcoxon signed-rank test', 'RM-ANOVA'). Si es \code{NULL} (por defecto), se elige automáticamente según los datos.}
+\item{test}{Test estadístico que se quiere forzar, con uno de estos nombres
+exactos: \code{"Student's T"}, \code{"Mann–Whitney U"} (con guion largo,
+U+2013), \code{"Anova"}, \code{"Kruskal-Wallis"}, \code{"Paired Student's T"},
+\code{"Wilcoxon signed-rank test"}, \code{"RM-ANOVA"} o \code{"Friedman"}.
+Si es \code{NULL} (por defecto), se elige según \code{method}, el número de
+niveles de \code{group} y \code{paired}; véase \sQuote{Details}.}
 
-\item{show.pval}{Lógico. Si es \code{TRUE} (por defecto), muestra la columna con el p-valor del test de asociación.}
+\item{show.pval}{Lógico. Si es \code{TRUE} (por defecto), muestra la columna con
+el p-valor del test.}
 
-\item{show.all}{Lógico. Si es \code{TRUE} (por defecto), añade una columna con los resultados descriptivos de la muestra total global.}
+\item{show.all}{Lógico. Si es \code{TRUE} (por defecto), añade la columna
+\code{ALL} con los resultados de la muestra total (se fuerza a \code{FALSE}
+con \code{paired = TRUE}).}
 
-\item{show.n}{Lógico. Si es \code{TRUE} (por defecto), muestra el recuento de la N de la muestra.}
+\item{show.n}{Lógico. Si es \code{TRUE} (por defecto), añade la columna \code{n}
+con el número de observaciones completas.}
 
-\item{show.stat}{Lógico. Si es \code{TRUE}, añade el estadístico del test a la salida. Por defecto es \code{FALSE}.}
+\item{show.stat}{Lógico. Si es \code{TRUE}, añade el estadístico del test (por
+ejemplo, \eqn{t}, \eqn{W} o \eqn{F}). Solo se aplica si
+\code{show.pval = TRUE} (por defecto, \code{FALSE}).}
 
-\item{show.or}{Lógico. Si es \code{TRUE} y el grupo tiene exactamente dos niveles, calcula y muestra las Odds Ratios de un modelo logístico aplicado. Por defecto es \code{FALSE}.}
+\item{show.or}{Lógico. Si es \code{TRUE} y \code{group} tiene exactamente dos
+niveles, añade la columna \code{OR} con la odds ratio de un modelo logístico
+\code{group ~ x} (por defecto, \code{FALSE}).}
 
-\item{prep2sum}{Lógico. Modifica la estructura interna de la tabla de salida para que se integre correctamente con la función \code{desc_group}. Por defecto es \code{FALSE}.}
+\item{prep2sum}{Lógico. Si es \code{TRUE}, añade una columna \code{levels} vacía
+a la tabla para que se integre con \code{desc_ggstats} (por defecto,
+\code{FALSE}).}
 
-\item{prep.tab}{Lógico. Modifica la estructura interna de la tabla de salida para que se integre correctamente con la función \code{desc_quanti}. Por defecto es \code{FALSE}.}
+\item{prep.tab}{Lógico. Si es \code{TRUE} y hay \code{group}, añade a la salida
+\code{df_prep_tab}, la tabla intermedia que usa \code{desc_group_numeric}.
+Requiere \code{show.n = TRUE} y \code{show.pval = TRUE} (por defecto,
+\code{FALSE}).}
 
-\item{sub.ht}{Lógico. Si es \code{TRUE} (por defecto), formatea ciertos elementos (como indicadores de grupo o método) como subíndices HTML.}
+\item{sub.ht}{Lógico. Si es \code{TRUE} (por defecto), añade un superíndice
+HTML de nota al nombre de la variable. Con \code{FALSE} la función falla;
+véase \sQuote{Details}.}
 
-\item{paired}{Lógico. Si es \code{TRUE}, se ejecutarán las versiones de tests estadísticos apareados. Por defecto es \code{FALSE}.}
+\item{paired}{Lógico. Si es \code{TRUE}, se usan los tests para datos apareados
+(por defecto, \code{FALSE}). Requiere \code{idvar}.}
 
-\item{idvar}{Carácter opcional. El nombre de la variable de identificación de sujeto/clúster necesaria si \code{paired = TRUE}. Por defecto es \code{NULL}.}
+\item{idvar}{Nombre (texto) de la variable de identificación del sujeto,
+necesaria si \code{paired = TRUE} (por defecto, \code{NULL}).}
 
-\item{var.tidy}{Lógico. Si es \code{TRUE} (por defecto), permite pasar los nombres de las variables tanto entre comillas (\code{"var"}) como directamente como expresiones sin comillas.}
+\item{var.tidy}{Lógico. Si es \code{TRUE} (por defecto), \code{x} y \code{group}
+pueden darse con o sin comillas. Si es \code{FALSE}, deben ser texto.}
 }
 \value{
-Una lista que contiene los siguientes elementos:
+Una lista. Sin \code{group}: \code{variable}, \code{methods},
+\code{txt_caption} y \code{summary}. Con \code{group}:
 \describe{
-  \item{rows}{Nombre de la variable cuantitativa evaluada.}
-  \item{txt_test}{Cadena de texto que identifica el test estadístico aplicado.}
-  \item{pval}{Valor p de carácter numérico resultante del test.}
-  \item{txt_caption}{Cadena con el título generado para la tabla.}
-  \item{methods}{Descripción textual del tipo de metodología empleada (paramétrica/no paramétrica).}
-  \item{summary}{Un \code{data.frame} estructurado y formateado listo para la visualización final en HTML.}
-  \item{df_prep_tab}{Si \code{prep.tab = TRUE}, incluye el dataframe intermedio procesado.}
+  \item{\code{rows}}{Nombre de la variable cuantitativa.}
+  \item{\code{txt_test}}{Texto con el nombre del test aplicado (\code{NULL} si
+    \code{show.pval = FALSE}).}
+  \item{\code{pval}}{P-valor del test sin redondear, o \code{"."} si el test
+    falla (\code{NULL} si \code{show.pval = FALSE}).}
+  \item{\code{txt_caption}}{Título de la tabla.}
+  \item{\code{methods}}{Descripción del contenido de las celdas.}
+  \item{\code{summary}}{Data frame con las columnas \code{variable}, una por
+    grupo, \code{ALL}, \code{p.value}, \code{stat}, \code{n} y \code{OR}
+    (según los argumentos \code{show.*}). Cada celda contiene n, media (SD),
+    IC 95 \% de la media y mediana [Q1, Q3].}
+  \item{\code{df_prep_tab}}{Solo si \code{prep.tab = TRUE}: data frame con
+    \code{variable}, \code{levels}, \code{summary}, \code{p.value} y \code{n}.}
 }
 }
 \description{
-Calcula estadísticos descriptivos (media, desviación estándar, mediana y cuartiles)
-para una variable cuantitativa continua. Los resultados se pueden calcular de manera
-global o estratificada por un factor (grupo), ejecutando automáticamente los tests
-de contraste de hipótesis adecuados (paramétricos o no paramétricos, independientes o apareados).
+Calcula estadísticos descriptivos (media, desviación estándar, intervalo de
+confianza de la media, mediana y cuartiles) de una variable cuantitativa. Los
+resultados se pueden calcular de forma global o estratificada por un factor
+(grupo), ejecutando automáticamente el test de contraste de hipótesis
+adecuado (paramétrico o no paramétrico, para datos independientes o
+apareados).
+}
+\details{
+\itemize{
+  \item Test por defecto con datos independientes: con \code{"param"},
+    \code{"Student's T"} (2 grupos) o \code{"Anova"} (más de 2); con
+    \code{"non-param"}, \code{"Mann–Whitney U"} o \code{"Kruskal-Wallis"}. Con
+    \code{paired = TRUE}: \code{"Paired Student's T"} o \code{"RM-ANOVA"}
+    (paramétrico), \code{"Wilcoxon signed-rank test"} o \code{"Friedman"}
+    (no paramétrico).
+  \item El test llamado \code{"Student's T"} es en realidad el de Welch
+    (\code{t.test()} sin \code{var.equal}).
+  \item Con datos apareados solo se usan los sujetos con valores completos en
+    todos los niveles de \code{group}.
+  \item Las observaciones con valores perdidos en \code{x} o en \code{group} se
+    ignoran.
+  \item Nota: \code{sub.ht = FALSE} produce un error. Un \code{test} no válido,
+    o \code{test} apareado con \code{paired = FALSE}, no calcula el p-valor
+    (error o \code{"."}). \code{"RM-ANOVA"} devuelve \code{"."} si el paquete
+    \pkg{ez} no está cargado (\code{ezANOVA} no está importada).
+    \code{prep.tab = TRUE} falla con \code{show.n = FALSE} o
+    \code{show.pval = FALSE}.
+}
 }
 \examples{
-\dontrun{
-library(dplyr)
-library(kableExtra)
-
-df_prova <- data.frame(
+set.seed(1)
+df <- data.frame(
   id = rep(1:13, 2),
   MUT = factor(c(rep("A", 13), rep("B", 13))),
   var = rnorm(26, mean = 10, sd = 2)
 )
+# Resumen global
+summary.quanti(data = df, x = var)$summary
 
-# Resumen global simple
-summary.quanti(data = df_prova, x = var)
+# Por grupos, con el estadístico del test
+res <- summary.quanti(data = df, x = "var", group = "MUT", show.stat = TRUE)
+res$summary[, c("p.value", "stat")]
+res$txt_test
 
-# Resumen bivariante estratificado por grupo mutacional
-tab <- summary.quanti(data = df_prova, x = "var", group = "MUT")
+# Test no paramétrico
+summary.quanti(data = df, x = var, group = MUT, method = "non-param")$pval
 
-# Resumen utilizando métodos no paramétricos y datos apareados
-tab_aparellat <- summary.quanti(
-  data = df_prova, x = var, group = MUT,
-  idvar = "id", paired = TRUE, method = "nonparam"
-)
+# Datos apareados (idvar identifica al sujeto)
+res_pa <- summary.quanti(data = df, x = var, group = MUT, idvar = "id", paired = TRUE)
+res_pa$txt_test
 
-# Renderizado en una tabla con kableExtra
-kable(tab$summary, escape = FALSE, row.names = FALSE, align = "c",
-      caption = paste(tab$txt_caption, tab$txt_test)) \%>\%
-  kable_styling(full_width = FALSE, font_size = 14)
+# Odds ratio y decimales automáticos
+summary.quanti(data = df, x = var, group = MUT, show.or = TRUE, nround = "auto")$summary$OR
+
 }
-
+\seealso{
+\code{\link{summary.quali}}, \code{\link{summary.quanti.rep}},
+  \code{\link{summary.nround}}, \code{\link{desc_group_numeric}},
+  \code{\link{desc_ggstats}}, \code{\link[stats]{t.test}},
+  \code{\link[stats]{wilcox.test}}, \code{\link[stats]{kruskal.test}},
+  \code{\link[stats]{friedman.test}}, \code{\link[Publish]{ci.mean}}
 }
 \author{
 Miriam Mota \email{miriam.mota@vhir.org}
+
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }
 \keyword{biostatistics}
 \keyword{descriptive}

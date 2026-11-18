@@ -1,89 +1,120 @@
-#' A summary.quali.rep Function
+#' @title Resumen descriptivo de una variable binaria con medidas repetidas
 #'
-#' Genera un resumen descriptivo para una variable categórica binaria en estudios
-#' con medidas repetidas, mostrando frecuencias, porcentajes e intervalos de confianza
-#' exactos tanto de forma global como por cada momento temporal. Adicionalmente puede
-#' realizar el test de Cochran para comparar proporciones apareadas entre visitas.
+#' @description
+#' Genera un resumen descriptivo de una variable categórica binaria (factor) en
+#' estudios con medidas repetidas: frecuencias, porcentajes e intervalos de
+#' confianza exactos binomiales, tanto globales como por cada momento temporal
+#' (visita). Opcionalmente realiza el test Q de Cochran para comparar proporciones
+#' apareadas entre visitas.
 #'
-#' @param data data frame que contiene las variables a analizar.
-#' @param x variable categórica binaria a resumir.
-#' @param tiempo variable que identifica los momentos temporales o visitas.
-#' @param id identificador único de sujeto para el análisis de medidas repetidas.
-#' @param format formato de salida utilizado para los saltos de línea. Valores posibles:
-#' \code{"html"}, \code{"latex"} o \code{"R"}. Por defecto \code{"html"}.
-#' @param nround número de decimales utilizados en porcentajes e intervalos de confianza.
-#' Por defecto 1.
-#' @param show.pval TRUE o FALSE indicando si se realiza el test de Cochran y se muestra el p-valor. Por defecto TRUE.
-#' @param show.all TRUE o FALSE indicando si se muestra el resumen global (ALL). Por defecto TRUE.
-#' @param show.n TRUE o FALSE indicando si se muestra el tamaño muestral. Por defecto TRUE.
-#' @param show.stat TRUE o FALSE indicando si se muestra el estadístico del test de Cochran. Por defecto FALSE.
-#' @param byrow TRUE o FALSE indicando si los porcentajes se calculan por filas. Si FALSE se calculan por columnas. Por defecto FALSE.
-#' @param sub.ht TRUE o FALSE indicando si se añade un subíndice identificativo al nombre de la variable. Por defecto TRUE.
-#' @param var.tidy TRUE o FALSE indicando si los nombres de las variables se obtienen automáticamente mediante evaluación no estándar. Por defecto TRUE.
-#' @param correct argumento reservado para compatibilidad. Por defecto FALSE.
+#' @param data Data frame con las variables, en formato largo (una fila por sujeto y
+#'   visita).
+#' @param x Variable categórica binaria a resumir (un factor): nombre de columna,
+#'   con o sin comillas (si \code{var.tidy = TRUE}).
+#' @param tiempo Variable que identifica los momentos temporales o visitas (un
+#'   factor), en el mismo formato que \code{x}.
+#' @param id Nombre (texto) de la variable con el identificador único de sujeto.
+#' @param format Formato de los saltos de línea de las celdas: \code{"html"} (por
+#'   defecto), \code{"latex"} o \code{"R"}. Cualquier otro valor elimina los saltos
+#'   de línea.
+#' @param nround Número de decimales de los porcentajes y sus IC (por defecto, 1).
+#' @param show.pval Lógico. Si es \code{TRUE} (por defecto), realiza el test Q de
+#'   Cochran y muestra el p-valor.
+#' @param show.all Lógico. Si es \code{TRUE} (por defecto), añade la columna
+#'   \code{ALL} con el resumen global.
+#' @param show.n Lógico. Si es \code{TRUE} (por defecto), añade la columna \code{n}
+#'   con el número de observaciones (filas), no de sujetos.
+#' @param show.stat Lógico. Si es \code{TRUE}, muestra el estadístico Q de Cochran.
+#'   Solo se aplica si \code{show.pval = TRUE} (por defecto, \code{FALSE}).
+#' @param byrow Lógico. Si es \code{FALSE} (por defecto), los porcentajes se
+#'   calculan por columnas (dentro de cada visita); si es \code{TRUE}, por filas
+#'   (dentro de cada categoría de \code{x}).
+#' @param sub.ht Lógico. Si es \code{TRUE} (por defecto), añade un superíndice de
+#'   nota al nombre de la variable. Con \code{FALSE} la función falla; véase
+#'   \sQuote{Details}.
+#' @param var.tidy Lógico. Si es \code{TRUE} (por defecto), \code{x} y
+#'   \code{tiempo} pueden darse con o sin comillas (\code{id} debe ser siempre
+#'   texto). Si es \code{FALSE}, deben ser texto.
+#' @param correct Reservado por compatibilidad; no tiene efecto (por defecto,
+#'   \code{FALSE}).
 #'
 #' @return Una lista con:
-#' \itemize{
-#'   \item \code{rows}: nombre de la variable analizada.
-#'   \item \code{columns}: variable temporal utilizada.
-#'   \item \code{txt_test}: descripción del contraste estadístico realizado.
-#'   \item \code{pval}: p-valor del test de Cochran.
-#'   \item \code{txt_caption}: texto descriptivo para tablas.
-#'   \item \code{methods}: descripción de las estadísticas mostradas.
-#'   \item \code{summary}: tabla resumen con los resultados.
+#' \describe{
+#'   \item{\code{rows}}{Nombre de la variable analizada.}
+#'   \item{\code{columns}}{Nombre de la variable temporal.}
+#'   \item{\code{txt_test}}{Texto con el nombre del test (\code{NULL} si
+#'     \code{show.pval = FALSE}).}
+#'   \item{\code{pval}}{P-valor del test Q de Cochran sin redondear (\code{NULL} si
+#'     \code{show.pval = FALSE}).}
+#'   \item{\code{txt_caption}}{Título de la tabla.}
+#'   \item{\code{methods}}{Descripción del contenido de las celdas.}
+#'   \item{\code{summary}}{Data frame con las columnas \code{variable},
+#'     \code{levels}, una por visita, \code{ALL}, \code{p.value}, \code{stat} y
+#'     \code{n} (según los argumentos \code{show.*}).}
 #' }
 #'
 #' @details
-#' La función está diseñada para variables categóricas binarias y calcula:
 #' \itemize{
-#'   \item Frecuencias absolutas.
-#'   \item Porcentajes.
-#'   \item Intervalos de confianza exactos binomiales.
+#'   \item La función está pensada para variables binarias y calcula frecuencias
+#'     absolutas, porcentajes e intervalos de confianza exactos binomiales.
+#'   \item Con \code{show.pval = TRUE}, se aplica
+#'     \code{rstatix::cochran_qtest(x ~ tiempo | id)}.
+#'   \item Se eliminan por completo los sujetos con algún valor perdido en
+#'     \code{x}.
+#'   \item Nota: \code{sub.ht = FALSE} produce un error. Los niveles vacíos de
+#'     \code{x} producen un error (\code{could not find function "\%>\%<-"}). Si
+#'     algún sujeto no tiene todas las visitas, o hay valores perdidos en
+#'     \code{tiempo}, el test de Cochran falla y no se devuelve ningún resultado.
+#'     No se comprueba que \code{x} sea binaria (con más de dos niveles no se
+#'     produce error) ni se avisa de más de 10 visitas. La función carga y
+#'     adjunta \pkg{rstatix} y \pkg{pacman} en cada llamada
+#'     (\code{pacman::p_load()}). La leyenda (\code{txt_caption}) repite tres
+#'     veces el texto descriptivo cuando \code{show.pval = TRUE}.
 #' }
 #'
-#' Cuando \code{show.pval = TRUE}, se realiza un test de Cochran (\code{cochran_qtest})
-#' para evaluar cambios en proporciones apareadas a lo largo del tiempo.
-#'
-#' @export summary.quali.rep
-#' @import Hmisc dplyr rstatix pacman DescTools
-#'
-#' @author Àlex Martí Barrera, Miriam Mota \email{mmota.foix@@gmail.com}
+#' @seealso \code{\link{summary.quanti.rep}}, \code{\link{summary.quali}},
+#'   \code{\link{desc_group_rep}}, \code{\link[rstatix]{cochran_qtest}},
+#'   \code{\link[binom]{binom.confint}}
 #'
 #' @examples
+#' set.seed(1)
 #' df <- data.frame(
 #'   id = rep(1:30, each = 3),
 #'   visita = factor(rep(c("Basal", "Mes1", "Mes3"), 30)),
-#'   respuesta = factor(sample(c("Sí", "No"), 90, replace = TRUE))
+#'   respuesta = factor(sample(c("Si", "No"), 90, replace = TRUE))
 #' )
+#' # Resumen descriptivo y test de Cochran
+#' res <- summary.quali.rep(data = df, x = "respuesta", tiempo = "visita", id = "id")
+#' res$summary
+#' res$pval
 #'
-#' # Resumen descriptivo básico
-#' summary.quali.rep(
-#'   data = df,
-#'   x = "respuesta",
-#'   tiempo = "visita",
-#'   id = "id"
-#' )
+#' # Nombres sin comillas y estadístico del test
+#' res_st <- summary.quali.rep(df, x = respuesta, tiempo = visita, id = "id",
+#'                             show.stat = TRUE)
+#' res_st$summary[, c("levels", "p.value", "stat")]
 #'
-#' # Mostrar estadístico del test
-#' summary.quali.rep(
-#'   data = df,
-#'   x = "respuesta",
-#'   tiempo = "visita",
-#'   id = "id",
-#'   show.stat = TRUE
-#' )
-#'
-#' # Porcentajes por fila
-#' summary.quali.rep(
-#'   data = df,
-#'   x = "respuesta",
-#'   tiempo = "visita",
-#'   id = "id",
-#'   byrow = TRUE
-#' )
+#' # Porcentajes por filas, sin la columna global
+#' summary.quali.rep(df, "respuesta", "visita", "id", byrow = TRUE,
+#'                   show.all = FALSE)$summary
 #'
 #' @keywords descriptives repeated-measures longitudinal categorical proportions
-
+#'
+#' @importFrom dplyr %>% pull group_by filter ungroup sym
+#' @importFrom magrittr %<>%
+#' @importFrom rstatix cochran_qtest
+#' @importFrom binom binom.confint
+#' @importFrom pacman p_load
+#' @importFrom stats as.formula
+#'
+#' @author
+#' Àlex Martí Barrera
+#' 
+#' Miriam Mota \email{miriam.mota@vhir.org}
+#'
+#' Biomedical Data Intelligence Unit (BIDU)
+#' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
+#'
+#' @export
 summary.quali.rep <- function (
     data,
     x,

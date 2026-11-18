@@ -2,7 +2,7 @@
 % Please edit documentation in R/desc_group_numeric.R
 \name{desc_group_numeric}
 \alias{desc_group_numeric}
-\title{A desc_group_numeric Function}
+\title{Tabla resumen para variables numéricas y categóricas frente a una variable respuesta numérica}
 \usage{
 desc_group_numeric(
   data,
@@ -70,50 +70,17 @@ Una lista con:
 }
 }
 \description{
-Genera una tabla resumen para covariables numéricas y factores respecto a una o varias variables respuesta numéricas.
-Es la funcion equivalente a desc_group pero cuando tu variable outcome o de interés es numérica.
-Para covariables numéricas calcula correlaciones y para covariables categóricas realiza comparaciones entre grupos,
+Genera una tabla resumen para covariables numéricas y factores respecto a una o varias
+variables respuesta numéricas. Es la función equivalente a \code{desc_group()} pero
+cuando tu variable outcome o de interés es numérica. Para covariables numéricas calcula
+correlaciones y para covariables categóricas realiza comparaciones entre grupos,
 mostrando únicamente las variables que cumplen los criterios de selección definidos.
 }
-\examples{
-data(mtcars)
-mtcars$cyl <- factor(mtcars$cyl)
-mtcars$am <- factor(mtcars$am)
-
-# Una variable respuesta
-desc_group_numeric(
-  data = mtcars,
-  covariates = c(mpg, wt, cyl),
-  y = disp
-)
-
-# Utilizando fórmula
-desc_group_numeric(
-  data = mtcars,
-  frml = disp ~ mpg + wt + cyl
-)
-
-# Varias variables respuesta
-desc_group_numeric(
-  data = mtcars,
-  covariates = c(mpg, wt, cyl),
-  y = c(disp, drat)
-)
-
-# Modificando puntos de corte
-desc_group_numeric(
-  data = mtcars,
-  covariates = c(mpg, wt, cyl),
-  y = disp,
-  cor_cut = 0.5,
-  pval_cut = 0.10
-)
-
-}
 \author{
-Àlex Martí Barrera, Miriam Mota \email{mmota.foix@gmail.com}
+Àlex Martí Barrera
+
+Miriam Mota \email{mmota.foix@gmail.com}
+
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }
-\keyword{correlations}
-\keyword{descriptives}
-\keyword{summary}
-\keyword{tables}

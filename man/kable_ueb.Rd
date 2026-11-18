@@ -2,7 +2,7 @@
 % Please edit documentation in R/kable_ueb.R
 \name{kable_ueb}
 \alias{kable_ueb}
-\title{A kable_ueb Function}
+\title{Tabla con estilo kable para HTML o LaTeX}
 \usage{
 kable_ueb(
   tab,
@@ -16,29 +16,52 @@ kable_ueb(
 )
 }
 \arguments{
-\item{tab}{table to kable}
+\item{tab}{Tabla (data frame o matriz) a formatear con \code{kable}.}
 
-\item{caption}{Character vector containing the table's caption or title. Set to NULL to suppress the caption. Default value is NULL.}
+\item{caption}{Vector de caracteres con el título o leyenda de la tabla.
+Se puede establecer en \code{NULL} para suprimir la leyenda. Valor por
+defecto: \code{NULL}.}
 
-\item{font_size}{A numeric input for table font size}
+\item{font_size}{Valor numérico para el tamaño de letra de la tabla.}
 
-\item{full_width}{A TRUE or FALSE variable controlling whether the HTML table should have 100% width. Since HTML and pdf have different flavors on the preferable format for full_width. If not specified, a HTML table will have full width by default but this option will be set to FALSE for a LaTeX table}
+\item{full_width}{Valor lógico (\code{TRUE}/\code{FALSE}) que controla si
+la tabla HTML debe ocupar el 100\% del ancho. Como HTML y PDF tienen
+formatos preferentes distintos para \code{full_width}, si no se
+especifica, una tabla HTML tendrá ancho completo por defecto, pero esta
+opción se fijará en \code{FALSE} para una tabla LaTeX.}
 
-\item{escape}{Boolean; whether to escape special characters when producing HTML or LaTeX tables. When escape = FALSE, you have to make sure that special characters will not trigger syntax errors in LaTeX or HTML.}
+\item{escape}{Valor lógico; indica si se deben escapar los caracteres
+especiales al generar tablas HTML o LaTeX. Si \code{escape = FALSE}, hay
+que asegurarse de que los caracteres especiales no provoquen errores de
+sintaxis en LaTeX o HTML.}
 
-\item{col.background}{A character string for row background color. Here please pay attention to the differences in color codes between HTML and LaTeX.}
+\item{col.background}{Cadena de caracteres con el color de fondo de las
+filas. Aquí hay que prestar atención a las diferencias en los códigos de
+color entre HTML y LaTeX.}
+}
+\value{
+Un objeto de tabla con estilo \code{kable}/\code{kableExtra}, listo
+  para su renderizado en HTML o LaTeX.
 }
 \description{
-DESCRIPCIO DE LA FUNCIO
+Genera una tabla con estilo \code{kable} (vía \pkg{kableExtra}) a partir de
+un data frame o matriz, pensada para su uso en informes de la UEB en
+formato HTML o LaTeX. Permite añadir un título o leyenda, controlar el
+tamaño de letra, el ancho de la tabla y el color de fondo de las filas, y
+gestionar el escapado de caracteres especiales.
 }
 \examples{
-aa <- data.frame(num = rnorm(10), fact= factor(rep(c("A","B","C"), 10)))
+aa <- data.frame(num = rnorm(10), fact = factor(rep(c("A", "B", "C"), 10)))
 kable_ueb(aa)
 kable_ueb(aa, digits = 2, row.names = TRUE, position = "left")
 kable_ueb(aa, digits = 2, row.names = TRUE, format = "latex")
+
 }
 \author{
-Miriam Mota  \email{miriam.mota@vhir.org}
+Miriam Mota \email{miriam.mota@vhir.org}
+
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }
 \keyword{html}
 \keyword{kable}

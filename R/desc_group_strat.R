@@ -1,5 +1,6 @@
-#' A desc_group_strat Function
+#' @title Tablas descriptivas estratificadas por una variable de estratificación
 #'
+#' @description
 #' Genera tablas descriptivas estratificadas por una variable de estratificación.
 #' Para cada estrato realiza un análisis descriptivo comparando las variables
 #' seleccionadas según los grupos definidos y posteriormente combina los resultados
@@ -65,15 +66,14 @@
 #' Los estratos que no presentan suficientes observaciones en los grupos
 #' comparados son excluidos automáticamente del análisis.
 #'
-#' @export desc_group_strat
-#' @import dplyr Hmisc knitr kableExtra magrittr
-#' @author Marcos Esteve \email{marcos.esteve@vhir.org}
+#' @seealso \code{\link{desc_group}}
+#'
 #' @examples
 #' data(mtcars)
 #' mtcars$am <- factor(mtcars$am)
 #' mtcars$vs <- factor(mtcars$vs)
 #' mtcars$cyl <- factor(mtcars$cyl)
-#
+#'
 #' # Análisis estratificado básico
 #' desc_group_strat(
 #'   data = mtcars,
@@ -108,9 +108,17 @@
 #'   include.NA = TRUE
 #' )
 #'
+#' @import dplyr Hmisc knitr kableExtra magrittr
+#'
 #' @keywords descriptives stratified subgroup tables summary
-
-
+#'
+#' @author
+#' Marcos Esteve \email{marcos.esteve@vhir.org}
+#'
+#' Biomedical Data Intelligence Unit (BIDU)
+#' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
+#'
+#' @export
 desc_group_strat <- function(data,
                              frml = NULL,
                              covariates,

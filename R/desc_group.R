@@ -1,31 +1,92 @@
-#' A desc_group Function
+#' @rdname desc_group
+#' @export
+descGroup <- function(...) {
+  .Deprecated("desc_group") #include a package argument, too
+  desc_group(...)
+}
+
+#' @title Tabla descriptiva de covariables según una variable de grupo
 #'
-#' DESCRIPCIO DE LA FUNCIO
-#' @param frml Right side of ~ must have the terms in an additive way, and left side of ~ must contain the name of the grouping variable or can be left in blank (in this latter case descriptives for whole sample are calculated and no test is performed).
-#' @param covariates a character string with names of variables.
-#' @param group factor variable. Outcome. Default value is NULL
-#' @param data data frame, list or environment (or object coercible by 'as.data.frame' to a data frame) containing the variables in the model. If they are not found in 'data', the variables are taken from 'environment(formula)'.
-#' @param method character string indicating the method to test use; possible values are 'param' or 'non-param'. Default values is 'non-param'.
-#' @param font_size A numeric input for table font size
-#' @param byrow logical or NA. Percentage of categorical variables must be reported by rows (TRUE), by columns (FALSE) or by columns and rows to sum up 1 (NA). Default value is FALSE, which means that percentages are reported by columns (withing groups).
-#' @param width_lev defines the maximum width of table columns. Default value is 8em
-#' @param pval_cut cut p.value colored. To select
+#' @description
+#' Genera una tabla descriptiva de las covariables indicadas, globalmente o según los
+#' niveles de una variable de grupo. Las variables numéricas se resumen con
+#' \code{summary.quanti()} y las categóricas con \code{summary.quali()}, e incluye el
+#' p-valor del test de comparación entre grupos. Devuelve la tabla en formato
+#' data.frame y formateada en HTML mediante \pkg{kableExtra}, y resalta las variables
+#' con p-valor inferior o igual a \code{pval_cut}.
+#'
+#' @param data Data frame, lista o entorno (u objeto convertible a data frame mediante
+#'   \code{as.data.frame}) que contiene las variables del modelo. Si no se encuentran en
+#'   \code{data}, las variables se toman de \code{environment(formula)}.
+#' @param frml Fórmula. La parte derecha de \code{~} debe contener los términos de forma
+#'   aditiva y la parte izquierda el nombre de la variable de agrupación. La parte
+#'   izquierda puede dejarse en blanco: en ese caso se calculan los descriptivos para
+#'   toda la muestra y no se realiza ningún test.
+#' @param covariates Nombres de las variables a describir (texto o selección tidyverse).
+#' @param group Variable factor de agrupación (outcome). Por defecto \code{NULL}.
+#' @param method Cadena de caracteres con el método del test: \code{"param"} o
+#'   \code{"non-param"}. Por defecto \code{"non-param"}.
+#' @param caption Vector de caracteres con el título o leyenda de la tabla.
+#' @param font_size Valor numérico con el tamaño de letra de la tabla.
+#' @param width_lev Ancho máximo de la columna de niveles. Por defecto \code{"8em"}.
+#' @param byrow Lógico o \code{NA}. Los porcentajes de las variables categóricas se
+#'   calculan por filas (\code{TRUE}), por columnas (\code{FALSE}) o sobre el total, de
+#'   forma que filas y columnas suman 1 (\code{NA}). Por defecto \code{FALSE}: los
+#'   porcentajes se calculan por columnas (dentro de cada grupo).
+#' @param show.pval.adj Lógico. Si \code{TRUE}, añade una columna con los p-valores
+#'   ajustados mediante la corrección de Benjamini-Hochberg. Por defecto \code{FALSE}.
+#' @param pval_cut Punto de corte del p-valor. Las variables con p-valor inferior o igual
+#'   a \code{pval_cut} se devuelven en \code{selVar} y se resaltan en la tabla con
+#'   \code{col.varsel}. Por defecto 0.05.
+#' @param col.background Color de fondo de la cabecera de la tabla HTML.
+#' @param col.varsel Color de fondo de las filas de las variables seleccionadas según
+#'   \code{pval_cut}.
 #' @param show.pval \code{logical}. Si \code{TRUE}, muestra el valor p del test de asociación.
 #' @param show.all \code{logical}. Si \code{TRUE}, añade columna con resultados globales (sin estratificar).
 #' @param show.n \code{logical}. Si \code{TRUE}, añade una columna con el número total de observaciones.
 #' @param show.stat \code{logical}. Si \code{TRUE}, añade el estadístico de prueba (Chi-cuadrado).
 #' @param show.or \code{logical}. Si \code{TRUE} y \code{group} tiene exactamente dos niveles,
-#' @param caption Character vector containing the table's caption or title.
-#' @param paired  logical indicating paired data. Default value is FALSE.
-#' @param idvar a character string with name of identifier variable .
+#'   añade la columna con la odds ratio (\code{OR}).
+#' @param paired Lógico. Indica si los datos son apareados. Por defecto \code{FALSE}.
+#' @param idvar Cadena de caracteres con el nombre de la variable identificadora.
+#' @param prep2sum Lógico. Se pasa a \code{summary.quanti()}. Por defecto \code{TRUE}.
+#' @param include.NA Lógico. Si \code{TRUE}, los valores perdidos se incluyen como
+#'   categoría en las variables categóricas (se pasa a \code{summary.quali()}). Por
+#'   defecto \code{FALSE}.
+#' @param patt.NA Etiqueta utilizada para los valores perdidos (se pasa a
+#'   \code{summary.quali()}). Por defecto \code{"No"}.
+#' @param correct Lógico. Si \code{TRUE}, aplica la corrección de Yates en la prueba
+#'   Chi-cuadrado (se pasa a \code{summary.quali()}). Por defecto \code{FALSE}.
+#' @param full_width Lógico. Si \code{TRUE}, la tabla HTML ocupa todo el ancho
+#'   disponible (se pasa a \code{kableExtra::kable_styling()}). Por defecto \code{FALSE}.
 #' @param ... Argumentos adicionales para \code{summary.quanti} y \code{summary.quali} (p. ej. \code{nround}).
-#'   Con \code{nround = "auto"} las variables cuantitativas usan decimales dinamicos; las cualitativas, 1 decimal.
-#' @keywords summary ci qualitative descriptive exploratory
-#' @export desc_group
-#' @export descGroup
+#'   Con \code{nround = "auto"} las variables cuantitativas usan decimales dinámicos; las cualitativas, 1 decimal.
+#'
+#' @return Una lista con:
+#' \itemize{
+#'   \item \code{group}: variable de agrupación utilizada.
+#'   \item \code{covariates}: variables descritas.
+#'   \item \code{selVar}: variables con p-valor inferior o igual a \code{pval_cut}
+#'   (\code{NA} si no hay ninguna).
+#'   \item \code{pvalues}: vector con los p-valores obtenidos.
+#'   \item \code{df_all}: tabla resumen en formato data.frame.
+#'   \item \code{results}: tabla formateada en HTML mediante \pkg{kableExtra}.
+#' }
+#'
+#' @details
+#' Desde mayo de 2025 la prueba Chi-cuadrado se ejecuta por defecto sin corrección de
+#' Yates (\code{correct = FALSE}). Para replicar resultados anteriores, indique
+#' \code{correct = TRUE} explícitamente.
+#'
+#' \code{descGroup()} está obsoleta (deprecated) y se mantiene solo por compatibilidad:
+#' llama a \code{desc_group()} con los mismos argumentos. Utilice \code{desc_group()}.
+#'
+#' @seealso \code{\link{summary.quanti}}, \code{\link{summary.quali}},
+#'   \code{\link{desc_group_numeric}}, \code{\link{desc_group_strat}},
+#'   \code{\link{desc_group_rep}}
+#'
 #' @import kableExtra formula.tools
-#' @author
-#' Miriam Mota-Foix <mmota.foix@gmail.com>
+#'
 #' @examples
 #'  # set.seed(1)
 #'  # dat <- df <- data.frame(MUT = factor(c(rep("A", 13),rep("B",13))),
@@ -41,16 +102,16 @@
 #'  # desc_group(covariates = gear, group = vs, data = mtc_bis)
 #'  # mtc_bis %>% desc_group(covariates = qsec, group = vs)
 #'  # mtc_bis %>% desc_group(covariates = c(qsec, mpg, gear), group = vs)
-
-
-
-descGroup <- function(...) {
-  .Deprecated("desc_group") #include a package argument, too
-  desc_group(...)
-}
-
-
-
+#'
+#' @keywords summary ci qualitative descriptive exploratory
+#'
+#' @author
+#' Miriam Mota-Foix \email{mmota.foix@gmail.com}
+#'
+#' Biomedical Data Intelligence Unit (BIDU)
+#' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
+#'
+#' @export
 desc_group <- function(data,
                        frml = NULL,
                        covariates,

@@ -2,7 +2,7 @@
 % Please edit documentation in R/gg_theme.R
 \name{gg_theme}
 \alias{gg_theme}
-\title{UEB/VHIR ggplot Theme}
+\title{Tema gráfico corporativo UEB/VHIR para ggplot2}
 \usage{
 gg_theme(
   base_theme = c("minimal", "classic", "bw", "light", "linedraw"),
@@ -22,69 +22,77 @@ gg_theme(
 )
 }
 \arguments{
-\item{base_theme}{Tema base de ggplot2: uno de \code{"minimal"},
-\code{"classic"}, \code{"bw"}, \code{"light"} o \code{"linedraw"}.}
+\item{base_theme}{Tema base de \pkg{ggplot2}: uno de \code{"minimal"} (por
+defecto), \code{"classic"}, \code{"bw"}, \code{"light"} o \code{"linedraw"}.}
 
-\item{legend_position}{Posición de la leyenda: \code{"bottom"},
+\item{legend_position}{Posición de la leyenda: \code{"bottom"} (por defecto),
 \code{"right"} o \code{"none"}.}
 
-\item{font_family}{Familia tipográfica.}
+\item{font_family}{Familia tipográfica. Por defecto, \code{"sans"}.}
 
-\item{size_title}{Tamaño del título.}
+\item{size_title}{Tamaño del título. Por defecto, 13.}
 
-\item{size_subtitle}{Tamaño del subtítulo.}
+\item{size_subtitle}{Tamaño del subtítulo. Por defecto, 11.}
 
-\item{size_axis}{Tamaño de las etiquetas de los ejes.}
+\item{size_axis}{Tamaño de las etiquetas de los ejes. Por defecto, 10.}
 
-\item{size_axis_title}{Tamaño de los títulos de los ejes.}
+\item{size_axis_title}{Tamaño de los títulos de los ejes. Por defecto, 11.}
 
-\item{size_legend}{Tamaño del texto de la leyenda.}
+\item{size_legend}{Tamaño del texto de la leyenda. Por defecto, 10.}
 
-\item{rotate_x}{Etiquetas del eje X inclinadas 45 grados.}
+\item{rotate_x}{Lógico. Si es \code{TRUE}, las etiquetas del eje X se inclinan
+45 grados. Por defecto, \code{FALSE}.}
 
-\item{aspect_ratio}{Relación ancho/alto del panel.}
+\item{aspect_ratio}{Relación alto/ancho del panel (argumento
+\code{aspect.ratio} de \code{ggplot2::theme()}). Por defecto, \code{NULL}
+(sin relación fija).}
 
-\item{border}{Lógico. Si es \code{FALSE}, elimina \code{panel.border}
-cuando \code{base_theme} es \code{"bw"}, \code{"light"} o
-\code{"linedraw"} (no tiene efecto con \code{"minimal"}/\code{"classic"},
-que no dibujan borde de panel).}
+\item{border}{Lógico. Si es \code{FALSE}, elimina \code{panel.border} cuando
+\code{base_theme} es \code{"bw"}, \code{"light"} o \code{"linedraw"}. No
+tiene efecto con \code{"minimal"} ni \code{"classic"}, que no dibujan borde
+de panel. Por defecto, \code{TRUE}.}
 
-\item{grid_major_y}{Lógico. Por defecto \code{FALSE}. Modifica original 'panel.grid.major.y'}
+\item{grid_major_y}{Lógico. Si es \code{FALSE} (por defecto), se elimina la
+rejilla principal del eje Y (\code{panel.grid.major.y}). Si es \code{TRUE},
+se dibuja con el color de \code{grid_major_y_color}.}
 
-\item{grid_major_y_color}{Por defecto \code{NULL}. Modifica color del 'panel.grid.major.y'}
+\item{grid_major_y_color}{Color de la rejilla principal del eje Y. Solo se
+usa si \code{grid_major_y = TRUE}. Por defecto, \code{NULL} (color por
+defecto del tema).}
 
-\item{remove_minor_grid}{Lógico. Por defecto \code{FALSE}. Canvia 'element_line()' por 'element_blank()'.}
+\item{remove_minor_grid}{Lógico. Si es \code{TRUE}, se elimina la rejilla
+secundaria (\code{panel.grid.minor}). Si es \code{FALSE} (por defecto), se
+mantiene la del tema base.}
 }
 \value{
 Un objeto de clase \code{theme} que puede añadirse a cualquier gráfico
 mediante el operador \code{+}.
 }
 \description{
-Tema gráfico corporativo basado en ggplot2 para homogeneizar la apariencia
-visual de los gráficos generados por el paquete.
+Tema gráfico corporativo basado en \pkg{ggplot2} para homogeneizar la
+apariencia visual de los gráficos generados por el paquete.
 
-Está diseñado para gráficos descriptivos, forest plots, curvas ROC,
-curvas de supervivencia y otros gráficos estadísticos. Se aplica igual
-que cualquier tema de ggplot2, con el operador \code{+} al final de la
-cadena de capas.
+Está diseñado para gráficos descriptivos, forest plots, curvas ROC, curvas de
+supervivencia y otros gráficos estadísticos. Se aplica igual que cualquier
+tema de \pkg{ggplot2}, con el operador \code{+} al final de la cadena de
+capas.
 }
 \details{
 \strong{Limitaciones}
 \itemize{
-  \item No implementa "zebra striping" (bandas alternas de color de fondo
-  por fila/categoría): al ser un tema, no tiene acceso a los datos del
-  gráfico, así que ese efecto debe añadirse en la propia función de
-  ploteo (p. ej. con \code{geom_rect()} antes de aplicar el tema).
+  \item No implementa \dQuote{zebra striping} (bandas alternas de color de
+    fondo por fila o categoría): al ser un tema, no tiene acceso a los datos
+    del gráfico, así que ese efecto debe añadirse en la propia función de
+    ploteo (por ejemplo, con \code{geom_rect()} antes de aplicar el tema).
   \item \code{aspect_ratio} fuerza una relación de aspecto fija del panel;
-  combinado con \code{coord_cartesian(clip = "off")} (habitual en los
-  forest plots del paquete) puede recortar anotaciones de texto situadas
-  fuera del panel. Si se usan ambas cosas a la vez, revisar el resultado
-  visualmente.
-  \item \code{match.arg()} exige que \code{base_theme} y
-  \code{legend_position} sean exactamente uno de los valores permitidos
-  (no distingue mayúsculas/minúsculas de forma flexible); un valor no
-  reconocido produce error en lugar de usar un valor por defecto
-  silencioso.
+    combinado con \code{coord_cartesian(clip = "off")} (habitual en los forest
+    plots del paquete) puede recortar anotaciones de texto situadas fuera del
+    panel. Si se usan ambas cosas a la vez, conviene revisar el resultado
+    visualmente.
+  \item \code{base_theme} y \code{legend_position} se validan con
+    \code{match.arg()}: distinguen mayúsculas de minúsculas, admiten
+    coincidencia parcial (por ejemplo, \code{"cl"} se interpreta como
+    \code{"classic"}) y un valor no reconocido produce un error.
 }
 }
 \examples{
@@ -102,10 +110,17 @@ ggplot(mtcars_na, aes(mpg, hp)) +
   gg_theme(base_theme = "bw", border = FALSE, rotate_x = TRUE)
 
 }
+\seealso{
+\code{\link[ggplot2]{theme}}, \code{\link[ggplot2]{theme_minimal}},
+  \code{\link{plot_forest_unimods}}, \code{\link{plot_multi_roc}}
+}
 \author{
 Miquel Vázquez-Santiago \email{miquel.vazquez@vhir.org}
 
-Modificaciones y mantenimiento:
 Biomedical Data Intelligence Unit (BIDU)
 Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }
+\keyword{ggplot}
+\keyword{graphics}
+\keyword{plots}
+\keyword{theme}

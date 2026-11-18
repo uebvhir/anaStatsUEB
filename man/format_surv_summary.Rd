@@ -2,79 +2,83 @@
 % Please edit documentation in R/format_surv_summary.R
 \name{format_surv_summary}
 \alias{format_surv_summary}
-\title{A format_surv_summary Function}
+\title{Tabla resumen de un modelo de supervivencia en tiempos concretos}
 \usage{
 format_surv_summary(fit, times)
 }
 \arguments{
-\item{fit}{objeto de clase \code{survfit} generado mediante la función
+\item{fit}{Objeto de clase \code{survfit} generado con
 \code{survival::survfit()}.}
 
-\item{times}{vector numérico con los tiempos en los que se desea obtener
-el resumen de supervivencia.}
-
-\item{stratified}{TRUE o FALSE indicando si el modelo contiene estratos y
-los resultados deben mostrarse agrupados por grupo. Por defecto FALSE.}
+\item{times}{Vector numérico con los tiempos en los que se desea obtener el
+resumen de supervivencia.}
 }
 \value{
-Una tabla formateada mediante \code{kableExtra} que incluye:
+Una tabla con formato (objeto \code{kableExtra}) con las columnas:
 \itemize{
   \item Tiempo.
-  \item Número de sujetos en riesgo (\code{n.risk}).
-  \item Número de eventos (\code{n.event}).
-  \item Probabilidad de supervivencia estimada.
+  \item N en riesgo (\code{n.risk}).
+  \item N evento (\code{n.event}).
+  \item Supervivencia estimada.
   \item Error estándar.
-  \item Límite inferior del intervalo de confianza del 95\%.
-  \item Límite superior del intervalo de confianza del 95\%.
+  \item IC inferior.
+  \item IC superior.
 }
 }
 \description{
-Genera una tabla resumen de un modelo de supervivencia ajustado mediante
-\code{survfit()}, mostrando el número de sujetos en riesgo, eventos,
-estimaciones de supervivencia e intervalos de confianza en tiempos
-específicos. Opcionalmente puede presentar los resultados estratificados
-por grupos.
+Genera una tabla resumen de un modelo de supervivencia ajustado con
+\code{survival::survfit()}, que muestra el número de sujetos en riesgo, los
+eventos, la estimación de supervivencia, el error estándar y el intervalo de
+confianza en los tiempos indicados. Si el modelo tiene estratos, los
+resultados se presentan agrupados por estrato.
 }
 \details{
-Cuando \code{stratified = FALSE}, la función genera una única tabla con los
-resultados globales del modelo de supervivencia.
+La función no tiene ningún argumento para indicar la estratificación: se
+detecta automáticamente a partir del objeto \code{fit}.
 
-Cuando \code{stratified = TRUE}:
+Si \code{fit} no tiene estratos (por ejemplo, \code{Surv(time, status) ~ 1}),
+se genera una única tabla con los resultados globales.
+
+Si \code{fit} tiene estratos (por ejemplo, \code{Surv(time, status) ~ sex}):
 \itemize{
-  \item Se extraen automáticamente los nombres de los grupos a partir de los estratos.
-  \item Los resultados se ordenan por grupo y tiempo.
-  \item La tabla se presenta agrupando visualmente las filas correspondientes
-  a cada estrato mediante \code{kableExtra::pack_rows()}.
+  \item el nombre del grupo se extrae de la etiqueta del estrato, conservando
+    la parte posterior al último signo \code{=};
+  \item los resultados se ordenan por grupo y tiempo;
+  \item las filas de cada estrato se agrupan visualmente con
+    \code{kableExtra::pack_rows()}.
 }
 
-Todas las estimaciones de supervivencia, errores estándar e intervalos de
-confianza se redondean a tres decimales.
+Los valores se calculan con \code{summary(fit, times = times)}. Por tanto, el
+nivel de los intervalos de confianza es el indicado en \code{survfit()}
+(95\% por defecto, argumento \code{conf.int}), y los tiempos posteriores al
+máximo seguimiento no aparecen en la tabla. La supervivencia, el error
+estándar y los límites se redondean a tres decimales.
+
+Limitación: con más de un factor de estratificación (por ejemplo,
+\code{~ sex + ph}) la etiqueta del grupo conserva solo el valor del último
+factor, por lo que estratos distintos pueden recibir el mismo nombre.
 }
 \examples{
-\dontrun{
 library(survival)
 
 # Modelo de supervivencia simple
 fit <- survfit(Surv(time, status) ~ 1, data = lung)
+format_surv_summary(fit = fit, times = c(100, 200, 300))
 
-format_surv_summary(
-  fit = fit,
-  times = c(100, 200, 300)
-)
-
-# Modelo estratificado
+# Modelo estratificado (se detecta automaticamente)
 fit_strat <- survfit(Surv(time, status) ~ sex, data = lung)
+format_surv_summary(fit = fit_strat, times = c(100, 200, 300))
 
-format_surv_summary(
-  fit = fit_strat,
-  times = c(100, 200, 300),
-  stratified = TRUE
-)
 }
-
+\seealso{
+\code{\link[survival]{survfit}}, \code{\link[survival]{summary.survfit}},
+  \code{\link{kable_ueb}}, \code{\link{coxPretty}}
 }
 \author{
 Alba García Zarzosa
+
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }
 \keyword{Kaplan-Meier}
 \keyword{summary}

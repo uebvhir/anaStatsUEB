@@ -1,13 +1,10 @@
-#' A desc_group_rep Function
+#' @title Tabla descriptiva para datos longitudinales o de medidas repetidas
 #'
+#' @description
 #' Genera una tabla descriptiva para datos longitudinales o de medidas repetidas,
 #' comparando las variables entre distintos momentos temporales de seguimiento.
 #' Para variables numéricas realiza comparaciones de medidas repetidas y para
 #' variables categóricas compara la distribución de frecuencias entre tiempos.
-#'
-#' @details
-#' Actualmente la funcion únicamente admite que la variable tiempo contenga 2 niveles.
-#'
 #'
 #' @param data data frame que contiene las variables a analizar.
 #' @param covariates variables a evaluar. Puede indicarse mediante selección tidyverse.
@@ -44,9 +41,11 @@
 #'   \item \code{results}: tabla formateada en html mediante kableExtra.
 #' }
 #'
-#' @export desc_group_rep
+#' @details
+#' Actualmente la función únicamente admite que la variable tiempo contenga 2 niveles.
+#'
 #' @import dplyr Hmisc knitr kableExtra
-#' @author Àlex Martí Barrera, Miriam Mota \email{mmota.foix@@gmail.com}
+#'
 #' @examples
 #' set.seed(1111)
 #'
@@ -84,7 +83,16 @@
 #' )
 #'
 #' @keywords descriptives longitudinal repeated-measures tables
-
+#'
+#' @author
+#' Àlex Martí Barrera
+#'
+#' Miriam Mota \email{mmota.foix@gmail.com}
+#'
+#' Biomedical Data Intelligence Unit (BIDU)
+#' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
+#'
+#' @export
 desc_group_rep <- function (data, covariates, tiempo, id, method = "non-param",
                       caption = NULL, font_size = 13, width_lev = "8em", byrow = FALSE,
                       show.pval.adj = FALSE, pval_cut = 0.05, col.background = "#993489",

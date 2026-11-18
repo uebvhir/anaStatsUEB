@@ -1,8 +1,10 @@
-#' A desc_group_numeric Function
+#' @title Tabla resumen para variables numéricas y categóricas frente a una variable respuesta numérica
 #'
-#' Genera una tabla resumen para covariables numéricas y factores respecto a una o varias variables respuesta numéricas.
-#' Es la funcion equivalente a desc_group pero cuando tu variable outcome o de interés es numérica.
-#' Para covariables numéricas calcula correlaciones y para covariables categóricas realiza comparaciones entre grupos,
+#' @description
+#' Genera una tabla resumen para covariables numéricas y factores respecto a una o varias
+#' variables respuesta numéricas. Es la función equivalente a \code{desc_group()} pero
+#' cuando tu variable outcome o de interés es numérica. Para covariables numéricas calcula
+#' correlaciones y para covariables categóricas realiza comparaciones entre grupos,
 #' mostrando únicamente las variables que cumplen los criterios de selección definidos.
 #'
 #' @param data data frame que contiene las variables a analizar.
@@ -32,46 +34,17 @@
 #'   \item \code{results}: tabla formateada en html mediante kableExtra.
 #' }
 #'
-#' @export desc_group_numeric
 #' @import dplyr magrittr knitr kableExtra
-#' @author Àlex Martí Barrera, Miriam Mota \email{mmota.foix@@gmail.com}
-#' @examples
-#' data(mtcars)
-#' mtcars$cyl <- factor(mtcars$cyl)
-#' mtcars$am <- factor(mtcars$am)
 #'
-#' # Una variable respuesta
-#' desc_group_numeric(
-#'   data = mtcars,
-#'   covariates = c(mpg, wt, cyl),
-#'   y = disp
-#' )
+#' @author
+#' Àlex Martí Barrera
 #'
-#' # Utilizando fórmula
-#' desc_group_numeric(
-#'   data = mtcars,
-#'   frml = disp ~ mpg + wt + cyl
-#' )
+#' Miriam Mota \email{mmota.foix@gmail.com}
 #'
-#' # Varias variables respuesta
-#' desc_group_numeric(
-#'   data = mtcars,
-#'   covariates = c(mpg, wt, cyl),
-#'   y = c(disp, drat)
-#' )
+#' Biomedical Data Intelligence Unit (BIDU)
+#' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 #'
-#' # Modificando puntos de corte
-#' desc_group_numeric(
-#'   data = mtcars,
-#'   covariates = c(mpg, wt, cyl),
-#'   y = disp,
-#'   cor_cut = 0.5,
-#'   pval_cut = 0.10
-#' )
-#'
-#' @keywords descriptives summary correlations tables
-
-
+#' @export
 desc_group_numeric <- function (data, covariates, y = NULL, frml = NULL, method = "non-param",
           method.cor = "pearson", caption = NULL, font_size = 13, width_lev = "9em",
           col.background = "#993489", show.pval = TRUE, show.all = TRUE,

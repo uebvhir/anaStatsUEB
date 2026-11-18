@@ -1,26 +1,67 @@
-#' @title Descriptive Summary Table of a Data Frame
+#' @title Tabla resumen descriptiva de un data frame
+#'
 #' @description
-#' Generates a summary table of a dataset with key metadata: variable types, labels, number of levels (for factors),
-#' value ranges (for numerics), and missing data. Optionally highlights problematic variables based on level count or missing values.
+#' Genera una tabla resumen de un conjunto de datos con metadatos clave: tipos de
+#' variable, etiquetas, número de niveles (para factores), rangos de valores (para
+#' numéricas) y datos faltantes. Resalta en rojo las variables problemáticas según
+#' el número de niveles o el porcentaje de valores faltantes.
 #'
-#' @param data A data frame to summarize.
-#' @param format Output format: "html" or "latex". Used for line breaks and rendering style. Default is "html".
-#' @param maxlev Maximum number of levels to display for factor variables (default = 7).
-#' @param maxNA Threshold (in %) to highlight variables with too many missing values (default = 80).
-#' @param size Font size in output (for `kable` rendering, default = 13).
-#' @param caption Optional caption text. If `NULL`, a default is generated with variable and observation counts.
-#' @param remove_cols Logical. If `TRUE`, removes empty columns before processing (default = TRUE).
-#' @param df Logical. If `TRUE`, returns the summary as a data frame. If `FALSE`, returns a formatted table.
+#' @param data Un data frame a resumir.
+#' @param format Formato de salida: \code{"html"} o \code{"latex"}. Se usa para los
+#'   saltos de línea y el renderizado de la tabla. Por defecto, \code{"html"}. Con
+#'   otros valores el comportamiento no está definido.
+#' @param maxlev Número máximo de niveles que se muestran para las variables
+#'   factor. Los factores con más niveles se resaltan en rojo. Por defecto, 7.
+#' @param maxNA Umbral (en \%) para resaltar en rojo las variables con un
+#'   porcentaje de valores faltantes estrictamente superior. Por defecto, 80.
+#' @param size Tamaño de letra de la tabla (para \code{kable}). Por defecto, 13.
+#' @param caption Texto de leyenda. Actualmente no se utiliza: la función siempre
+#'   genera la leyenda, con el número de variables y de observaciones, \code{maxlev}
+#'   y \code{maxNA}.
+#' @param remove_cols Lógico. Actualmente no se utiliza: las columnas vacías
+#'   siempre se eliminan antes de procesar (\code{janitor::remove_empty()}). Por
+#'   defecto, \code{TRUE}.
+#' @param df Lógico. Si es \code{TRUE}, devuelve el resumen como un data frame. Si
+#'   es \code{FALSE} (por defecto), devuelve una tabla formateada.
 #'
-#' @return A `kable`-styled summary table or a data frame, depending on `df`.
+#' @return Una tabla con estilo \code{kable} (objeto \code{kableExtra}) o, si
+#'   \code{df = TRUE}, un data frame con las columnas \code{nms}, \code{clss},
+#'   \code{lbl} (solo si alguna variable tiene etiqueta), \code{mm_lev} y
+#'   \code{compl_mis}.
+#'
+#' @details
+#' La tabla tiene una fila por variable y las columnas: \code{Variable},
+#' \code{Type}, \code{Description} (solo si hay etiquetas), \code{[Min,Max] or
+#' Levels} y los casos válidos y faltantes, con su porcentaje.
+#'
+#' El rango se calcula para variables numéricas, enteras y de fecha; para los
+#' factores se muestran el número de niveles y los primeros \code{maxlev}; las
+#' variables de texto muestran \code{"-"}. La función contempla los tipos
+#' \code{logical}, \code{factor}, \code{numeric}, \code{integer}, \code{Date},
+#' \code{POSIXt} y \code{character}.
+#'
+#' @seealso \code{\link{NAperc}}, \code{\link{desc_group}},
+#'   \code{\link[janitor]{remove_empty}}
+#'
+#' @examples
+#' desc_data(data = iris, format = "html")
+#' desc_data(airquality, format = "html", maxNA = 20)
+#'
+#' # Como data frame
+#' desc_data(airquality, df = TRUE)
+#'
+#' @keywords descriptive summary missing data-frame
+#'
 #' @importFrom Hmisc label
 #' @importFrom kableExtra cell_spec kable kable_styling
 #' @importFrom janitor remove_empty
 #'
-#' @author Miriam Mota-Foix <mmota.foix@gmail.com>
-#' # desc_data(data = iris, format = "html")
-#' # desc_data(airquality, format = "html", maxNA = 20)
-#' 
+#' @author
+#' Miriam Mota-Foix \email{mmota.foix@gmail.com}
+#'
+#' Biomedical Data Intelligence Unit (BIDU)
+#' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
+#'
 #' @export
 desc_data <- function(data,
                 format = "html",

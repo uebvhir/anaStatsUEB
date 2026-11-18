@@ -2,7 +2,7 @@
 % Please edit documentation in R/list_files_ueb.R
 \name{list_files_ueb}
 \alias{list_files_ueb}
-\title{Llista arxius de diferents carpetes de dades.}
+\title{Listar archivos de varias carpetas de datos}
 \usage{
 list_files_ueb(
   home_folder,
@@ -11,25 +11,69 @@ list_files_ueb(
 )
 }
 \arguments{
-\item{home_folder}{Objecte R amb la ruta a les carpetes de dades.}
+\item{home_folder}{Cadena de texto con la ruta de la carpeta de datos. Debe
+existir; si no, la función produce un error.}
 
-\item{recursive}{Lògic (TRUE per defecte). Llista els arxius de forma recursiva.}
+\item{recursive}{Lógico. Si es \code{TRUE} (por defecto), se listan todas las
+carpetas de forma recursiva, incluida la propia \code{home_folder}. Si es
+\code{FALSE}, solo se listan las subcarpetas directas (véase
+\sQuote{Details}).}
 
-\item{pattern}{Carrega un format d'extensió específic entre 'xlsx', 'xls' i 'csv'.}
+\item{pattern}{Vector de caracteres con las extensiones de archivo a buscar,
+sin punto. Por defecto, \code{c("xlsx", "xls", "csv", "sav")}. Si alguna
+extensión no es una de esas cuatro, se emite un aviso, pero se utiliza igual.}
 }
 \value{
-Una llista d'arxius estructurada per 'carpetes' anomenades.
+Lista con nombre (el nombre de cada carpeta) de vectores de caracteres con la
+ruta completa de los archivos encontrados. Una carpeta sin archivos da
+\code{character(0)}. Si no se encuentra ninguna carpeta, devuelve una lista
+vacía y muestra un mensaje.
 }
 \description{
-Llista arxius de diferents carpetes de dades donat un 'home_folder'.
+Lista los archivos de datos (por extensión) de las carpetas que hay dentro de
+una carpeta de partida (\code{home_folder}) y los devuelve organizados por
+carpeta.
+}
+\details{
+Para cada carpeta se buscan los archivos con \code{list.files(recursive =
+TRUE)}. Por ello:
+\itemize{
+  \item con \code{recursive = TRUE}, el primer elemento de la lista corresponde
+    a \code{home_folder} y contiene todos los archivos, y cada archivo aparece
+    también en todas las carpetas que lo contienen (por ejemplo, un archivo de
+    \code{A/sub} aparece en \code{home_folder}, en \code{A} y en \code{sub};
+  \item con \code{recursive = FALSE}, solo se listan las subcarpetas directas
+    (cada una con todos sus archivos, incluidos los de sus subcarpetas) y los
+    archivos que están directamente en \code{home_folder} no aparecen;
+  \item los nombres de la lista son \code{basename()} de cada carpeta, por lo
+    que pueden repetirse si hay carpetas con el mismo nombre en rutas
+    distintas.
+}
+Los mensajes y errores de la función están en catalán.
+}
+\examples{
+root <- file.path(tempdir(), "datos")
+dir.create(file.path(root, "A"), recursive = TRUE)
+dir.create(file.path(root, "B"))
+file.create(file.path(root, c("A/a1.xlsx", "A/a2.txt", "B/b1.csv")))
+
+# Todas las carpetas, de forma recursiva
+list_files_ueb(root)
+
+# Solo archivos .csv
+list_files_ueb(root, pattern = "csv")
+
+}
+\seealso{
+\code{\link[base]{list.files}}, \code{\link[base]{list.dirs}}
 }
 \author{
 Miquel Vázquez-Santiago \email{miquel.vazquez@vhir.org}
-Biomedical Data Intelligence Unit (BIDU)
-Vall d'Hebron Research Institute (VHIR)
 
-Modificaciones y mantenimiento:
-Biomedical Data Intelligence Unit (BIDU) 
-Vall d'Hebron Research Institute (VHIR) | 
-Vall d'Hebron Barcelona Hospital Campus.
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }
+\keyword{files}
+\keyword{folders}
+\keyword{import}
+\keyword{list}

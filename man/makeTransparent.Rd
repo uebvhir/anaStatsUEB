@@ -2,21 +2,51 @@
 % Please edit documentation in R/makeTransparent.R
 \name{makeTransparent}
 \alias{makeTransparent}
-\title{A makeTransparent Function}
+\title{Crear colores transparentes}
 \usage{
 makeTransparent(..., alpha = 0.5)
 }
 \arguments{
-\item{alpha}{nivel de translucido}
+\item{...}{Uno o varios colores, como nombres de color de R (por ejemplo,
+\code{"red"}), códigos hexadecimales (\code{"#FF0000"}) o índices numéricos
+de la paleta. Se combinan todos los indicados en un único vector.}
 
-\item{color}{nombre del color en formato R}
+\item{alpha}{Valor numérico único entre 0 (totalmente transparente) y 1
+(opaco) que indica el nivel de opacidad. Por defecto, 0.5.}
+}
+\value{
+Vector de caracteres con un código hexadecimal \code{"#RRGGBBAA"} por
+  cada color indicado.
 }
 \description{
-Creación de colores transparentes
-ROC(representación gráfica de la sensibilidad en frente a la especificidad).
+Convierte uno o varios colores de R en colores con transparencia, devolviendo
+su código hexadecimal con canal alfa.
+}
+\details{
+El canal alfa se calcula como \code{floor(255 * alpha)}; por ejemplo,
+\code{alpha = 0.5} da \code{"7F"}. Un \code{alpha} fuera del intervalo
+\eqn{[0, 1]} produce un error, igual que un nombre de color no válido. La
+función solo admite un valor de \code{alpha}, que se aplica a todos los
+colores.
 }
 \examples{
-makeTransparent('mediumorchid4')
+makeTransparent("mediumorchid4")
+
+# Varios colores a la vez, con 20\\% de opacidad
+makeTransparent("red", "blue", alpha = 0.2)
+
+# Combinando vectores y codigos hexadecimales
+makeTransparent(c("red", "blue"), "#00FF00")
+
 }
+\seealso{
+\code{\link[grDevices]{rgb}}, \code{\link[grDevices]{col2rgb}},
+  \code{\link[grDevices]{adjustcolor}}
+}
+\author{
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
+}
+\keyword{alpha}
 \keyword{color}
 \keyword{transparent}

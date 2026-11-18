@@ -1,4 +1,4 @@
-#' Gráficos descriptivos con estadísticos (estilo ggstatsplot) coherentes con desc_group()
+#' @title Gráficos descriptivos con estadísticos (estilo ggstatsplot) coherentes con desc_group()
 #'
 #' @description
 #' Genera un gráfico por variable con el aspecto de \code{ggstatsplot} (violín + boxplot + puntos en
@@ -14,7 +14,7 @@
 #' @param covariates variables a graficar: texto (p. ej. \code{res$selVar}) o estilo tidyverse.
 #' @param group variable de agrupación (factor). Texto o estilo tidyverse.
 #' @param method \code{'param'} o \code{'non-param'} (también \code{'nonparam'}). Debe ser el mismo que en
-#'   \code{desc_group()}. Default value is 'non-param'.
+#'   \code{desc_group()}. Valor por defecto: 'non-param'.
 #' @param res_desc opcional: resultado de \code{desc_group()}. Si se indica, el test global (p, n y, si
 #'   \code{desc_group(show.stat = TRUE)}, el estadístico) se lee de este objeto y no se recalcula; con Fisher
 #'   simulado el p-valor es exactamente el de la tabla. \code{group} y \code{covariates} pueden omitirse.
@@ -36,7 +36,7 @@
 #' @param show.posthoc \code{logical}. Si \code{TRUE}, dibuja los corchetes del post-hoc.
 #' @param posthoc.display \code{'significant'} (solo parejas con \code{p.adj < pval_cut}), \code{'all'} o
 #'   \code{'none'} (sin corchetes; equivale a \code{show.posthoc = FALSE}).
-#' @param pval_cut punto de corte de significación (test global y \code{p.adj}). Default value is 0.05.
+#' @param pval_cut punto de corte de significación (test global y \code{p.adj}). Valor por defecto: 0.05.
 #' @param correct \code{logical}. Corrección de Yates en Chi-cuadrado (igual que \code{desc_group()}).
 #' @param bw \code{logical}. Si \code{TRUE}, añade los puntos individuales (jitter) en \code{'violin'} y
 #'   \code{'box'}. En \code{'dots'} los puntos se muestran siempre.
@@ -53,6 +53,18 @@
 #' @param rowcol filas y columnas por página del PDF.
 #' @param ... argumentos para \code{desc_group_posthoc()} (p. ej. \code{p.adjust.method}). Solo se usan
 #'   si \code{res_posthoc = NULL}.
+#'
+#' @return Invisiblemente, una lista:
+#' \describe{
+#'   \item{group}{nombre de la variable de agrupación.}
+#'   \item{covariates}{variables graficadas.}
+#'   \item{method}{método usado.}
+#'   \item{plots}{lista de objetos ggplot, con el nombre de cada variable.}
+#'   \item{df_tests}{data.frame, una fila por variable: \code{variable, label, type, test, statistic,
+#'   p, n, subtitle}.}
+#'   \item{df_posthoc}{\code{df_posthoc} de \code{desc_group_posthoc()} más \code{label} (texto del
+#'   corchete) e \code{y.position} (\code{NA} si no se dibuja); \code{NULL} si no hay post-hoc.}
+#' }
 #'
 #' @details
 #' \itemize{
@@ -72,17 +84,13 @@
 #'   \item No hay versión para datos apareados ni tamaños de efecto (no están en las tablas).
 #' }
 #'
-#' @return Invisiblemente, una lista:
-#' \describe{
-#'   \item{group}{nombre de la variable de agrupación.}
-#'   \item{covariates}{variables graficadas.}
-#'   \item{method}{método usado.}
-#'   \item{plots}{lista de objetos ggplot, con el nombre de cada variable.}
-#'   \item{df_tests}{data.frame, una fila por variable: \code{variable, label, type, test, statistic,
-#'   p, n, subtitle}.}
-#'   \item{df_posthoc}{\code{df_posthoc} de \code{desc_group_posthoc()} más \code{label} (texto del
-#'   corchete) e \code{y.position} (\code{NA} si no se dibuja); \code{NULL} si no hay post-hoc.}
-#' }
+#' @seealso \code{\link{desc_group}}, \code{\link{desc_group_posthoc}}, \code{\link{ggplot_to_pdf}}
+#'
+#' @importFrom ggplot2 ggplot aes geom_violin geom_boxplot geom_jitter geom_col geom_text geom_segment
+#'   stat_summary scale_x_discrete scale_y_continuous scale_fill_discrete labs theme theme_minimal
+#'   element_text element_blank element_rect margin position_stack position_dodge
+#' @importFrom scales percent percent_format
+#' @importFrom stringr str_wrap
 #'
 #' @examples
 #'  # set.seed(1)
@@ -98,17 +106,16 @@
 #'  # ## test global y post-hoc leidos de las tablas, sin recalcular nada
 #'  # res <- desc_group(data = dat, covariates = c("size", "var"), group = "MUT", show.stat = TRUE)
 #'  # gs <- desc_ggstats(dat, res_desc = res, res_posthoc = res_ph)
-#'  # gs <- desc_ggstats(dat, res_desc = res, res_posthoc = res_ph, type.num = "box", type.cat = "dodge")
+#'  # gs <- desc_ggstats(dat, res_desc = res, res_posthoc = res_ph,
+#'  #                    type.num = "box", type.cat = "dodge")
 #'
-#' @importFrom ggplot2 ggplot aes geom_violin geom_boxplot geom_jitter geom_col geom_text geom_segment
-#'   stat_summary scale_x_discrete scale_y_continuous scale_fill_discrete labs theme theme_minimal
-#'   element_text element_blank element_rect margin position_stack position_dodge
-#' @importFrom scales percent percent_format
-#' @importFrom stringr str_wrap
-#' @export desc_ggstats
 #' @author
-#' Miquel Vazquez-Santiago <miquel.vazquez@vhir.org>. BIDU-UEB. VHIR
-
+#' Miquel Vázquez-Santiago \email{miquel.vazquez@vhir.org}
+#'
+#' Biomedical Data Intelligence Unit (BIDU)
+#' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
+#'
+#' @export
 desc_ggstats <- function(data,
                          covariates,
                          group,

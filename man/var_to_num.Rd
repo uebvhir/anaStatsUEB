@@ -2,30 +2,70 @@
 % Please edit documentation in R/var_to_num.R
 \name{var_to_num}
 \alias{var_to_num}
-\title{var_to_num Function}
+\title{Conversión de una variable de texto a numérica}
 \usage{
 var_to_num(x, pat = NULL, rep = NULL)
 }
 \arguments{
-\item{x}{a character variable with numbers}
+\item{x}{Variable de texto con números (también admite numéricos y factores).}
 
-\item{pat}{a string or strings with pattern to delete}
+\item{pat}{Vector de texto con patrones literales (no expresiones regulares) a
+sustituir, además de la coma y el \code{\%}. Por defecto, \code{NULL}.}
 
-\item{rep}{a string or strings witg pattern to replace}
+\item{rep}{Vector de texto con los reemplazos de \code{pat}, en el mismo orden.
+Debe tener la misma longitud que \code{pat}. Por defecto, \code{NULL}.}
 }
 \value{
-a numeric variable and a warning with delete values.
- edad <- c("6", "6,7", "10 ", "12.5", "3%   ", "4,", "no se", ">2" ,"4pct")
- Hmisc::label(edad) <- "Edad de los pacientes"
- df <- data.frame(edad = edad, e1 = edad)
- df %>% mutate(edad_mod = structure(var_to_num(edad), label = Hmisc::label(edad)))
- df %>% mutate(edad_mod2 = structure(var_to_num(edad, pat = c(">", "pct"),rep = c("","")), label = Hmisc::label(edad)))
+Un vector numérico con la etiqueta de \code{x} (\code{Hmisc::label}),
+de clase \code{c("labelled", "numeric")}. Los valores no convertibles son
+\code{NA}.
 }
 \description{
-The function var_to_num is used to convert a character variable to numeric variable. Change ',' by '.'. Delete spaces. Return a numeric variable and a warning with the delete values.
+Convierte una variable de texto con números en una variable numérica: sustituye
+la coma por el punto decimal, elimina el símbolo \code{\%} y los espacios al
+principio y al final, y permite eliminar o sustituir otros patrones. Los valores
+que no se pueden convertir pasan a \code{NA} y se avisa de cuáles son.
+}
+\details{
+\itemize{
+  \item El orden de las sustituciones es: \code{","} por \code{"."}, \code{"\%"}
+    por \code{""} y, después, \code{pat} por \code{rep}. Luego se eliminan los
+    espacios iniciales y finales y se convierte con \code{as.numeric()}.
+  \item Cada patrón se sustituye una sola vez por elemento (se usa
+    \code{stringr::str_replace()}): por ejemplo, \code{"1,5,3"} o \code{"5\%\%"}
+    pasan a \code{NA}. Los espacios internos y los separadores de millares
+    (\code{"1 000"}, \code{"1.234,5"}) tampoco se tratan y dan \code{NA}.
+  \item Si algún valor (no perdido) no se puede convertir, se emiten dos avisos:
+    el de \code{as.numeric()} (\code{NAs introduced by coercion}) y otro con la
+    lista de los valores originales descartados y el nombre de la variable.
+    Los valores vacíos y los espacios en blanco también se consideran perdidos.
+  \item Efecto secundario: en ese caso, el mensaje se registra también con
+    \code{desc_changes()}, que lo guarda en la variable global
+    \code{list_changes} del entorno global.
+  \item Si \code{pat} y \code{rep} no tienen la misma longitud, o solo se indica
+    \code{pat}, se produce un error.
+}
+}
+\examples{
+edad <- c("6", "6,7", "10 ", "12.5", "3\%   ", "4,", "no se", ">2", "4pct")
+Hmisc::label(edad) <- "Edad de los pacientes"
+edad_num <- var_to_num(edad)   # avisa de los valores convertidos a NA
+edad_num
+Hmisc::label(edad_num)
+
+# Eliminar también otros patrones (pat y rep deben tener la misma longitud)
+var_to_num(edad, pat = c(">", "pct"), rep = c("", ""))
+
+}
+\seealso{
+\code{\link{desc_changes}}, \code{\link[stringr]{str_replace}},
+  \code{\link[purrr]{reduce2}}, \code{\link[base]{as.numeric}}
 }
 \author{
-Miriam Mota  \email{miriam.mota@vhir.org}
+Miriam Mota \email{miriam.mota@vhir.org}
+
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }
 \keyword{change}
 \keyword{character}

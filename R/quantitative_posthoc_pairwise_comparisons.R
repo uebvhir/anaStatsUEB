@@ -1,44 +1,81 @@
-#' Comparaciones post-hoc para variables cuantitativas
+#' @title Comparaciones post-hoc para variables cuantitativas
 #'
-#' Realiza comparaciones post-hoc entre grupos definidos por una variable categórica con más de dos niveles,
-#' aplicando el test de Dunn (no paramétrico) o el test de Tukey HSD (paramétrico), únicamente para variables numéricas.
+#' @description
+#' Realiza comparaciones post-hoc entre grupos definidos por una variable
+#' categórica con más de dos niveles, aplicando el test de Dunn (no paramétrico) o
+#' el test de Tukey HSD (paramétrico), únicamente para variables numéricas.
 #'
-#' El resultado incluye una tabla con los p-valores de cada comparación y una versión formateada para informes en HTML.
+#' El resultado incluye una tabla con los p-valores ajustados de cada comparación
+#' y una versión formateada para informes en HTML.
 #'
 #' @param covariates Vector de nombres de variables numéricas a comparar.
 #' @param data Dataframe que contiene las variables.
-#' @param group Nombre (carácter) de la variable de agrupación (factor con más de dos niveles).
-#' @param method Método de comparación: \code{"no-param"} (por defecto, test de Dunn) o \code{"param"} (test de Tukey HSD).
-#' @param caption Título de la tabla formateada (por defecto: "Comparaciones post-hoc").
+#' @param group Nombre (carácter) de la variable de agrupación. Si no es un factor,
+#'   se convierte en uno; debe tener más de dos niveles.
+#' @param method Método de comparación: \code{"no-param"} (por defecto, test de
+#'   Dunn con ajuste de Bonferroni) o \code{"param"} (test de Tukey HSD; véase
+#'   \sQuote{Details}).
+#' @param caption Título de la tabla formateada (por defecto,
+#'   \code{"Comparaciones post-hoc"}). Se le añade \code{" (Dunn test)"} o
+#'   \code{" (Tukey HSD test)"} según el método.
 #'
 #' @return Una lista con dos elementos:
 #' \describe{
-#'   \item{\code{tabla}}{Dataframe con los p-valores sin formato (ancho: variables en filas, comparaciones en columnas).}
-#'   \item{\code{kable}}{Tabla HTML formateada con `kableExtra`.}
+#'   \item{\code{tabla}}{Tibble con los p-valores ajustados sin formato (ancho: una
+#'     fila por variable, en la columna \code{Variable}, y una columna por
+#'     comparación, con nombres como \code{"A vs B"}).}
+#'   \item{\code{kable}}{Tabla HTML formateada con \code{kableExtra}.}
 #' }
 #'
 #' @details
-#' - Las variables deben ser numéricas. Las variables categóricas o no numéricas serán ignoradas.
-#' - Los p-valores < 0.05 se muestran resaltados. Valores < 0.001 aparecen como "<0.001".
+#' \itemize{
+#'   \item Las variables deben ser numéricas. Las variables de texto se ignoran con
+#'     un aviso. Las variables de tipo factor también generan un aviso, pero en la
+#'     versión actual no se omiten correctamente: si no son la primera de
+#'     \code{covariates}, se repiten los resultados de la variable anterior con la
+#'     etiqueta del factor, y si son la primera se produce un error.
+#'   \item Las observaciones con valores perdidos en la variable o en el grupo se
+#'     excluyen en cada variable.
+#'   \item Los p-valores < 0.05 se muestran resaltados (negrita y color de fondo).
+#'     Los valores < 0.001 aparecen como \code{"<0.001"}.
+#'   \item Nota: en la versión actual, \code{method = "param"} produce un error
+#'     (\code{object 'tipo_variable' not found}). Hasta que se corrija, solo
+#'     funciona \code{method = "no-param"}.
+#'   \item \code{dunn.test::dunn.test()} imprime por consola su propia tabla cada
+#'     vez que se ejecuta.
+#' }
 #'
-#' @author Marcos Esteve \email{marcos.esteve@@vhir.org}
+#' @seealso \code{\link[dunn.test]{dunn.test}}, \code{\link[stats]{TukeyHSD}},
+#'   \code{\link[Hmisc]{label}}, \code{\link[kableExtra]{kable_styling}}
 #'
-#' @export quantitative_posthoc_pairwise_comparisons
+#' @examples
+#' set.seed(1)
+#' dat <- data.frame(
+#'   grupo = factor(rep(c("A", "B", "C"), each = 10)),
+#'   x = rnorm(30),
+#'   z = rnorm(30)
+#' )
+#' res <- quantitative_posthoc_pairwise_comparisons(
+#'   covariates = c("x", "z"), data = dat, group = "grupo"
+#' )
+#' res$tabla
+#' res$kable
+#'
+#' @keywords post-hoc dunn tukey comparisons quantitative
+#'
 #' @importFrom dunn.test dunn.test
 #' @importFrom Hmisc label
 #' @importFrom kableExtra kable kable_styling row_spec column_spec cell_spec
 #' @importFrom tidyr pivot_wider
 #' @importFrom dplyr bind_rows mutate across
 #'
-#' @examples
-#' \dontrun{
-#' dat <- data.frame(
-#'   grupo = factor(rep(c("A", "B", "C"), each = 10)),
-#'   x = rnorm(30),
-#'   z = rnorm(30)
-#' )
-#' quantitative_posthoc_pairwise_comparisons(covariates = c("x", "z"), data = dat, group = "grupo")$kable
-#' }
+#' @author
+#' Marcos Esteve \email{marcos.esteve@vhir.org}
+#'
+#' Biomedical Data Intelligence Unit (BIDU)
+#' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
+#'
+#' @export
 quantitative_posthoc_pairwise_comparisons <- function(covariates, data, group, method = "no-param", caption = "Comparaciones post-hoc") {
   # Verificar si la variable de agrupación es factor con más de 2 niveles
   if (!group %in% names(data)) stop("La variable de agrupación no está en el dataframe.")

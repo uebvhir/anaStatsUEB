@@ -1,14 +1,16 @@
-#' Gráficos descriptivos automáticos para variables categóricas y numéricas
+#' @title Gráficos descriptivos automáticos para variables categóricas y numéricas
 #'
-#' Esta función genera gráficos descriptivos (barras, histogramas, boxplots) para un conjunto de variables,
-#' de forma univariada o bivariada, con opciones para personalizar estilo, leyendas, etiquetas, tamaños de texto, etc.
+#' @description
+#' Esta función genera gráficos descriptivos (barras, histogramas, boxplots) para un
+#' conjunto de variables, de forma univariada o bivariada, con opciones para
+#' personalizar estilo, leyendas, etiquetas, tamaños de texto, etc.
 #'
 #' @param dat Data frame que contiene las variables a analizar.
 #' @param covariates Vector de nombres de variables a graficar. Si se usa \code{frml}, se sobreescribe.
 #' @param frml Fórmula del tipo \code{y ~ x1 + x2 + ...} para definir la variable dependiente y las independientes.
 #' @param y Variable de agrupación (dependiente) para análisis bivariado. Ignorado si se usa \code{frml}.
 #' @param method \code{'param'} o \code{'non-param'} (también \code{'nonparam'}). Test del p-valor cuando
-#'   \code{show.pval = TRUE}; debe ser el mismo que en \code{desc_group()}. Default value is 'non-param'.
+#'   \code{show.pval = TRUE}; debe ser el mismo que en \code{desc_group()}. Valor por defecto: 'non-param'.
 #' @param nameFile Nombre del archivo PDF de salida si \code{topdf = TRUE}.
 #' @param topdf Lógico. Si \code{TRUE}, guarda los gráficos en un archivo PDF.
 #' @param list.plots Lógico. Si \code{TRUE}, retorna una lista con los objetos ggplot generados.
@@ -43,9 +45,12 @@
 #'
 #' @details
 #' La función selecciona automáticamente el tipo de gráfico según el tipo de variable:
-#' - Variables \code{factor}: gráfico de barras (univariado o apilado bivariado).
-#' - Variables numéricas: histograma (univariado) o boxplot (bivariado).
-#' - Variables \code{Date} o \code{POSIXt}: histograma por fechas.
+#'
+#' \itemize{
+#'   \item Variables \code{factor}: gráfico de barras (univariado o apilado bivariado).
+#'   \item Variables numéricas: histograma (univariado) o boxplot (bivariado).
+#'   \item Variables \code{Date} o \code{POSIXt}: histograma por fechas.
+#' }
 #'
 #' Variables de tipo \code{character} son ignoradas con una advertencia.
 #'
@@ -53,14 +58,22 @@
 #' las mismas funciones que usa \code{desc_group()}, por lo que coincide con la tabla. Para un gráfico
 #' con el test completo y el post-hoc, ver \code{desc_ggstats()}.
 #'
+#' @seealso \code{\link{desc_group}}, \code{\link{desc_ggstats}}
+#'
 #' @examples
 #' \dontrun{
 #' desc_ggplot(mtcars, covariates = c("mpg", "cyl"), y = "am", topdf = TRUE)
 #' }
 #'
 #' @import ggplot2 dplyr Hmisc scales stringr
+#'
+#' @author
+#' Miriam Mota \email{mmota.foix@gmail.com}
+#'
+#' Biomedical Data Intelligence Unit (BIDU)
+#' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
+#'
 #' @export
-
 desc_ggplot <- function(dat,
                         covariates = NULL,
                         frml = NULL,

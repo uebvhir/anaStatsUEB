@@ -2,7 +2,7 @@
 % Please edit documentation in R/factor_ueb.R
 \name{factor_ueb}
 \alias{factor_ueb}
-\title{factor_ueb Function}
+\title{Convertir un vector en factor conservando la etiqueta original}
 \usage{
 factor_ueb(
   x,
@@ -15,47 +15,94 @@ factor_ueb(
 )
 }
 \arguments{
-\item{x}{a vector of data, usually taking a small number of distinct values.}
+\item{x}{Vector de datos (numérico, de texto o factor), normalmente con pocos
+valores distintos.}
 
-\item{levs}{a vector of the values (as character strings) that x might have taken. The default is the unique set of values taken by as.character(x), sorted into increasing order of x. Note that this set can be specified as smaller than sort(unique(x))}
+\item{levs}{Vector con los valores de \code{x} que se codifican como niveles.
+Solo se utiliza si también se indica \code{labs}; si \code{labs} es
+\code{NULL}, se ignora.}
 
-\item{labs}{a character vector of labels for the levels (in the same order as levels after removing those in exclude).}
+\item{labs}{Vector de caracteres con las etiquetas de los niveles. Con
+\code{levs}, se asignan en el mismo orden que \code{levs}. Sin \code{levs},
+\code{x} debe ser un factor y \code{labs} debe contener exactamente sus
+niveles, en el orden deseado: solo se reordena el factor.}
 
-\item{del.empty.val}{elimina los niveles que tienen 0 casos}
+\item{del.empty.val}{Lógico. Si es \code{TRUE} (por defecto), elimina los
+niveles sin casos.}
 
-\item{name.var}{nom de la variable. Per defecte agafa la part dreta del "$" (exemple: mtcars$mpg, utilitza "mpg")}
+\item{name.var}{Nombre de la variable que se usa en los mensajes. Por
+defecto, la parte derecha del \code{$} (por ejemplo, con
+\code{mtcars$mpg} se usa \code{"mpg"}).}
+
+\item{write_changes}{Lógico. Si es \code{TRUE} (por defecto), cuando se indican
+\code{levs} y \code{labs} y hay valores de \code{x} que no están en
+\code{levs}, se muestra un mensaje con \code{desc_changes()} y se emite un
+aviso (\code{warning}), porque esos valores pasan a ser \code{NA}.}
+
+\item{write_recod}{Lógico. Si es \code{TRUE} (por defecto), cuando se indican
+\code{levs} y \code{labs}, se muestra con \code{desc_changes()} la
+recodificación de los valores originales a las etiquetas.}
 }
 \value{
-factor returns an object of class "factor" which has a set of integer codes the length of x with a "levels" attribute of mode character and unique (!anyDuplicated(.)) entries. If argument ordered is true (or ordered() is used) the result has class c("ordered", "factor"). Undocumentedly for a long time, factor(x) loses all attributes(x) but "names", and resets "levels" and "class".
+Un factor con la misma longitud que \code{x} y la etiqueta
+  (\code{Hmisc::label}) original de \code{x}.
 }
 \description{
-The function factor is used to encode a vector as a factor (the terms ‘category’ and ‘enumerated type’ are also used for factors). Return original label.
+Codifica un vector como factor conservando la etiqueta de la variable
+(\code{Hmisc::label}). Permite asignar niveles y etiquetas, o reordenar los
+niveles de un factor existente, y avisa de los valores que se convierten en
+\code{NA}.
+}
+\details{
+El comportamiento depende de los argumentos indicados:
+\itemize{
+  \item \code{levs} y \code{labs}: equivale a
+    \code{factor(x, levels = levs, labels = labs)}. Los valores de \code{x}
+    que no están en \code{levs} pasan a \code{NA}.
+  \item Solo \code{labs}: se reordenan los niveles de \code{x} según
+    \code{labs}. Se produce un error si \code{x} no es un factor o si
+    \code{labs} no contiene exactamente los niveles de \code{x}.
+  \item Ninguno de los dos, o solo \code{levs}: equivale a \code{factor(x)}.
+}
+Si \code{del.empty.val} es \code{TRUE}, se aplica \code{droplevels()} al
+resultado.
 }
 \examples{
-#create variable
-variable <- c(0,0,0,1,1,1,0,"a",1,0, "B")
-# automatic factor
+# Crear variable
+variable <- c(0, 0, 0, 1, 1, 1, 0, "a", 1, 0, "B")
+
+# Factor automatico
 factor_ueb(x = variable)
-# assign levels and label factor
-(var_factor <- factor_ueb(variable, levs = c(0,1,2), labs = c("No", "Si","NSNC")))
-#reorder factor
-factor_ueb(x = var_factor, labs = c("Si","No"))
+
+# Asignar niveles y etiquetas
+(var_factor <- factor_ueb(variable, levs = c(0, 1, 2), labs = c("No", "Si", "NSNC")))
+
+# Reordenar un factor
+factor_ueb(x = var_factor, labs = c("Si", "No"))
 
 var_factor2 <- factor(variable)
-var_factor2[var_factor2 =="B"] <- NA
-factor_ueb(var_factor2, labs = c("1", "a","B","0") )
+var_factor2[var_factor2 == "B"] <- NA
+factor_ueb(var_factor2, labs = c("1", "a", "B", "0"))
 
-## Other examples
-variable <- c(0,0,0,1,1,1,0,10,1,0)
+# Otros ejemplos
+variable <- c(0, 0, 0, 1, 1, 1, 0, 10, 1, 0)
 factor_ueb(variable)
-factor_ueb(variable, levs = c(0,1), labs = c("No", "Si"))
+factor_ueb(variable, levs = c(0, 1), labs = c("No", "Si"))
 
-variable <- c(0,0,0,1,1,1,0,1,1,0, NA)
+variable <- c(0, 0, 0, 1, 1, 1, 0, 1, 1, 0, NA)
 factor_ueb(variable)
-factor_ueb(variable, levs = c(0,1), labs = c("No", "Si"))
+factor_ueb(variable, levs = c(0, 1), labs = c("No", "Si"))
+
+}
+\seealso{
+\code{\link[base]{factor}}, \code{\link{desc_changes}},
+  \code{\link{desc_group}}
 }
 \author{
-Miriam Mota  \email{miriam.mota@vhir.org}
+Miriam Mota \email{miriam.mota@vhir.org}
+
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }
 \keyword{class}
 \keyword{factor}

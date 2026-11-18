@@ -154,13 +154,12 @@ probabilities from a logistic regression model. The function estimates
 optimal cut-off points according to different criteria, computes diagnostic
 accuracy measures and optionally displays the ROC curve, diagnostic tables
 and boxplots.
-}
-\details{
+
 Bootstrap confidence intervals for the AUC can also be estimated using
 stratified resampling. When a logistic regression model is specified, the
 model is refitted in each bootstrap sample.
-
-
+}
+\details{
 When `modGLM = FALSE`, the ROC analysis is performed directly using the
 predictor specified by `x`. When `modGLM = TRUE`, a logistic regression
 model is fitted and the predicted probabilities are used as the marker.
@@ -214,5 +213,12 @@ res <- doROC(
 \code{\link[OptimalCutpoints]{optimal.cutpoints}}
 }
 \author{
-Marcos Esteve, Miriam Mota
+Marcos Esteve \email{marcos.esteve@vhir.org}
+Miriam Mota \email{miriam.mota@vhir.org}
+
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }
+\keyword{ROC}
+\keyword{cutoff}
+\keyword{diagnostic}

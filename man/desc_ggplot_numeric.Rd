@@ -2,7 +2,7 @@
 % Please edit documentation in R/desc_ggplot_numeric.R
 \name{desc_ggplot_numeric}
 \alias{desc_ggplot_numeric}
-\title{A desc_ggplot_numeric Function}
+\title{Gráficos exploratorios de variables numéricas frente a variables explicativas}
 \usage{
 desc_ggplot_numeric(
   y,
@@ -62,8 +62,7 @@ un conjunto de variables explicativas. Para variables categóricas crea
 boxplots mediante \code{ggplot2} y opcionalmente añade puntos individuales,
 tamaño muestral y resultado del test estadístico. Para variables numéricas
 calcula la correlación utilizando \code{quickCor()}.
-}
-\details{
+
 Si se especifican varias variables respuesta en \code{y}, la función genera
 todos los gráficos correspondientes para cada combinación entre las variables
 respuesta y las variables explicativas.
@@ -120,7 +119,12 @@ desc_ggplot_numeric(
 
 }
 \author{
-Àlex Martí Barrera, Miriam Mota \email{mmota.foix@gmail.com}
+Àlex Martí Barrera
+
+Miriam Mota \email{mmota.foix@gmail.com}
+
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }
 \keyword{boxplot}
 \keyword{descriptive}

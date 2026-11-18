@@ -1,48 +1,111 @@
-#' quickSurv Function
+#' @title Supervivencia de Kaplan-Meier y regresión de Cox
 #'
-#' Realiza supervivencia Kaplan Meier, cox para variables cuali y cuanti
+#' @description
+#' Estima la supervivencia para una covariable. Si es un factor, dibuja la curva de
+#' Kaplan-Meier (con tabla de riesgo) y calcula el log-rank; si es numérica, ajusta
+#' un modelo de Cox. También puede mostrar el Cox para factores con un p-valor
+#' significativo.
 #'
-#' @param time for right censored data, this is the follow up time. For interval data, the first argument is the starting time for the interval.
-#' @param event the status indicator. Factor with two levels
-#' @param tag.event A character value. Level of event
-#' @param covariate variables a evaluar
-#' @param data an optional matrix or data frame (or similar: see model.frame) containing the variables in the formula formula.
-#' @param summary.km type of table to produce for Kaplan-Meier summary. Possible values for type are "ht", "r" or "no". Default value is "ht".
-#' @param summary.cox type of table to produce for Kaplan-Meier summary. Possible values for type are "ht", "r" or "no". Default value is "ht".
-#' @param title.plot a title for the plot.
-#' @param title.cox a title for the Cox regression.
-#' @param do.plot A logical value indicating if show plot. Default value is TRUE.
-#' @param pval.plot A logical value indicating if show pvalue at plot. Default value is TRUE.
-#' @param do.cox A logical value indicating if show cox regression. Default value is TRUE.
-#' @param pval.cut Pvalor que s'utlitza per mostrar el Cox. Per defecte 0.05
-#' @export quickSurv
-#' @usage #' @usage \\method{names}{mtc_bis}(x) <- value
-#' @import survival
-#' @author Miriam Mota  \email{miriam.mota@@vhir.org}
+#' @param time Variable numérica de \code{data} con el tiempo de seguimiento (sin
+#'   comillas).
+#' @param event Variable de \code{data} con el evento. Debe ser un factor con dos
+#'   niveles (sin comillas).
+#' @param tag.event Texto con el nivel de \code{event} que indica que se ha
+#'   producido el evento; el otro nivel se toma como referencia.
+#' @param covariate Variable de \code{data} a evaluar (sin comillas): un factor para
+#'   Kaplan-Meier o una variable numérica para Cox.
+#' @param data Data frame con las variables.
+#' @param do.plot Lógico. Si es \code{TRUE} (por defecto), dibuja las curvas de
+#'   Kaplan-Meier. Solo se aplica a covariables factor.
+#' @param pval.plot Lógico. Si es \code{TRUE} (por defecto), muestra el p-valor del
+#'   log-rank en el gráfico.
+#' @param title.plot Título del gráfico. Si es \code{NULL} (por defecto), se usa
+#'   \code{"Kaplan-Meier estimate (<covariable>)"}; véase \sQuote{Details}.
+#' @param summary.km Resumen de la curva de Kaplan-Meier: \code{"ht"} (tabla HTML),
+#'   \code{"r"} o \code{"no"}. Hay que indicarlo siempre; véase \sQuote{Details}.
+#' @param do.cox Si es \code{"no"}, no se calcula el Cox para factores. Cualquier
+#'   otro valor, incluido \code{FALSE}, no tiene efecto (por defecto,
+#'   \code{TRUE}). Para covariables numéricas, el Cox se calcula siempre.
+#' @param summary.cox Resumen del modelo de Cox: \code{"ht"} (tabla HTML),
+#'   \code{"r"} (data frame) o \code{"no"}. Hay que indicarlo siempre.
+#' @param title.cox Título del Cox. Sin efecto en la versión actual (por defecto,
+#'   \code{NULL}).
+#' @param pval.cut Valor del p-valor del log-rank por debajo del cual se calcula
+#'   el Cox para un factor (por defecto, 0.05).
+#' @param ... Otros argumentos que se pasan a \code{survminer::ggsurvplot()},
+#'   por ejemplo \code{surv.median.line = "hv"} o \code{cumevents = TRUE}.
+#'
+#' @return Una lista con los elementos:
+#' \describe{
+#'   \item{\code{pval.cut}}{Valor de \code{pval.cut} usado.}
+#'   \item{\code{my_surv}}{Objeto \code{Surv} construido con \code{time} y
+#'     \code{event}.}
+#'   \item{\code{pplot}}{Solo para factores y \code{do.plot = TRUE}: objeto
+#'     \code{ggsurvplot} con las curvas.}
+#'   \item{\code{sum_km_ht}}{Solo para factores y \code{summary.km = "ht"}: tabla
+#'     HTML con registros, eventos, mediana e IC al 95 \%.}
+#'   \item{\code{cox}}{Si se calcula el Cox: lista de \code{\link{coxPretty}}, con
+#'     \code{sum_mod_ht} (si \code{"ht"}) o \code{sum_mod} (si \code{"r"}).}
+#' }
+#'
+#' @details
+#' \itemize{
+#'   \item \code{time}, \code{event} y \code{covariate} se evalúan dentro de
+#'     \code{data}. Se detiene con un error si \code{event} no tiene dos niveles o
+#'     si \code{time} no es numérico.
+#'   \item Las etiquetas de \code{Hmisc::label} se usan, si existen, como nombre de
+#'     la covariable.
+#'   \item Nota: en la versión actual, \code{summary.km} y \code{summary.cox}
+#'     deben indicarse siempre: los valores por defecto (\code{getOption(...)})
+#'     producen un error. \code{summary.km = "r"} no devuelve la tabla. Si se
+#'     indica \code{title.plot}, la función falla
+#'     (\code{argument "no" is missing}). \code{title.cox} no tiene efecto.
+#'   \item Nota: las funciones de \pkg{survminer} (\code{surv_fit},
+#'     \code{surv_pvalue}, \code{ggsurvplot}) no están declaradas en el paquete;
+#'     con factores, \pkg{survminer} debe estar cargado
+#'     (\code{library(survminer)}).
+#'   \item \code{event} debe ser un factor y \code{tag.event} uno de sus niveles.
+#'     Las covariables de tipo texto no producen resultados (sin aviso).
+#'   \item El eje X del gráfico se rotula \code{"Years"}.
+#' }
+#'
+#' @seealso \code{\link{coxPretty}}, \code{\link{kable_ueb}},
+#'   \code{\link[survival]{Surv}}, \code{\link[survival]{coxph}}
+#'
 #' @examples
+#' set.seed(81)
+#' dat <- data.frame(
+#'   tm = abs(c(rnorm(50, 12 * 4, 19), rnorm(50, 12 * 2, 12))),
+#'   ev = factor(sample(c("Vivo", "Muerto"), 100, replace = TRUE)),
+#'   iq = factor(c(rep("A", 50), rep("B", 50))),
+#'   age = rnorm(100, 22, 6)
+#' )
+#' # Covariable numérica: regresión de Cox
+#' res <- quickSurv(time = tm, event = ev, covariate = age, tag.event = "Muerto",
+#'                  data = dat, summary.km = "no", summary.cox = "r")
+#' res$cox$sum_mod
 #'
-#' # set.seed(81)
-#' # dat <- data.frame(tm = c(rnorm(50,12*4,19), rnorm(50,12*2,12)),
-#' # ev = factor(sample(c("Vivo", "Muerto"), 100, replace = TRUE)) ,
-#' #                   iq = factor(c(rep("A",50), rep("B",50))), age = rnorm(100,22,6))
-#' #
-#' # quickSurv(time = tm,event = ev, covariate = age, tag.event = "Muerto",
-#' #          data = dat, do.cox = TRUE,summary.cox = "ht")
+#' # Covariable factor: Kaplan-Meier y Cox
+#' if (requireNamespace("survminer", quietly = TRUE)) {
+#'   library(survminer)
+#'   res2 <- quickSurv(time = tm, event = ev, covariate = iq, tag.event = "Muerto",
+#'                     data = dat, summary.km = "r", summary.cox = "r",
+#'                     pval.cut = 1, surv.median.line = "hv")
+#'   res2$cox$sum_mod
+#' }
 #'
+#' @keywords survival kaplan-meier cox quickSurv
 #'
-#' # quickSurv(time = tm,event = ev, covariate = iq, tag.event = "Muerto",
-#' #           data = dat, surv.median.line = "hv",
-#' #           cox = TRUE, summary.cox = "ht" )
+#' @importFrom stats na.omit relevel as.formula
+#' @import survival
 #'
-#' # quickSurv(time = tm,event = ev, covariate = iq, tag.event = "Muerto",
-#' #           data = dat, surv.median.line = "hv", cumevents = TRUE,
-#' #          cox = TRUE, summary.cox = "ht")
-#' @return results:
-#' @return coeff:
-#' @return plot
-#' @keywords quickCor pearson sperman plotcor correlation
-
-
+#' @author
+#' Miriam Mota \email{miriam.mota@@vhir.org}
+#'
+#' Biomedical Data Intelligence Unit (BIDU)
+#' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
+#'
+#' @export
 quickSurv <- function(time, event, tag.event,
                       covariate ,
                       data,

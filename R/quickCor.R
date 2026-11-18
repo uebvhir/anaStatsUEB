@@ -1,47 +1,118 @@
-#' quickCor Function
+#' @title Correlación de Pearson y/o Spearman entre dos variables numéricas
 #'
-#' La función quickCor
-#' @param x,y   numeric vectors of data values. x and y must have the same length.
-#' @param dat an optional matrix or data frame (or similar: see model.frame) containing the variables in the formula formula.
-#' @param nround integer indicating the number of decimal places (round).
-#' @param xtab A logical value indicating whether the output is a xtable
-#' @param method "pearson", "spearman" or "both" Default value is "pearson".
-#' @param corplot A logical value indicating whether the output is a plot. Default value is TRUE.
-#' @param pos a character string indicating the legend location. Options: "bottomright",  "bottom", "bottomleft", "left", "topleft", "top", "topright", "right" and "center".
-#' @param A character vector that is inserted just before the tabular environment starts. This can be used to set the font size and a variety of other table settings. Initial backslashes are automatically prefixed, if not supplied by user. Default value is "small".
-#' @param cex.txt character expansion factor. NULL and NA are equivalent to 0.8. This is an absolute measure, not scaled by par("cex") or by setting par("mfrow") or par("mfcol"). Can be a vector.
-#' @param sz.xtab A character vector that is inserted just before the tabular environment starts. This can be used to set the font size and a variety of other table settings. Initial backslashes are automatically prefixed, if not supplied by user. Default value is NULL.
-#' @param cex.main settings for main- and sub-title and axis annotation, see \code{\link{title}} and \code{\link{par}}.
-#' @param xtab.type Type of table to produce. Possible values for type are "latex" or "html". Default value is "latex".
-#' @param main an overall title for the plot.
-#' @param sub a sub title for the plot.
-#' @param lm.fit A logical value indicating if show a linear regression line. Default value is TRUE.
-#' @param pos.text on which MARgin line, starting at 0 counting outwards.
-#' @param cor_cut integer indicating the number cut relevant correlation
-#' @export quickCor
-#' @usage #' @usage \\method{names}{mtc_bis}(x) <- value
-#' @import xtable mada
-#' @author Miriam Mota  \email{miriam.mota@@vhir.org}
+#' @description
+#' Calcula la correlación entre dos variables numéricas de un data frame
+#' (Pearson, Spearman o ambas), con su intervalo de confianza al 95 \%, el
+#' p-valor y el número de observaciones. Opcionalmente muestra un diagrama de
+#' dispersión con la recta de regresión y una tabla formateada.
+#'
+#' @param dat Data frame que contiene las variables. No se admite un tibble.
+#' @param x,y Variables numéricas a correlacionar: nombres de columna de
+#'   \code{dat}, con o sin comillas. Ninguna puede ser constante.
+#' @param nround Número de decimales con los que se redondean los coeficientes y
+#'   los p-valores (por defecto, 3).
+#' @param main Título del gráfico. Si es \code{NULL} (por defecto), se usa
+#'   \code{"<x> with <y>"}, con la etiqueta de \code{Hmisc::label} si existe.
+#' @param xtab Lógico. Si es \code{TRUE} (por defecto), imprime la tabla de
+#'   resultados con \code{\link{kable_ueb}}.
+#' @param pos Posición de la leyenda del gráfico (por defecto,
+#'   \code{"bottomleft"}). Valores: \code{"bottomright"}, \code{"bottom"},
+#'   \code{"bottomleft"}, \code{"left"}, \code{"topleft"}, \code{"top"},
+#'   \code{"topright"}, \code{"right"} y \code{"center"}.
+#' @param sz.xtab Sin efecto en la versión actual: no se usa en el cuerpo de la
+#'   función (por defecto, \code{NULL}).
+#' @param method Método de correlación: \code{"pearson"} (por defecto),
+#'   \code{"spearman"} o \code{"both"}. Véase \sQuote{Details}.
+#' @param corplot Lógico. Si es \code{TRUE} (por defecto), dibuja el diagrama de
+#'   dispersión.
+#' @param cex.txt Factor de expansión del texto con el coeficiente que se escribe
+#'   en el gráfico (por defecto, 0.8).
+#' @param cex.main Factor de expansión del título del gráfico (por defecto, 0.8);
+#'   véase \code{\link[graphics]{title}} y \code{\link[graphics]{par}}.
+#' @param xtab.type Sin efecto en la versión actual: no se usa en el cuerpo de la
+#'   función (por defecto, \code{"html"}).
+#' @param sub Subtítulo del gráfico. También se añade a la leyenda de la tabla
+#'   (por defecto, \code{NULL}).
+#' @param lm.fit Lógico. Si es \code{TRUE} (por defecto), dibuja la recta de
+#'   regresión lineal.
+#' @param show.res Lógico. Si es \code{TRUE} (por defecto), devuelve la lista de
+#'   resultados; si es \code{FALSE}, no devuelve nada (\code{NULL}).
+#' @param pos.text Línea del margen (contando desde 0 hacia fuera) en la que se
+#'   escribe el texto con el coeficiente (por defecto, -1.8).
+#' @param show.pval Lógico. Si es \code{TRUE} (por defecto), incluye el p-valor
+#'   en la tabla y en el gráfico.
+#' @param prep.tab Lógico. Si es \code{TRUE}, añade a la salida el elemento
+#'   \code{df_prep_tab}, pensado para las tablas de \code{desc_group_numeric}
+#'   (por defecto, \code{FALSE}).
+#' @param cor_cut Valor numérico a partir del cual la correlación se considera
+#'   relevante (por defecto, 0.7). Véase \sQuote{Details}.
+#'
+#' @return Una lista con los elementos:
+#' \describe{
+#'   \item{\code{coeff}}{Objeto \code{summary.lm} de la regresión lineal de
+#'     \code{y} sobre \code{x}.}
+#'   \item{\code{methods}}{Texto \code{"Correlation coefficient"}.}
+#'   \item{\code{result}}{Matriz de caracteres con una fila por método
+#'     (\code{Pearson}, \code{Spearman}) y las columnas \code{rho}, \code{IC},
+#'     \code{p-value} y \code{n}. Los p-valores menores de 0.001 se muestran como
+#'     \code{"<0.001"}.}
+#'   \item{\code{df_prep_tab}}{Solo si \code{prep.tab = TRUE}: data frame de una
+#'     fila con \code{variable}, \code{levels}, \code{summary}, \code{p.value} y
+#'     \code{n}.}
+#'   \item{\code{select}}{Solo si \code{method = "both"} y el valor absoluto de
+#'     alguna de las dos correlaciones supera \code{cor_cut}: nombre (o etiqueta)
+#'     de \code{x}.}
+#' }
+#' Si \code{show.res = FALSE}, no se devuelve nada.
+#'
+#' @details
+#' \itemize{
+#'   \item El intervalo de confianza de Pearson procede de
+#'     \code{\link[stats]{cor.test}}; el de Spearman se calcula con
+#'     \code{\link[mada]{CIrho}}.
+#'   \item Para \code{n} se usan los pares de observaciones sin valores perdidos.
+#'   \item Se muestran las etiquetas de \code{Hmisc::label}, si existen, en lugar
+#'     de los nombres de las variables.
+#'   \item Se detiene con un error si \code{x} o \code{y} no son numéricas o si
+#'     alguna es constante.
+#'   \item Nota: en la versión actual, \code{method = "spearman"} produce un error
+#'     (\code{object 'pe' not found}). Con \code{method = "both"} el gráfico solo
+#'     muestra el texto de Spearman. Con \code{method = "pearson"} no se devuelve
+#'     \code{select}. Con un solo método, \code{show.pval = FALSE} hace que
+#'     \code{result} sea un vector y falla si \code{corplot = TRUE}.
+#'   \item La prueba de Spearman avisa cuando hay empates (no se puede calcular
+#'     el p-valor exacto).
+#' }
+#'
+#' @seealso \code{\link[stats]{cor.test}}, \code{\link[mada]{CIrho}},
+#'   \code{\link{kable_ueb}}, \code{\link{desc_group_numeric}},
+#'   \code{\link{desc_ggplot_numeric}}
+#'
 #' @examples
-#' # quickCor(x = "mpg", y = "hp", dat = mtc_bis,
-#' # nround = 3, xtab = FALSE, pearson = TRUE, corplot = TRUE, sub = "subtitle")
-#' # # Spearman correlation
-#' # quickCor(x = "mpg", y = "hp", dat = mtc_bis,
-#' # nround = 3, xtab = FALSE, pearson = FALSE, corplot = TRUE, sub = "subtitle")
-#' # # No es mostra recta de regressio
-#' # quickCor(x = "mpg", y = "hp", dat = mtc_bis,
-#' # nround = 3, xtab = FALSE, pearson = TRUE, corplot = TRUE, sub = "subtitle", lm.fit =FALSE)
-#' # # canviem la posicio de la llegenda
-#' # quickCor(x = "mpg", y = "hp", dat = mtc_bis,
-#' # nround = 3, xtab = TRUE, pearson = TRUE, corplot = TRUE, sub = "subtitle",
-#' # pos = "bottomright")
-#' @return results:
-#' @return coeff:
-#' @return plot
-#' @keywords quickCor pearson sperman plotcor correlation
-
-
-
+#' res <- quickCor(dat = mtc_bis, x = "mpg", y = "hp", xtab = FALSE)
+#' res$result
+#'
+#' # Ambas correlaciones, sin recta de regresión y con la leyenda arriba
+#' quickCor(dat = mtc_bis, x = mpg, y = hp, method = "both", xtab = FALSE,
+#'          sub = "Subtítulo", lm.fit = FALSE, pos = "topright")
+#'
+#' # Fila para tablas descriptivas, sin gráfico
+#' res2 <- quickCor(dat = mtc_bis, x = "mpg", y = "hp", method = "both",
+#'                  xtab = FALSE, corplot = FALSE, prep.tab = TRUE)
+#' res2$df_prep_tab
+#'
+#' @keywords quickCor pearson spearman plotcor correlation
+#'
+#' @importFrom mada CIrho
+#' @importFrom stats cor.test lm na.omit
+#'
+#' @author
+#' Miriam Mota \email{miriam.mota@vhir.org}
+#'
+#' Biomedical Data Intelligence Unit (BIDU)
+#' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
+#'
+#' @export
 quickCor <- function(dat, x, y,
                      nround = 3,
                      main = NULL,

@@ -1,39 +1,82 @@
-#' Fill, Update, and Optionally Derive Variable Labels
+#' @title Completar, actualizar y derivar etiquetas de variables
 #'
 #' @description
-#' Fills empty variable labels with variable names, updates labels if provided,
-#' and optionally derives labels and categorical levels from variable names
-#' formatted as:
+#' Rellena con el nombre de la variable las etiquetas vacías de un data frame,
+#' actualiza las etiquetas si se proporcionan y, de forma opcional, deriva
+#' etiquetas y niveles categóricos a partir de nombres de variable con el formato:
 #'
-#' \code{"Variable (0=No; 1=Yes; 2=Other)"}.
+#' \code{"Variable (0=No; 1=Si; 2=Otro)"}.
 #'
-#' Parsed category mappings are stored as an attribute (\code{"var_levels"})
-#' for downstream use (e.g., with \code{factor_ueb()}).
+#' Las correspondencias de categorías extraídas se guardan en el atributo
+#' \code{"var_levels"} del data frame, para su uso posterior.
 #'
-#' @param df A data.frame or tibble.
-#' @param lbls Named vector or list of labels (optional).
-#' @param warn_missing Logical. Warn if variables in \code{lbls} are not in \code{df}.
-#' @param store Logical. Store labels in attribute \code{"var_labels"}.
-#' @param parse_names Logical. If TRUE, extract labels and categorical levels from \code{names(df)}.
+#' @param df Data frame o tibble.
+#' @param lbls Vector o lista con nombres de etiquetas (opcional). Los nombres
+#'   deben coincidir con los de las columnas de \code{df}.
+#' @param warn_missing Lógico. Si es \code{TRUE} (por defecto), avisa cuando
+#'   variables de \code{lbls} no están en \code{df}. Solo se aplica con
+#'   \code{parse_names = FALSE}.
+#' @param store Lógico. Si es \code{TRUE} (por defecto), guarda las etiquetas
+#'   finales en el atributo \code{"var_labels"} de \code{df}.
+#' @param parse_names Lógico. Si es \code{TRUE}, extrae etiquetas y niveles
+#'   categóricos de los nombres de columna (\code{names(df)}). Por defecto,
+#'   \code{FALSE}.
 #'
-#' @return A list with:
+#' @return Lista con dos elementos:
 #' \describe{
-#'   \item{data}{Data frame with updated labels}
-#'   \item{labels}{Final label vector}
+#'   \item{data}{Data frame con las etiquetas actualizadas (\code{Hmisc::label}).
+#'     Con \code{store = TRUE} incluye el atributo \code{"var_labels"} y, con
+#'     \code{parse_names = TRUE}, también \code{"var_levels"}.}
+#'   \item{labels}{Vector de caracteres con nombres (las columnas de \code{df}) con
+#'     las etiquetas finales.}
 #' }
+#'
+#' @details
+#' Con \code{parse_names = FALSE}, las etiquetas vacías se sustituyen por el
+#' nombre de la variable y, si se indica \code{lbls}, se actualizan las etiquetas
+#' de las variables correspondientes. Un \code{lbls} sin nombres produce un error,
+#' y las variables de \code{lbls} que no están en \code{df} se ignoran (con un
+#' aviso si \code{warn_missing = TRUE}).
+#'
+#' Con \code{parse_names = TRUE}, la etiqueta de cada variable es el nombre de la
+#' columna sin el texto entre paréntesis final, y las correspondencias
+#' \code{codigo=etiqueta} separadas por \code{;} se guardan en
+#' \code{attr(df, "var_levels")}: una lista con un elemento por columna, que es un
+#' vector con nombres (código y etiqueta) o \code{NULL} si el nombre no tiene
+#' paréntesis. En este modo se descartan las etiquetas existentes y solo prevalecen
+#' las de \code{lbls}, que deben corresponder a columnas de \code{df}: si no, se
+#' produce un error y no se avisa.
+#'
+#' \code{labelling_ueb()} guarda \code{"var_levels"} pero ninguna otra función del
+#' paquete lo utiliza actualmente.
+#'
+#' @seealso \code{\link[Hmisc]{label}}, \code{\link{factor_ueb}},
+#'   \code{\link{get_lab_nam}}
+#'
+#' @examples
+#' df <- data.frame(id = 1:3, edad = c(50, 60, 70), sexo = c(0, 1, 1))
+#' Hmisc::label(df$edad) <- "Edad (anos)"
+#'
+#' # Rellenar etiquetas vacias y actualizar alguna
+#' res <- labelling_ueb(df, lbls = c(id = "Identificador"))
+#' res$labels
+#'
+#' # Derivar etiquetas y niveles a partir de los nombres de columna
+#' df2 <- data.frame(`Sexo (0=Hombre; 1=Mujer)` = c(0, 1, 1), check.names = FALSE)
+#' res2 <- labelling_ueb(df2, parse_names = TRUE)
+#' res2$labels
+#' attr(res2$data, "var_levels")
+#'
+#' @keywords labels variables data-frame Hmisc
 #'
 #' @importFrom Hmisc label
 #'
-#' @author Miquel Vázquez-Santiago \email{miquel.vazquez@vhir.org}
-#' Biomedical Data Intelligence Unit (BIDU)
-#' Vall d'Hebron Research Institute (VHIR)
-#' 
-#' Modificaciones y mantenimiento:
-#' Biomedical Data Intelligence Unit (BIDU) 
-#' Vall d'Hebron Research Institute (VHIR) | 
-#' Vall d'Hebron Barcelona Hospital Campus.
+#' @author
+#' Miquel Vázquez-Santiago \email{miquel.vazquez@vhir.org}
 #'
-#' @rdname labelling_ueb
+#' Biomedical Data Intelligence Unit (BIDU)
+#' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
+#'
 #' @export
 labelling_ueb <- function(
   df,

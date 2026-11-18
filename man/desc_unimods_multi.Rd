@@ -2,7 +2,7 @@
 % Please edit documentation in R/desc_unimods_multi.R
 \name{desc_unimods_multi}
 \alias{desc_unimods_multi}
-\title{Multinomial univariate and adjusted models for multiple predictors}
+\title{Modelos multinomiales univariables y ajustados para múltiples predictores}
 \usage{
 desc_unimods_multi(
   var_out,
@@ -24,185 +24,196 @@ desc_unimods_multi(
 )
 }
 \arguments{
-\item{var_out}{Character string indicating the multinomial outcome variable.}
+\item{var_out}{Cadena de texto con el nombre de la variable respuesta
+multinomial.}
 
-\item{var_comp}{Character vector containing the predictor variables to be
-evaluated. One multinomial regression model is fitted for each predictor.}
+\item{var_comp}{Vector de caracteres con las variables predictoras a evaluar.
+Se ajusta un modelo multinomial para cada predictor.}
 
-\item{adjust_vars}{Character vector or \code{NULL}. Covariates included in all
-fitted models in addition to each predictor in \code{var_comp}. By default,
-\code{NULL}, corresponding to strictly univariate models.}
+\item{adjust_vars}{Vector de caracteres o \code{NULL}. Covariables incluidas
+en todos los modelos además de cada predictor de \code{var_comp}. Por
+defecto, \code{NULL}, es decir, modelos estrictamente univariables.}
 
-\item{data}{Data frame containing the study variables.}
+\item{data}{Data frame con las variables del estudio.}
 
-\item{col.background}{Character string specifying the background color used
-for table headers. Default is \code{"#993489"}.}
+\item{col.background}{Cadena de texto con el color de fondo de las cabeceras
+de la tabla. Por defecto, \code{"#993489"}.}
 
-\item{align}{Character vector specifying column alignment in the output
-table. If \code{NULL}, the level column is left aligned and the remaining
-columns are centered.}
+\item{align}{Vector de caracteres con la alineación de las columnas de la
+tabla. Si es \code{NULL}, la columna de niveles se alinea a la izquierda y
+el resto se centran.}
 
-\item{pval_cut}{Numeric value indicating the significance threshold used
-for highlighting results. Default is \code{0.05}.}
+\item{pval_cut}{Valor numérico con el umbral de significación utilizado para
+el resaltado. Por defecto, 0.05.}
 
-\item{col.varsel}{Character string specifying the background color used to
-highlight rows corresponding to predictors with at least one significant
-p-value. Set to \code{NULL} to disable row highlighting. Default is
+\item{col.varsel}{Cadena de texto con el color de fondo para resaltar las
+filas de los predictores con al menos un p-valor significativo. Con
+\code{NULL} se desactiva el resaltado de filas. Por defecto,
 \code{"#ebe0e9"}.}
 
-\item{col.varsel_pval}{Optional specification for highlighting significant
-p-value cells. Can be:
+\item{col.varsel_pval}{Especificación opcional del resaltado de las celdas de
+p-valor significativas. Puede ser:
 \itemize{
-  \item \code{NULL}: no cell highlighting.
-  \item A single color value: applies a fixed background color.
-  \item \code{"gradient"}: applies a default color gradient according to
-  significance.
-  \item A vector of two colors defining a custom gradient.
+  \item \code{NULL}: sin resaltado de celdas.
+  \item Un único color: aplica un color de fondo fijo.
+  \item \code{"gradient"}: aplica un gradiente de color por defecto según
+    la significación.
+  \item Un vector de dos colores: define un gradiente personalizado.
 }}
 
-\item{font_size}{Numeric value specifying the font size of the output table.
-Default is \code{12}.}
+\item{font_size}{Valor numérico con el tamaño de fuente de la tabla. Por
+defecto, 12.}
 
-\item{width_lev}{Numeric value kept for backward compatibility with previous
-versions of the function. It is currently not used.}
+\item{width_lev}{Valor numérico conservado por compatibilidad con versiones
+anteriores de la función. Actualmente no se utiliza.}
 
-\item{conf_level}{Numeric value indicating the confidence level used for
-confidence interval estimation. Default is \code{0.95}.}
+\item{conf_level}{Valor numérico con el nivel de confianza de los intervalos.
+Por defecto, 0.95.}
 
-\item{group}{Logical. If \code{TRUE} (default), rows are grouped by variable
-using \code{\link[kableExtra]{group_rows}}, so that each variable label is
-shown as a group header row and the first column contains only the level,
-exactly as in \code{\link{desc_unimods}}. If \code{FALSE}, no group headers
-are added and only the level column is shown.}
+\item{group}{Lógico. Si es \code{TRUE} (por defecto), las filas se agrupan por
+variable con \code{\link[kableExtra]{group_rows}}: la etiqueta de cada
+variable aparece como fila de cabecera de grupo y la primera columna
+contiene solo el nivel, como en \code{\link{desc_unimods}}. Si es
+\code{FALSE}, no se añaden cabeceras de grupo y solo se muestra la columna
+de niveles.}
 
-\item{fixed_thead}{Logical. Passed to \code{\link[kableExtra]{kable_styling}}.
-Defaults to \code{FALSE}: because the table has two header rows (the
-outcome categories added by \code{add_header_above()} and the column
-names), \code{TRUE} makes kableExtra fix both with
-\code{position: sticky; top: 0}, so they overlap while scrolling and the
-outcome row is hidden behind the column-name row. Set it to \code{TRUE}
-only if the table is short enough not to scroll.}
+\item{fixed_thead}{Lógico. Se pasa a \code{\link[kableExtra]{kable_styling}}.
+Por defecto, \code{FALSE}: como la tabla tiene dos filas de cabecera (las
+categorías del outcome, añadidas con \code{add_header_above()}, y los
+nombres de columna), con \code{TRUE} kableExtra fija ambas con
+\code{position: sticky; top: 0}, de modo que se superponen al desplazarse y
+la fila del outcome queda oculta tras la de nombres de columna. Úsese
+\code{TRUE} solo si la tabla es lo bastante corta para no desplazarse.}
 
-\item{footnote}{Optional character vector containing footnotes to be added
-to the table.}
+\item{footnote}{Vector de caracteres opcional con notas al pie de la tabla.}
 
-\item{caption}{Character string specifying the table caption. If
-\code{NULL}, a default caption is generated automatically.}
+\item{caption}{Cadena de texto con el título de la tabla. Si es \code{NULL},
+se genera un título por defecto.}
 }
 \value{
-A list containing:
+Lista con los elementos:
 \describe{
-  \item{table}{A formatted HTML table summarizing multinomial univariate
-  model results.}
-  \item{results}{A data frame containing relative risk ratios, confidence
-  intervals, standard errors, and p-values for each predictor and outcome
-  category.}
-  \item{models}{A named list of fitted multinomial regression models.}
-  \item{lbls_vars}{Named character vector with the label of each predictor.}
-  \item{lbls_levels}{Named list with the observed levels of each factor
-  predictor.}
+  \item{table}{Tabla HTML con formato que resume los resultados de los
+    modelos multinomiales.}
+  \item{results}{Data frame en formato largo, con una fila por predictor (o
+    nivel) y categoría del outcome, y las columnas \code{Outcome},
+    \code{Level}, \code{Relative Risk Ratio}, \code{SE}, \code{Lower95},
+    \code{Upper95}, \code{P.value} y \code{Variable}.}
+  \item{models}{Lista con nombre de los modelos multinomiales ajustados, uno
+    por predictor.}
+  \item{lbls_vars}{Vector de caracteres con nombre con la etiqueta de cada
+    predictor.}
+  \item{lbls_levels}{Lista con nombre con los niveles observados de cada
+    predictor factor (\code{NULL} para los no factores).}
 }
 }
 \description{
-Fits a series of multinomial logistic regression models using
-\code{\link[nnet]{multinom}} and summarizes the results in a formatted HTML
-table. Each predictor in \code{var_comp} is evaluated in a separate model and
-may optionally be adjusted for a common set of covariates specified through
-\code{adjust_vars}. Relative risk ratios (RRR), confidence intervals, and
-p-values are calculated for each outcome category relative to the reference
-category. Significant associations can be highlighted either at the row level
-or directly within p-value cells.
+Ajusta una serie de modelos de regresión logística multinomial con
+\code{\link[nnet]{multinom}} y resume los resultados en una tabla HTML con
+formato. Cada predictor de \code{var_comp} se evalúa en un modelo distinto y,
+opcionalmente, se ajusta por un conjunto común de covariables indicado en
+\code{adjust_vars}. Se calculan los riesgos relativos (RRR), sus intervalos de
+confianza y los p-valores de cada categoría del outcome respecto a la
+categoría de referencia. Las asociaciones significativas pueden resaltarse a
+nivel de fila o directamente en las celdas de p-valor.
+
+La función devuelve tanto una tabla lista para informes como los resultados
+numéricos subyacentes, incluidos los modelos ajustados.
 }
 \details{
-The function returns both a formatted table suitable for reporting and the
-underlying model results, including fitted models and coefficients.
-
-
-For each predictor in \code{var_comp}, a multinomial logistic regression
-model is fitted. If \code{adjust_vars} is \code{NULL}, the fitted model is:
+Para cada predictor de \code{var_comp} se ajusta un modelo de regresión
+logística multinomial. Si \code{adjust_vars} es \code{NULL}, el modelo es:
 
 \deqn{Outcome \sim Predictor}
 
-Otherwise, each model includes the predictor of interest together with all
-adjustment covariates:
+En caso contrario, cada modelo incluye el predictor de interés junto con
+todas las covariables de ajuste:
 
 \deqn{Outcome \sim Predictor + Covariates}
 
-Relative risk ratios are obtained by exponentiating regression coefficients.
-Confidence intervals are calculated using the normal approximation:
+Los riesgos relativos (RRR) se obtienen exponenciando los coeficientes de
+regresión. Los intervalos de confianza se calculan con la aproximación
+normal:
 
 \deqn{\exp(\beta \pm z_{\alpha/2} \times SE)}
 
-where \eqn{SE} is the standard error of the coefficient estimate.
+donde \eqn{SE} es el error estándar del coeficiente. Las columnas de límites
+del data frame \code{results} se llaman siempre \code{Lower95} y
+\code{Upper95}, aunque se modifique \code{conf_level}.
 
-\strong{Table layout.} The table follows the same row structure as
-\code{\link{desc_unimods}}: the first column (\code{levs}) contains only the
-level of the predictor, preceded by \code{": "}, and each variable is shown
-as a group header row (see \code{group}). Continuous predictors have an empty
-level cell. Above the level column, one grouped header per outcome category
-holds the columns:
+\strong{Diseño de la tabla.} La tabla sigue la misma estructura de filas que
+\code{\link{desc_unimods}}: la primera columna (\code{levs}) contiene solo el
+nivel del predictor, precedido de \code{": "}, y cada variable aparece como
+fila de cabecera de grupo (véase \code{group}). Los predictores continuos
+tienen la celda de nivel vacía. Sobre las columnas, hay una cabecera agrupada
+por categoría del outcome con:
 \itemize{
-  \item Relative Risk Ratio (RRR) with its confidence interval
-  \item p-value
+  \item el riesgo relativo (RRR) con su intervalo de confianza;
+  \item el p-valor.
 }
-plus a final \code{N} column with the sample size of each model, shown once
-per variable.
+y una columna final \code{N} con el tamaño muestral de cada modelo, mostrada
+una vez por variable.
 
-Significant predictors may be highlighted according to \code{pval_cut}.
-If both \code{col.varsel} and \code{col.varsel_pval} are specified, cell-level
-highlighting takes precedence and row highlighting is disabled.
+\strong{Resaltado.} Los predictores significativos se resaltan según
+\code{pval_cut}. Si se indica \code{col.varsel_pval} y \code{col.varsel}
+conserva su valor por defecto (\code{"#ebe0e9"}), el resaltado de filas se
+desactiva y solo se resaltan las celdas de p-valor. Si \code{col.varsel} se
+cambia a otro color, ambos resaltados se aplican a la vez.
 }
 \examples{
-
 set.seed(123)
-
 n <- 300
 
 mydata <- data.frame(
-  outcome = factor(
-    sample(c("Bajo", "Medio", "Alto"),
-           n,
-           replace = TRUE,
-           prob = c(0.3, 0.4, 0.3))
-  ),
+  outcome = factor(sample(c("Bajo", "Medio", "Alto"), n, replace = TRUE,
+                          prob = c(0.3, 0.4, 0.3))),
   age = round(rnorm(n, mean = 55, sd = 12)),
   bmi = round(rnorm(n, mean = 27, sd = 4), 1),
   sex = factor(sample(c("Hombre", "Mujer"), n, replace = TRUE)),
-  smoker = factor(sample(c("No", "Si"), n, replace = TRUE, prob = c(0.7, 0.3))),
-  hypertension = factor(sample(c("No", "Si"), n, replace = TRUE, prob = c(0.6, 0.4)))
+  smoker = factor(sample(c("No", "Si"), n, replace = TRUE, prob = c(0.7, 0.3)))
 )
 
 # Etiquetas opcionales
-Hmisc::label(mydata$outcome) <- "Nivel de riesgo"
 Hmisc::label(mydata$age) <- "Edad"
-Hmisc::label(mydata$bmi) <- "Índice de masa corporal"
+Hmisc::label(mydata$bmi) <- "Indice de masa corporal"
 Hmisc::label(mydata$sex) <- "Sexo"
-Hmisc::label(mydata$smoker) <- "Tabaquismo"
-Hmisc::label(mydata$hypertension) <- "Hipertensión"
 
-str(mydata)
-head(mydata)
-
+# Modelos univariables
 result <- desc_unimods_multi(
   var_out = "outcome",
   var_comp = c("age", "sex", "bmi"),
   data = mydata
 )
-
 result$table
-
 head(result$results)
-
 names(result$models)
+
+# Modelos ajustados por tabaquismo, con gradiente en los p-valores
+result_adj <- desc_unimods_multi(
+  var_out = "outcome",
+  var_comp = c("age", "sex"),
+  adjust_vars = "smoker",
+  data = mydata,
+  col.varsel_pval = "gradient"
+)
+result_adj$table
 
 }
 \seealso{
-\code{\link{desc_unimods}}, \code{\link{plot_forest_multimods}}
+\code{\link{desc_unimods}}, \code{\link{plot_forest_multimods}},
+  \code{\link{desc_multimod}}, \code{\link[nnet]{multinom}}
 }
 \author{
-Àlex Martí Barrera, Miquel Vázquez-Santiago, Alba García Zarzoso, Miriam Mota
+Àlex Martí Barrera, Alba García Zarzoso, Miriam Mota
+
+Miquel Vázquez-Santiago \email{miquel.vazquez@vhir.org}
 
 Modificaciones y mantenimiento:
 Biomedical Data Intelligence Unit (BIDU)
 Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }
+\keyword{logistic}
+\keyword{multinomial}
+\keyword{regression}
+\keyword{relative-risk-ratio}
+\keyword{univariate}

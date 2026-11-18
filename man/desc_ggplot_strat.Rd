@@ -129,14 +129,17 @@ La función selecciona automáticamente el tipo de gráfico según el tipo de va
 Cuando se indica \code{y}, ambos tipos de variable comparten la misma jerarquía
 visual: \code{strat} arriba (panel/\code{facet_wrap}, solo nombre de nivel) e
 \code{y} abajo (eje X, con sus niveles y su etiqueta como título):
-- Variables \code{factor}: gráfico de barras apiladas en porcentaje. Los
+
+\itemize{
+  \item Variables \code{factor}: gráfico de barras apiladas en porcentaje. Los
   porcentajes se calculan dentro de cada combinación exacta de \code{strat} e
   \code{y} (igual que \code{desc_group_strat()}), de forma que coinciden con
   los de la tabla.
-- Variables numéricas: boxplot, coloreado por \code{y} (sin leyenda, ya que
+  \item Variables numéricas: boxplot, coloreado por \code{y} (sin leyenda, ya que
   \code{y} también está en el eje X).
-- Variables \code{Date} o \code{POSIXt}: histograma por fechas, facetado por
+  \item Variables \code{Date} o \code{POSIXt}: histograma por fechas, facetado por
   \code{strat} (no admiten \code{y}).
+}
 
 Si no se indica \code{y}, \code{strat} pasa a ser la única agrupación y se sitúa
 directamente en el eje X (sin paneles).
@@ -159,5 +162,8 @@ desc_ggplot_strat(mtcars, res_strat = res)
 
 }
 \author{
-BIDU-UEB. VHIR \email{bioestadistica@vhir.org}
+Miquel Vázquez-Santiago \email{miquel.vazquez@vhir.org}
+
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }

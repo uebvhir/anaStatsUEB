@@ -2,7 +2,7 @@
 % Please edit documentation in R/coxPretty.R
 \name{coxPretty}
 \alias{coxPretty}
-\title{A coxPretty Function}
+\title{Tabla con formato para los resultados de un modelo de Cox}
 \usage{
 coxPretty(
   frml,
@@ -15,31 +15,48 @@ coxPretty(
 )
 }
 \arguments{
-\item{frml}{a formula object, with the response on the left of a ~ operator, and the terms on the right. The response must be a survival object as returned by the Surv function.}
+\item{frml}{Objeto de fórmula, con la respuesta a la izquierda del operador \code{~} y
+los términos a la derecha. La respuesta debe ser un objeto de supervivencia devuelto
+por la función \code{Surv}.}
 
-\item{data}{data frame, list or environment (or object coercible by 'as.data.frame' to a data frame) containing the variables in the model. If they are not found in 'data', the variables are taken from 'environment(formula)'.}
+\item{data}{Data frame, lista o entorno (o un objeto que \code{as.data.frame} pueda
+convertir en data frame) que contiene las variables del modelo. Si no se encuentran
+en \code{data}, las variables se toman de \code{environment(formula)}.}
 
-\item{summary.cox}{a character string; possible values are ht, r, no}
+\item{summary.cox}{Cadena de caracteres; los valores posibles son \code{"ht"},
+\code{"r"} o \code{"no"}.}
 
-\item{mod_original}{logical value, return original cox model.}
+\item{mod_original}{Valor lógico. Si es \code{TRUE}, devuelve también el modelo de Cox
+original.}
 
-\item{title}{Character vector containing the table's caption or title.}
+\item{title}{Vector de caracteres con el título o leyenda de la tabla.}
 
-\item{namevar}{Character vector containing the variable name.}
+\item{namevar}{Vector de caracteres con el nombre de la variable.}
+}
+\value{
+Una tabla con formato \code{kable} con los resultados del modelo de Cox (y, si
+  \code{mod_original = TRUE}, también el modelo \code{coxph} original).
 }
 \description{
-DESCRIPCIO DE LA FUNCIO
+Ajusta (o recibe) un modelo de regresión de Cox (\code{coxph}) a partir de una fórmula
+con un objeto \code{Surv} como respuesta, y devuelve los resultados (hazard ratios,
+intervalo de confianza y p-valor) en una tabla con formato \code{kable} lista para
+incluir en el informe.
 }
 \examples{
 dat <- data.frame(tm = c(rnorm(50,12*4,19), rnorm(50,12*2,12)),
 ev = factor(sample(c("Vivo", "Muerto"), 100, replace = TRUE)) ,
 iq = factor(c(rep("A",50), rep("B",50))), age = rnorm(100,22,6))
-my_surv <- Surv(time = dat$tm, event = as.numeric(dat$ev) - 1)
+my_surv <- survival::Surv(time = dat$tm, event = as.numeric(dat$ev) - 1)
 # coxPretty(my_surv ~ iq + age , data = dat)
 # coxPretty(my_surv ~ iq + age , data = dat,summary.cox = "r", mod_original = FALSE)
+
 }
 \author{
-Miriam Mota-Foix <mmota.foix@gmail.com>
+Miriam Mota-Foix \email{mmota.foix@gmail.com}
+
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }
 \keyword{cox}
 \keyword{coxph}

@@ -1,40 +1,71 @@
-
-#' Resumen de modelos logísticos multivariables
+#' @title Resumen de modelos logísticos multivariables
 #'
-#' @description Resume un modelo logístico binomial ajustado con \code{stats::glm()} o
-#' un modelo logístico multinomial ajustado con \code{nnet::multinom()}.
-#' Devuelve resultados numéricos en formato largo, una tabla HTML con un
-#' formato equivalente a \code{desc_unimods()} o
-#' \code{desc_unimods_multi()}, las etiquetas de variables y niveles, el
-#' número de observaciones y los pseudo-R2 de McFadden.
+#' @description
+#' Resume un modelo logístico binomial ajustado con \code{stats::glm()} o un modelo
+#' logístico multinomial ajustado con \code{nnet::multinom()}. Devuelve resultados
+#' numéricos en formato largo, una tabla HTML con un formato equivalente a
+#' \code{desc_unimods()} o \code{desc_unimods_multi()}, las etiquetas de variables y
+#' niveles, el número de observaciones y los pseudo-R2 de McFadden.
 #'
-#' En el caso multinomial, la tabla pivota la categoría del outcome para
-#' mostrar, bajo una cabecera por categoría, las columnas
-#' \\code{Relative Risk Ratio} y \\code{p.value}. El objeto \\code{results} se
-#' conserva en formato largo para poder utilizarlo directamente en un
-#' forest plot facetado.
-#'
-#' @param model Modelo ajustado de clase \\code{multinom} o un modelo
-#'   \\code{glm} con familia binomial.
+#' @param model Modelo ajustado de clase \code{multinom} o un modelo
+#'   \code{glm} con familia binomial.
 #' @param align Vector de alineaciones de columnas pasado a
-#'   \\code{knitr::kable()}. Si es \\code{NULL}, todas las columnas se
+#'   \code{knitr::kable()}. Si es \code{NULL}, todas las columnas se
 #'   centran.
 #' @param pval_cut Punto de corte para identificar asociaciones
 #'   estadísticamente significativas. Por defecto, 0.05.
 #' @param col.varsel Color de fondo aplicado a todas las filas de una
 #'   variable que presenta al menos un p-valor inferior a
-#'   \\code{pval_cut}. Si es \\code{NULL}, no se colorean filas completas.
+#'   \code{pval_cut}. Si es \code{NULL}, no se colorean filas completas.
 #' @param col.varsel_pval Control del resaltado de las celdas de p-valor
-#'   significativas. Puede ser \\code{NULL}, un color, \\code{"gradient"}
+#'   significativas. Puede ser \code{NULL}, un color, \code{"gradient"}
 #'   o un vector de dos colores. Si se usa junto con el valor por defecto de
-#'   \\code{col.varsel}, se desactiva el coloreado de fila completa.
+#'   \code{col.varsel}, se desactiva el coloreado de fila completa.
 #' @param font_size Tamaño de fuente de la tabla HTML.
 #' @param conf_level Nivel de confianza. Por defecto, 0.95.
 #' @param footnote Nota al pie opcional. A la nota indicada se añade el
 #'   número de observaciones y los pseudo-R2 de McFadden.
-#' @param caption Título opcional de la tabla. Si es \\code{NULL}, se genera
+#' @param caption Título opcional de la tabla. Si es \code{NULL}, se genera
 #'   automáticamente según el tipo de modelo.
 #' @param col.background Color de fondo de la cabecera de la tabla.
+#'
+#' @return Lista con los elementos \code{table}, \code{table_data},
+#'   \code{results}, \code{model}, \code{model_type}, \code{N},
+#'   \code{logLik}, \code{logLik_null}, \code{R2_McFadden},
+#'   \code{R2_McFadden_ajustado}, \code{lbls_vars} y \code{lbls_levels}.
+#'
+#' @details
+#' En el caso multinomial, la tabla pivota la categoría del outcome para
+#' mostrar, bajo una cabecera por categoría, las columnas
+#' \code{Relative Risk Ratio} y \code{p.value}. El objeto \code{results} se
+#' conserva en formato largo para poder utilizarlo directamente en un
+#' forest plot facetado.
+#'
+#' Si se indica \code{col.varsel_pval} y \code{col.varsel} conserva su valor por
+#' defecto, \code{col.varsel} se ignora (no se colorean filas completas).
+#'
+#' @seealso \code{\link{desc_unimods}}, \code{\link{desc_unimods_multi}},
+#'   \code{\link{plot_forest_multimods_binom}}, \code{\link{plot_forest_multimods_multi}}
+#'
+#' @examples
+#' set.seed(1)
+#' dat <- data.frame(
+#'   y = factor(rep(c("No", "Si"), each = 30)),
+#'   x = rnorm(60),
+#'   g = factor(sample(c("A", "B"), 60, replace = TRUE))
+#' )
+#' mod <- glm(y ~ x + g, data = dat, family = binomial)
+#' res <- desc_multimod(mod)
+#' res$table
+#' res$results
+#'
+#' \dontrun{
+#' # Modelo multinomial
+#' mod_m <- nnet::multinom(Species ~ Sepal.Length + Petal.Width, data = iris, trace = FALSE)
+#' desc_multimod(mod_m)$table
+#' }
+#'
+#' @keywords logistic multinomial regression model summary
 #'
 #' @author
 #' Alba García Zarzoso \email{alba.garcia.zarzoso@vhir.org}
@@ -42,11 +73,6 @@
 #'
 #' Biomedical Data Intelligence Unit (BIDU)
 #' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
-#' 
-#' @return Lista con los elementos \\code{table}, \\code{table_data},
-#'   \\code{results}, \\code{model}, \\code{model_type}, \\code{N},
-#'   \\code{R2_McFadden}, \\code{R2_McFadden_ajustado},
-#'   \\code{lbls_vars} y \\code{lbls_levels}.
 #'
 #' @export
 desc_multimod <- function(

@@ -44,7 +44,7 @@ desc_ggplot(
 \item{y}{Variable de agrupación (dependiente) para análisis bivariado. Ignorado si se usa \code{frml}.}
 
 \item{method}{\code{'param'} o \code{'non-param'} (también \code{'nonparam'}). Test del p-valor cuando
-\code{show.pval = TRUE}; debe ser el mismo que en \code{desc_group()}. Default value is 'non-param'.}
+\code{show.pval = TRUE}; debe ser el mismo que en \code{desc_group()}. Valor por defecto: 'non-param'.}
 
 \item{nameFile}{Nombre del archivo PDF de salida si \code{topdf = TRUE}.}
 
@@ -101,14 +101,18 @@ con \code{variable, group, id, value, lower, upper, method, k}.
 Si \code{topdf = TRUE}, guarda los gráficos en un archivo PDF.
 }
 \description{
-Esta función genera gráficos descriptivos (barras, histogramas, boxplots) para un conjunto de variables,
-de forma univariada o bivariada, con opciones para personalizar estilo, leyendas, etiquetas, tamaños de texto, etc.
+Esta función genera gráficos descriptivos (barras, histogramas, boxplots) para un
+conjunto de variables, de forma univariada o bivariada, con opciones para
+personalizar estilo, leyendas, etiquetas, tamaños de texto, etc.
 }
 \details{
 La función selecciona automáticamente el tipo de gráfico según el tipo de variable:
-- Variables \code{factor}: gráfico de barras (univariado o apilado bivariado).
-- Variables numéricas: histograma (univariado) o boxplot (bivariado).
-- Variables \code{Date} o \code{POSIXt}: histograma por fechas.
+
+\itemize{
+  \item Variables \code{factor}: gráfico de barras (univariado o apilado bivariado).
+  \item Variables numéricas: histograma (univariado) o boxplot (bivariado).
+  \item Variables \code{Date} o \code{POSIXt}: histograma por fechas.
+}
 
 Variables de tipo \code{character} son ignoradas con una advertencia.
 
@@ -121,4 +125,13 @@ con el test completo y el post-hoc, ver \code{desc_ggstats()}.
 desc_ggplot(mtcars, covariates = c("mpg", "cyl"), y = "am", topdf = TRUE)
 }
 
+}
+\seealso{
+\code{\link{desc_group}}, \code{\link{desc_ggstats}}
+}
+\author{
+Miriam Mota \email{mmota.foix@gmail.com}
+
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }

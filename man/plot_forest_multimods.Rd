@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_forest_multimods.R
 \name{plot_forest_multimods}
 \alias{plot_forest_multimods}
-\title{Forest plot para modelos de regresión logística multinomial}
+\title{Forest plot para modelos multinomiales multivariables}
 \usage{
 plot_forest_multimods(
   results_df,
@@ -37,195 +37,157 @@ plot_forest_multimods(
 )
 }
 \arguments{
-\item{results_df}{Data frame con los resultados multinomiales (una fila
-por combinación variable/nivel/outcome).}
+\item{text_sep}{Separador entre el bloque de estimación/IC y el p-valor dentro
+de la etiqueta. Por defecto, \code{"; "}.}
 
-\item{lbls_vars}{Vector con nombres (columna \code{variable} -> etiqueta).
-Se pasa a \code{forest_build_labels()}.}
+\item{pval_cut}{Umbral de significación estadística. Debe ser un único número
+entre 0 y 1. Por defecto, 0.05.}
 
-\item{lbls_levels}{Lista con nombres (columna \code{variable} -> vector
-nivel -> etiqueta). Se pasa a \code{forest_build_labels()}.}
+\item{title}{Título principal del gráfico. Por defecto,
+\code{"Modelo multinomial multivariable"}.}
 
-\item{estimate}{Nombre EXACTO de columna con la medida de efecto
-representada por los puntos del forest plot. Habitualmente el Relative
-Risk Ratio (RRR) generado por \code{desc_unimods_multi()}, aunque puede
-usarse cualquier medida positiva representable en escala logarítmica
-(\code{"RRR"}, \code{"OR"}, \code{"HR"}...).}
+\item{subtitle}{Subtítulo del gráfico. Por defecto,
+\code{"Relative Risk Ratio (IC95\%)"}.}
 
-\item{lower}{Nombre EXACTO de columna con el límite inferior del IC
-asociado a \code{estimate}.}
+\item{xlab}{Etiqueta del eje X. Por defecto, \code{"RRR"}.}
 
-\item{upper}{Nombre EXACTO de columna con el límite superior del IC
-asociado a \code{estimate}.}
+\item{show.effect.column}{Lógico. Si es \code{TRUE} (por defecto), la etiqueta
+incluye la estimación puntual y el IC95\%.}
 
-\item{p}{Nombre EXACTO de columna con los p-valores.}
+\item{show.p}{Lógico. Si es \code{TRUE} (por defecto), la etiqueta incluye el
+p-valor.}
 
-\item{variable}{Nombre EXACTO de columna que identifica la variable
-explicativa evaluada en cada modelo.}
+\item{show.p.label}{Lógico. Si es \code{TRUE} (por defecto), los p-valores por
+encima de \code{pval_cut} se muestran como \code{"NS"} en lugar del valor
+numérico.}
 
-\item{level}{Nombre EXACTO de columna con el nivel evaluado para
-variables categóricas. Para variables continuas puede dejarse en
-\code{NA}; se usa internamente para construir las etiquetas del eje Y.}
+\item{hide.ns}{Lógico. Si es \code{TRUE} (por defecto), se oculta por completo
+la etiqueta de texto (aunque no el punto ni el intervalo) para las filas no
+significativas.}
 
-\item{header.est.text}{Etiqueta de VISUALIZACIÓN para la medida de
-efecto en la cabecera (por defecto \code{"RRR"}).}
+\item{show.null.band}{Lógico. Si es \code{TRUE} (por defecto), se dibuja una
+banda sombreada alrededor del valor nulo (\code{null_band}).}
 
-\item{header.ic.text}{Etiqueta de VISUALIZACIÓN para el intervalo de
-confianza en la cabecera (por defecto \code{"IC95\%"}).}
+\item{palette}{Paleta de colores. \code{"okabe"}/\code{"okabe_ito"} usa la
+paleta Okabe-Ito; \code{NULL} usa \code{\link{gg_color}}; o bien un vector de
+colores. En todos los casos los colores se reciclan hasta el número de niveles
+de \code{Outcome}. Por defecto, \code{"okabe"}.}
 
-\item{header.pval.text}{Etiqueta de VISUALIZACIÓN para el p-valor en la
-cabecera (por defecto \code{"P.value"}).}
+\item{point_size}{Tamaño de los puntos de estimación. Por defecto, 2.8.}
 
-\item{text_sep}{Separador entre la parte de efecto/IC y la de p-valor,
-usado tanto en cada fila de datos como en la cabecera (por defecto
-\code{"; "}).}
+\item{text_size}{Tamaño de letra de la etiqueta anclada a cada punto. Por
+defecto, 3.}
 
-\item{outcome}{Nombre EXACTO de columna que identifica la categoría del
-outcome multinomial frente a la categoría de referencia.}
+\item{x}{Lista resultante de \code{\link{desc_multimod}} para un modelo
+multinomial (\code{x$model_type == "multinomial"}). Debe contener, como
+mínimo, un data.frame \code{x$results} con las columnas \code{Outcome},
+\code{Variable}, \code{Level}, \code{Relative Risk Ratio}, \code{Lower95},
+\code{Upper95} y \code{P.value}. Si existen \code{x$lbls_vars},
+\code{x$lbls_levels}, \code{x$model}, \code{x$N}, \code{x$R2_McFadden} y
+\code{x$R2_McFadden_ajustado}, se utilizan para las etiquetas, la categoría de
+referencia y el pie del gráfico.}
 
-\item{pval_cut}{Punto de corte de significación estadística (por defecto
-0.05).}
+\item{shape.label}{Lógico. Si es \code{TRUE} (por defecto), se usa una forma
+distinta (triángulo) para los puntos significativos
+(\code{P.value < pval_cut}).}
 
-\item{vars_plot}{Variables a representar (subconjunto opcional).}
+\item{label_dx}{Factor multiplicativo aplicado sobre el valor de
+\code{Relative Risk Ratio} de cada fila para desplazar la etiqueta
+ligeramente a la derecha del punto (la escala del eje X es log10, por lo que
+el desplazamiento debe ser multiplicativo, no aditivo). Debe ser mayor que 1.
+Por defecto, 1.05.}
 
-\item{outcomes_plot}{Categorías de outcome a representar (subconjunto
-opcional).}
+\item{label_dy}{Desplazamiento aditivo, en unidades de \code{y} (posiciones
+discretas de variable/nivel), aplicado para situar la etiqueta por encima del
+punto. Por defecto, 0.25.}
 
-\item{title}{Título principal.}
+\item{x_limit_mult}{Factor multiplicativo sobre el máximo redondeado de la
+escala (\code{x_plot_max}) que determina el límite derecho del eje X, dejando
+margen para que las etiquetas de los puntos más extremos no queden cortadas.
+Debe ser mayor que 1. Por defecto, 1.8.}
 
-\item{subtitle}{Subtítulo.}
+\item{null_band}{Vector numérico de longitud 2 con los límites inferior y
+superior de la banda del valor nulo. Por defecto, \code{c(0.95, 1.05)}.}
 
-\item{xlab}{Título eje X. Si \code{NULL} (por defecto), se usa
-\code{header.est.text}.}
+\item{show.model.info}{Lógico. Si es \code{TRUE}, se añade un pie de página
+(\code{caption}) con la información del modelo (N, R2 de McFadden y R2 de
+McFadden ajustado). Por defecto, \code{FALSE}.}
 
-\item{show.effect.column}{Mostrar la medida de efecto y su IC95\% en la
-columna de texto.}
+\item{show.ref.outcome}{Lógico. Si es \code{TRUE} (por defecto), el subtítulo
+indica la categoría de referencia de la variable resultado, frente a la cual
+se interpretan todas las RRR de los paneles.}
 
-\item{show.p}{Mostrar el p-valor en la columna de texto.}
+\item{ref_outcome}{Categoría de referencia de la variable resultado. Si es
+\code{NULL} (por defecto), se obtiene automáticamente del modelo almacenado en
+\code{x$model} (\code{model$lev[1]} para objetos \code{nnet::multinom}; en su
+defecto, el primer nivel de la variable respuesta del \code{model.frame()}).
+Indíquela explícitamente solo si la detección automática no es posible.}
 
-\item{show.p.label}{Lógico. Si \code{TRUE}, los p-valores no
-significativos se muestran como \code{"NS"} (salvo si
-\code{hide.ns = TRUE}). Si \code{FALSE}, se muestran los valores
-exactos.}
-
-\item{hide.ns}{Lógico. Si \code{TRUE}, no se muestra ningún texto para
-los resultados no significativos (\code{p >= pval_cut}); los puntos e
-IC se siguen dibujando.}
-
-\item{show.null.band}{Mostrar banda sombreada alrededor de RRR=1.}
-
-\item{palette}{Paleta de color para el outcome. Puede ser \code{NULL}
-(usa \code{gg_color(n)}), \code{"okabe"}/\code{"okabe_ito"} (paleta
-accesible Okabe-Ito) o un vector de colores propio (se recicla si hace
-falta). El texto de los resultados se representa siempre en negro,
-independientemente de la paleta.}
-
-\item{point_size}{Tamaño de los puntos.}
-
-\item{text_size}{Tamaño del texto de la columna de resultados. Si
-\code{NULL} (por defecto), se calcula dinámicamente según el número de
-filas (\code{max(2.0, min(3.5, 3.8 - n_rows * 0.03))}).}
-
-\item{text_spacing}{Separación de la columna de texto respecto al IC
-máximo, en DÉCADAS log10 (por defecto 0.4).}
+\item{ref_outcome_label}{Texto que precede a la categoría de referencia en el
+subtítulo. Por defecto, \code{"Categoría de referencia"}.}
 }
 \value{
-Objeto \code{ggplot}.
+Un objeto \code{ggplot} con un panel por cada nivel de \code{Outcome}
+  (mediante \code{facet_grid()}), eje X en escala log10 y etiquetas de texto
+  ancladas a cada punto.
 }
 \description{
-Genera un forest plot a partir de resultados de modelos multinomiales
-(Relative Risk Ratio con IC95%), con una columna de texto combinada
-RRR(IC95%) [; p-valor] al estilo \code{summata}, alineada a la derecha
-del panel gráfico y separada por una línea fina.
+Genera un forest plot (Relative Risk Ratio con IC95\%) para un modelo de
+regresión multinomial multivariable, con un panel por cada nivel de la variable
+de resultado (\code{Outcome}), mediante \code{ggplot2::facet_grid()}. La
+estimación puntual y, opcionalmente, el intervalo de confianza y el p-valor se
+muestran como una etiqueta de texto anclada directamente sobre cada punto,
+ligeramente desplazada hacia arriba y a la derecha (al estilo de
+\code{sjPlot::plot_model()}), en lugar de una columna de texto alineada aparte.
+Este anclaje por punto evita el problema de recorte o solapamiento de texto
+entre paneles que aparece cuando el texto se sitúa en una columna común a una
+posición fija del eje X (véase \sQuote{Details}).
+
+El subtítulo incorpora la categoría de referencia de la variable resultado
+(\code{show.ref.outcome}), imprescindible para interpretar las RRR: cada panel
+compara su categoría frente a esa referencia, que por definición no tiene panel
+propio.
 }
 \details{
-\strong{Columnas de datos frente a etiquetas de visualización}: los
-argumentos \code{estimate}, \code{lower}, \code{upper}, \code{p},
-\code{variable}, \code{level} y \code{outcome} son \strong{nombres de
-columna}: deben coincidir EXACTAMENTE con \code{names(results_df)}. En
-cambio, \code{header.est.text}, \code{header.ic.text} y
-\code{header.pval.text} son \strong{texto de visualización} para la
-cabecera de la columna combinada; no tienen que coincidir con ningún
-nombre de columna. Por ejemplo, \code{estimate = "Relative Risk Ratio"}
-(columna real) + \code{header.est.text = "RRR"} (lo que se lee en la
-cabecera) es la combinación habitual.
+A diferencia de una columna de texto alineada a una posición fija del eje X
+(idéntica para todas las filas de un panel), aquí cada etiqueta se ancla a las
+coordenadas \code{(Relative Risk Ratio, y)} de su propia fila, con un pequeño
+desplazamiento (\code{label_dx}, \code{label_dy}) hacia arriba y a la derecha.
+Al depender del valor de dato de cada fila y no de una posición compartida entre
+todas las filas de un panel, la etiqueta queda dentro del rango de datos
+representado en su propio panel con independencia del ancho físico que
+\code{facet_grid()} le asigne, evitando así el recorte o solapamiento con el
+panel contiguo que aparecía con el enfoque de columna común.
 
-\strong{Visualización de resultados}
-
-La combinación de \code{show.effect.column}, \code{show.p},
-\code{show.p.label} y \code{hide.ns} permite distintos modos de
-visualización de la columna de resultados:
-
-\itemize{
-  \item \code{show.effect.column = TRUE}, \code{show.p = TRUE},
-  \code{show.p.label = FALSE}, \code{hide.ns = FALSE}
-  \describe{
-    \item{Resultado}{Medida de efecto, IC y p-valor exacto:
-      \code{1.03 (1.00, 1.06); 0.072}}
-  }
-  \item \code{show.effect.column = TRUE}, \code{show.p = TRUE},
-  \code{show.p.label = TRUE}, \code{hide.ns = FALSE}
-  \describe{
-    \item{Resultado}{Los no significativos se muestran como \code{NS}:
-      \code{1.03 (1.00, 1.06); NS}}
-  }
-  \item \code{show.effect.column = TRUE}, \code{show.p = FALSE}
-  \describe{
-    \item{Resultado}{Solo la medida de efecto con su IC95\%:
-      \code{1.03 (1.00, 1.06)}}
-  }
-  \item \code{show.effect.column = FALSE}, \code{show.p = TRUE}
-  \describe{
-    \item{Resultado}{Solo los p-valores: \code{0.072} o \code{NS}.}
-  }
-  \item \code{show.effect.column = TRUE}, \code{show.p = TRUE},
-  \code{show.p.label = TRUE}, \code{hide.ns = TRUE}
-  \describe{
-    \item{Resultado}{Las asociaciones no significativas se eliminan
-      completamente de la columna de texto (\code{NA}); solo se
-      muestran las significativas: \code{2.45 (1.38, 4.34); 0.002}}
-  }
-}
-
-Cuando \code{hide.ns = TRUE}, los puntos y los intervalos de confianza
-continúan representándose en el forest plot; solo se oculta el texto de
-los resultados no significativos. Al ser un \code{NA} intencionado,
-\code{geom_richtext()} se llama con \code{na.rm = TRUE} para no generar
-el aviso \code{"Removed N rows containing missing values"}.
-
-\strong{Limitaciones}
-\itemize{
-  \item Los RRR y los límites de confianza deben ser estrictamente
-  positivos (escala log10).
-  \item Requiere el paquete \pkg{ggtext} (para \code{geom_richtext()});
-  si no está instalado, la función lanza un error explicativo.
-  \item La paleta \code{"okabe_ito"} tiene 8 colores y el vector de
-  formas por defecto tiene 8 valores; con más de 8 categorías de outcome
-  ambos se reciclan (con aviso), dificultando distinguirlas.
-  \item El color del texto de la columna de resultados es fijo
-  (\code{'black'}); el color/forma por outcome se aplica solo a puntos y
-  barras de error.
-  \item \code{'text_size'} acepta valores inferiores a 3.75 sin solapamientos
-  en etiquetas.
-}
+Cuando \code{show.ref.outcome = TRUE} y se conoce la categoría de referencia, se
+añade al subtítulo con la forma \code{"<subtitle> | <ref_outcome_label>:
+<categoría>"}. Se necesita el paquete \pkg{ggtext}.
 }
 \examples{
 \dontrun{
-plot_forest_multimods(
-  res$results, res$lbls_vars, res$lbls_levels,
-  show.p = TRUE, show.p.label = TRUE, hide.ns = TRUE,
-  palette = 'okabe'
-)
+# Modelo multinomial resumido con desc_multimod()
+mod <- nnet::multinom(Species ~ Sepal.Length + Petal.Width, data = iris, trace = FALSE)
+res <- desc_multimod(mod)
+
+plot_forest_multimods_multi(res)
+
+# Con pie del modelo y mostrando tambien las filas no significativas
+plot_forest_multimods_multi(res, show.model.info = TRUE, hide.ns = FALSE)
 }
 
 }
 \seealso{
-\code{\link{forest_build_labels}}, \code{\link{plot_forest_uni}}
+\code{\link{desc_multimod}}, \code{\link{plot_forest_multimods_binom}},
+  \code{\link{plot_forest_multimods}}, \code{\link{plot_forest_unimods}}
 }
 \author{
-Alba García Zarzoso \email{alba.garcia.zarzoso@vhir.org}
 Miquel Vázquez-Santiago \email{miquel.vazquez@vhir.org}
 
 Biomedical Data Intelligence Unit (BIDU)
 Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }
+\keyword{forest-plot}
+\keyword{ggplot}
+\keyword{multinomial}
+\keyword{multivariable}
+\keyword{relative-risk-ratio}

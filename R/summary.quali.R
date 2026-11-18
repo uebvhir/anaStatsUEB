@@ -1,49 +1,124 @@
-#' Resumen descriptivo de variables cualitativas con comparación entre grupos
+#' @title Resumen descriptivo de variables cualitativas con comparación entre grupos
 #'
-#' Esta función genera un resumen descriptivo para variables cualitativas, con frecuencias, porcentajes,
-#' intervalos de confianza exactos y opcionalmente valores p de tests estadísticos, estadísticos de prueba
-#' y odds ratios cuando corresponda. Los resultados pueden devolverse en formato HTML, LaTeX o texto plano.
+#' @description
+#' Genera un resumen descriptivo de una variable cualitativa (factor), con
+#' frecuencias, porcentajes e intervalos de confianza exactos (binomial). Si se
+#' indica una variable de agrupación, calcula el resumen por grupos y,
+#' opcionalmente, el p-valor de un test de asociación (chi-cuadrado o Fisher), el
+#' estadístico de prueba y las odds ratio. Los saltos de línea de las celdas se
+#' adaptan a HTML, LaTeX o texto plano.
 #'
-#' A partir de mayo de 2025, la prueba chi-cuadrado se ejecuta por defecto con `correct = FALSE` (sin corrección de Yates).
-#' Para replicar resultados previos, especifique `correct = TRUE` explícitamente
+#' A partir de mayo de 2025, la prueba chi-cuadrado se ejecuta por defecto con
+#' \code{correct = FALSE} (sin corrección de Yates). Para replicar resultados
+#' anteriores, especifique \code{correct = TRUE} explícitamente.
 #'
-#' @param x factor variable.
-#' @param group factor variable. Outcome
-#' @param data data frame, list or environment (or object coercible by 'as.data.frame' to a data frame) containing the variables in the model. If they are not found in 'data', the variables are taken from 'environment(formula)'.
-#' @param format  a character string; possible values are ht, r, no. Default value is "ht".
-#' @param nround Entero. Numero de decimales de los porcentajes y sus IC. Por defecto \code{1}.
-#'   Si llega \code{"auto"} (p. ej. via \code{desc_group(...)}) se usa 1 decimal.
-#' @param test character string indicating the test to use. Possible values are 'Fisher','Chi'. Default value is NULL
-#' @param show.pval \code{logical}. Si \code{TRUE}, muestra el valor p del test de asociación.
-#' @param show.all \code{logical}. Si \code{TRUE}, añade columna con resultados globales (sin estratificar).
-#' @param show.n \code{logical}. Si \code{TRUE}, añade una columna con el número total de observaciones.
-#' @param show.stat \code{logical}. Si \code{TRUE}, añade el estadístico de prueba (Chi-cuadrado).
-#' @param show.or \code{logical}. Si \code{TRUE} y \code{group} tiene exactamente dos niveles,
-#' @param byrow logical or NA. Percentage of categorical variables must be reported by rows (TRUE), by columns (FALSE) or by columns and rows to sum up 1 (NA). Default value is FALSE, which means that percentages are reported by columns (withing groups).
-#' @keywords summary ci qualitative txt_descriptive exploratory
-#' @export summary.quali
-#' @author Miriam Mota  \email{miriam.mota@@vhir.org}
-#' @import binom
+#' @param data Data frame con las variables.
+#' @param x Variable cualitativa a describir (un factor): nombre de columna, con o
+#'   sin comillas (si \code{var.tidy = TRUE}).
+#' @param group Variable de agrupación (un factor), en el mismo formato que
+#'   \code{x}. Por defecto, \code{NULL} (solo resumen global).
+#' @param include.NA Lógico. Si es \code{TRUE}, los valores perdidos de \code{x} se
+#'   cuentan como un nivel más, con el nombre \code{patt.NA} (por defecto,
+#'   \code{FALSE}).
+#' @param patt.NA Texto con el nombre del nivel de valores perdidos cuando
+#'   \code{include.NA = TRUE} (por defecto, \code{"NA"}).
+#' @param format Formato de los saltos de línea en las celdas: \code{"html"} (por
+#'   defecto), \code{"latex"} o \code{"R"}. Cualquier otro valor elimina los saltos
+#'   de línea.
+#' @param nround Número de decimales de los porcentajes y sus IC (por defecto, 1).
+#'   Si llega \code{"auto"} (por ejemplo, desde \code{desc_group()}), se usa 1
+#'   decimal.
+#' @param test Test de asociación: \code{"Fisher's exact"} o
+#'   \code{"Chi-squared"}. Si es \code{NULL} (por defecto), se usa chi-cuadrado
+#'   si todas las frecuencias esperadas son al menos 5 y Fisher en caso
+#'   contrario.
+#' @param show.pval Lógico. Si es \code{TRUE} (por defecto), muestra el p-valor del
+#'   test de asociación.
+#' @param show.all Lógico. Si es \code{TRUE} (por defecto), añade la columna
+#'   \code{ALL} con los resultados globales (sin estratificar).
+#' @param show.n Lógico. Si es \code{TRUE} (por defecto), añade una columna con el
+#'   número total de observaciones.
+#' @param show.stat Lógico. Si es \code{TRUE}, añade el estadístico de prueba
+#'   (chi-cuadrado; con Fisher se muestra \code{"."}). Solo se aplica si
+#'   \code{show.pval = TRUE} (por defecto, \code{FALSE}).
+#' @param show.or Lógico. Si es \code{TRUE} y \code{group} tiene exactamente dos
+#'   niveles, añade la columna \code{OR} con las odds ratio de cada nivel de
+#'   \code{x} respecto al primero (\code{"Ref."}), calculadas con
+#'   \code{\link{desc_mod}} sobre una regresión logística (por defecto,
+#'   \code{FALSE}).
+#' @param byrow Lógico. Si es \code{FALSE} (por defecto), los porcentajes se
+#'   calculan por columnas (dentro de cada grupo); si es \code{TRUE}, por filas.
+#'   No se admite \code{NA}.
+#' @param sub.ht Lógico. Si es \code{TRUE} (por defecto), añade el superíndice de
+#'   la nota al nombre de la variable. Con \code{FALSE} la función falla; véase
+#'   \sQuote{Details}.
+#' @param var.tidy Lógico. Si es \code{TRUE} (por defecto), \code{x} y \code{group}
+#'   pueden darse con o sin comillas. Si es \code{FALSE}, deben ser texto.
+#' @param correct Lógico. Corrección de Yates en el test chi-cuadrado (por defecto,
+#'   \code{FALSE}).
+#'
+#' @return Una lista. Sin \code{group}: \code{variable}, \code{methods},
+#' \code{txt_caption} y \code{summary}. Con \code{group}: \code{rows} y
+#' \code{columns} (nombres de \code{x} y \code{group}), \code{txt_test} (texto con
+#' el nombre del test), \code{pval} (p-valor sin redondear, o \code{"."} si falla),
+#' \code{txt_caption}, \code{methods} y \code{summary}. \code{summary} es un data
+#' frame con las columnas \code{variable}, \code{levels}, una columna por grupo,
+#' \code{ALL}, \code{p.value}, \code{stat}, \code{n} y \code{OR} (según los
+#' argumentos \code{show.*}).
+#'
+#' @details
+#' \itemize{
+#'   \item \code{x} y \code{group} deben ser factores y \code{data} un data frame
+#'     (no un tibble). Se detiene con un error en caso contrario.
+#'   \item Con \code{group}, solo se usan las filas completas para \code{x} y
+#'     \code{group}. Los niveles de \code{x} sin observaciones se eliminan con un
+#'     mensaje.
+#'   \item Con \code{test = "Fisher's exact"} en tablas mayores de 2x2, el p-valor
+#'     se calcula por simulación (\code{simulate.p.value = TRUE}), por lo que puede
+#'     variar entre ejecuciones; use \code{set.seed()} para reproducirlo.
+#'   \item Nota: \code{sub.ht = FALSE} produce un error. \code{test} solo admite
+#'     \code{"Fisher's exact"} y \code{"Chi-squared"}; otros valores producen un
+#'     error poco claro. \code{byrow = NA} produce un error. La leyenda
+#'     (\code{txt_caption}) repite tres veces el texto descriptivo cuando
+#'     \code{show.pval = TRUE}. El aviso de más de 10 niveles de \code{group} no
+#'     llega a activarse.
+#' }
+#'
+#' @seealso \code{\link{summary.quali.rep}}, \code{\link{summary.quanti}},
+#'   \code{\link{desc_group}}, \code{\link[binom]{binom.confint}},
+#'   \code{\link[stats]{chisq.test}}, \code{\link[stats]{fisher.test}}
+#'
 #' @examples
-#'  # set.seed(1)
-#'  # data <- df <- data.frame(MUT = factor(c(rep("A", 12),rep("B",13))),
-#'  #                           var = factor(sample(c("Yes", "no"), 25, replace = T)))
-#'  # tab <- summary.quali(x = "var", data = df)
-#'  # summary.quali(group = "MUT",x = "var", data = df, show.all = F)
-#'  # tab <- summary.quali(group = "MUT",x = "var", data = df, byrow = T)
-#'  # kable(tab$summary,escape = F, row.names = F,align = "c", txt_caption = tab$txt_caption)  %>%
-#'  # kable_styling(latex_options = c("striped","hold_position", "repeat_header"), font_size = 14) %>%
-#'  # row_spec(0,background = "#993489", color = "white")
-#'  # mtc_bis %>% summary.quali( x = gear, group = vs)
-#'  # summary.quali( mtc_bis, x = gear, group = vs)
-#'  # mtc_bis %>% summary.quali( x = "gear", group = "vs")
-#'  # summary.quali( mtc_bis, x = "gear", group = "vs")
-
-
-
-
-
-
+#' set.seed(1)
+#' df <- data.frame(MUT = factor(c(rep("A", 12), rep("B", 13))),
+#'                  var = factor(sample(c("Yes", "no"), 25, replace = TRUE)))
+#' # Resumen global
+#' summary.quali(df, x = "var")$summary
+#'
+#' # Por grupos, sin la columna global
+#' summary.quali(df, x = "var", group = "MUT", show.all = FALSE)$summary
+#'
+#' # Nombres sin comillas y porcentajes por filas
+#' res <- summary.quali(mtc_bis, x = gear, group = vs, byrow = TRUE)
+#' res$pval
+#'
+#' # Odds ratio, estadístico de prueba y corrección de Yates
+#' res2 <- summary.quali(mtc_bis, x = am, group = vs, show.or = TRUE,
+#'                       show.stat = TRUE, test = "Chi-squared", correct = TRUE)
+#' res2$summary[, c("levels", "p.value", "stat", "OR")]
+#'
+#' @keywords summary ci qualitative txt_descriptive exploratory
+#'
+#' @importFrom binom binom.confint
+#' @importFrom stats chisq.test fisher.test glm na.omit
+#'
+#' @author
+#' Miriam Mota \email{miriam.mota@vhir.org}
+#'
+#' Biomedical Data Intelligence Unit (BIDU)
+#' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
+#'
+#' @export
 summary.quali <- function(data,
                           x,
                           group = NULL,

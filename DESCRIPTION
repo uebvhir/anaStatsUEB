@@ -1,6 +1,5 @@
 Package: anaStatsUEB
-Title: Statistical Analysis Functions for the Statistics and
-    Bioinformatics Unit (UEB, VHIR)
+Title: Statistical Analysis Functions for the Biomedical Data Intelligence Unit (BIDU) of the Vall d'Hebron Research Institute (VHIR)
 Version: 0.0.0.9000
 Authors@R:c(
     person("Miriam", "Mota", , "miriam.mota@vhir.org", role = c("aut", "cre")),
@@ -9,7 +8,7 @@ Authors@R:c(
     person("Miquel", "Vazquez-Santiago", , "miquel.vazquez@vhir.org", role = "aut")
   )
 Description: Statistical analysis, reporting and visualization functions
-    developed by the Statistics and Bioinformatics Unit (UEB) of the Vall
+    developed by the Statistical and Bioinformatits Unit (UEB) of the Vall
     d'Hebron Research Institute (VHIR). The package includes tools for
     descriptive statistics, regression modelling, survival analysis,
     epidemiological studies, biomarker evaluation, data management,
@@ -23,6 +22,7 @@ Depends:
     dplyr,
     R (>= 4.1.0)
 Imports:
+    BMisc,
     broom,
     car,
     caret,
@@ -48,6 +48,7 @@ Imports:
     magrittr,
     nlme,
     nnet,
+    OptimalCutpoints,
     openxlsx,
     pacman,
     papeR,

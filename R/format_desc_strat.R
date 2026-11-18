@@ -1,47 +1,70 @@
-#' A format_desc_strat Function
+#' @title Formato de tablas descriptivas estratificadas en HTML
 #'
+#' @description
 #' Formatea una tabla descriptiva estratificada en formato HTML utilizando
 #' \code{kableExtra}. Añade automáticamente cabeceras agrupadas por estrato,
-#' aplica estilos visuales, incorpora notas al pie y resalta las variables
-#' que presentan al menos un p-valor inferior al punto de corte especificado.
+#' aplica estilos visuales, incorpora notas al pie y resalta las variables que
+#' presentan al menos un p-valor menor o igual que el punto de corte
+#' especificado.
 #'
-#' @param results_filtrados data frame con los resultados previamente generados
-#' y combinados por estratos.
-#' @param caption título de la tabla. Por defecto \code{"Resumen de resultados"}.
-#' @param pval_cut punto de corte para resaltar variables con asociación
-#' estadísticamente significativa. Por defecto 0.05.
-#' @param font_size tamaño de letra de la tabla html. Por defecto 12.
-#' @param width_lev ancho de la columna de niveles. Por defecto 25.
-#' @param col.background color de fondo utilizado en las cabeceras de la tabla.
-#' Por defecto \code{"#993489"}.
-#' @param col.varsel color de fondo utilizado para resaltar las variables
-#' seleccionadas según el criterio de p-valor. Por defecto \code{"#ebe0e9"}.
-#' @param footnote texto o vector de textos que se añadirán como nota al pie
-#' de la tabla. Por defecto NULL.
+#' @param results_filtrados Data frame con los resultados previamente generados
+#'   y combinados por estratos. Debe contener las columnas \code{variable} y
+#'   \code{levels}, y el resto de columnas con el formato
+#'   \code{Estrato_variable} (véase \sQuote{Details}).
+#' @param caption Título de la tabla. Por defecto, \code{"Resumen de resultados"}.
+#' @param pval_cut Punto de corte para resaltar las variables con asociación
+#'   estadísticamente significativa. Por defecto, 0.05.
+#' @param font_size Tamaño de letra de la tabla HTML. Por defecto, 12.
+#' @param width_lev Ancho máximo de la columna de niveles, que se pasa a
+#'   \code{kableExtra::column_spec(width_max = )}. Por defecto, 25. Un valor
+#'   numérico se escribe en el HTML sin unidad (\code{max-width: 25}), por lo que
+#'   conviene indicar una cadena con unidad, por ejemplo \code{"25em"}.
+#' @param col.background Color de fondo de las cabeceras de la tabla. Por
+#'   defecto, \code{"#993489"}.
+#' @param col.varsel Color de fondo utilizado para resaltar las filas de las
+#'   variables seleccionadas según el criterio de p-valor. Por defecto,
+#'   \code{"#ebe0e9"}.
+#' @param footnote Texto o vector de textos que se añaden como nota al pie de la
+#'   tabla. Por defecto, \code{NULL}.
 #'
-#' @return Un objeto \code{kableExtra} en formato HTML con:
+#' @return Un objeto \code{kableExtra} (clases \code{kableExtra} y
+#'   \code{knitr_kable}) en formato HTML con:
 #' \itemize{
-#'   \item Cabeceras agrupadas automáticamente por estrato.
-#'   \item Formato visual personalizado.
-#'   \item Notas al pie.
-#'   \item Resaltado de variables con p-valores inferiores a \code{pval_cut}.
+#'   \item cabeceras agrupadas automáticamente por estrato;
+#'   \item formato visual personalizado;
+#'   \item notas al pie, si se indican;
+#'   \item resaltado de las variables con algún p-valor menor o igual que
+#'     \code{pval_cut}.
 #' }
 #'
 #' @details
-#' La función identifica automáticamente los estratos a partir del nombre de las
-#' columnas, asumiendo que siguen la estructura:
+#' La función necesita las columnas \code{variable} y \code{levels}. Una fila con
+#' \code{variable} no vacío marca el inicio de una variable; las filas siguientes
+#' con \code{variable} vacío son sus niveles.
+#'
+#' Los estratos se identifican a partir del nombre de las demás columnas, que
+#' deben seguir la estructura:
 #'
 #' \code{Estrato_variable}
 #'
-#' donde la parte previa al primer guion bajo corresponde al nombre del estrato.
+#' donde la parte previa al primer guion bajo es el nombre del estrato. En la
+#' tabla final se muestra solo la parte posterior al primer guion bajo, bajo una
+#' cabecera agrupada con el nombre del estrato, respetando el orden original de
+#' las columnas. Una columna llamada exactamente \code{ALL} se muestra en negrita.
+#'
+#' Los p-valores se buscan en las columnas cuyo nombre termina en
+#' \code{p.value}. Para compararlos con \code{pval_cut}, se eliminan los
+#' símbolos \code{<} y todo el texto a partir de \code{su} (marca de
+#' superíndice), y el resto se convierte a número; los valores no numéricos se
+#' ignoran. Por ejemplo, \code{"<0.001<sup>1</sup>"} se interpreta como 0.001.
 #'
 #' Si alguna variable presenta al menos un p-valor menor o igual que
-#' \code{pval_cut}, todas las filas correspondientes a dicha variable se resaltan
-#' utilizando el color definido en \code{col.varsel}.
+#' \code{pval_cut}, todas las filas correspondientes a dicha variable se
+#' resaltan con el color definido en \code{col.varsel}.
 #'
-#' @export format_desc_strat
-#' @import dplyr knitr kableExtra
-#' @author Marcos Esteve \email{marcos.esteve@@vhir.org}
+#' @seealso \code{\link{desc_group_strat}}, \code{\link{desc_group}},
+#'   \code{\link{kable_ueb}}
+#'
 #' @examples
 #' df_res <- data.frame(
 #'   variable = c("Edad", "", "Sexo", ""),
@@ -73,7 +96,16 @@
 #' )
 #'
 #' @keywords tables html formatting stratified kableExtra
-
+#'
+#' @import dplyr knitr kableExtra
+#'
+#' @author
+#' Marcos Esteve \email{marcos.esteve@@vhir.org}
+#'
+#' Biomedical Data Intelligence Unit (BIDU)
+#' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
+#'
+#' @export
 format_desc_strat <- function(results_filtrados,
                               caption = "Resumen de resultados",
                               pval_cut = 0.05,

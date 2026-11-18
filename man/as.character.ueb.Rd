@@ -2,18 +2,22 @@
 % Please edit documentation in R/as.character.ueb.R
 \name{as.character.ueb}
 \alias{as.character.ueb}
-\title{as.character.ueb Function}
+\title{Conversión a character conservando las etiquetas (labels)}
 \usage{
 \method{as.character}{ueb}(x)
 }
 \arguments{
-\item{x}{object to be coerced}
+\item{x}{Objeto a convertir.}
 }
 \value{
-attempts to coerce its argument to character type; like as.vector it strips attributes including names. For lists and pairlists (including language objects such as calls) it deparses the elements individually, except that it extracts the first element of length-one character vectors.
+Intenta convertir su argumento a tipo \code{character}; igual que
+  \code{as.vector}, elimina los atributos, incluidos los nombres. Para listas y
+  pairlists (incluidos objetos de lenguaje como las llamadas), deparsea los elementos
+  individualmente, salvo que extrae el primer elemento de los vectores de caracteres
+  de longitud uno.
 }
 \description{
-Create objects of type "character". Conserve labels
+Convierte un objeto a tipo \code{character}, conservando sus etiquetas (\code{label}).
 }
 \examples{
 #create variable
@@ -21,11 +25,13 @@ variable <- factor(c(0,0,0,1,1,1,0,"a",1,0, "B"))
 Hmisc::label(variable) <- "label de la variable"
 # automatic character
 variable <- as.character.ueb(variable)
+
 }
 \author{
-Miriam Mota  \email{miriam.mota@vhir.org}
+Miriam Mota \email{miriam.mota@vhir.org}
 
-Miriam Mota-Foix <mmota.foix@gmail.com>
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }
 \keyword{class}
 \keyword{factor}

@@ -2,33 +2,44 @@
 % Please edit documentation in R/desc_changes.R
 \name{desc_changes}
 \alias{desc_changes}
-\title{desc_changes Function}
+\title{Guardar mensajes de cambios aplicados en la base de datos}
 \usage{
 desc_changes(x, col = "blue")
 }
 \arguments{
-\item{x}{a string}
+\item{x}{Cadena de texto.}
 }
 \value{
-list_changes list with messages to report.
-var_sino <- c("Fum","alcohol")
-desc_changes(paste0("Los valores, 0 y 1 se han considerado 'No' y 'Si' respectivamente para las variables: ", paste(var_sino,collapse = ", ") ))
-desc_changes("Los valores superiores a 10000 para la variable n_il6_f han sido considerados NA ")
-list_changes
-#With results = 'asis' rmarkdown chunk
-for(i in seq_along(list_changes)){
-cat(list_changes[[i]])
-}
+Mensaje(s) de texto (invisible); además, añade cada mensaje al objeto
+  \code{list_changes} en el entorno global, para poder listarlos o imprimirlos más
+  tarde (p. ej. en un chunk de RMarkdown con \code{results = 'asis'}).
 }
 \description{
-The function desc_changes is used to save messages of changes applied in database
+La función \code{desc_changes} se utiliza para guardar mensajes de cambios aplicados
+en la base de datos.
 }
 \examples{
 desc_changes("")
 
+var_sino <- c("Fum", "alcohol")
+desc_changes(paste0(
+  "Los valores, 0 y 1 se han considerado 'No' y 'Si' respectivamente ",
+  "para las variables: ", paste(var_sino, collapse = ", ")
+))
+desc_changes("Los valores superiores a 10000 para la variable n_il6_f han sido considerados NA ")
+list_changes
+
+#With results = 'asis' rmarkdown chunk
+for(i in seq_along(list_changes)){
+cat(list_changes[[i]])
+}
+
 }
 \author{
-Miriam Mota  \email{miriam.mota@vhir.org}
+Miriam Mota \email{miriam.mota@vhir.org}
+
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }
 \keyword{changes}
 \keyword{message}

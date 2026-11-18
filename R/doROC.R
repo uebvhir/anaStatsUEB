@@ -1,5 +1,6 @@
-#' ROC analysis and optimal cut-off estimation
+#' @title ROC analysis and optimal cut-off estimation
 #'
+#' @description 
 #' Performs ROC curve analysis for a continuous marker or for the predicted
 #' probabilities from a logistic regression model. The function estimates
 #' optimal cut-off points according to different criteria, computes diagnostic
@@ -133,7 +134,14 @@
 #' Multiple optimal cut-off points may be returned when several values
 #' achieve the same optimal criterion.
 #'
-#' @author Marcos Esteve, Miriam Mota
+#' @keywords ROC cutoff diagnostic
+#' 
+#' @author
+#' Marcos Esteve \email{marcos.esteve@vhir.org}
+#' Miriam Mota \email{miriam.mota@vhir.org}
+#' 
+#' Biomedical Data Intelligence Unit (BIDU)
+#' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 #'
 #' @seealso \code{\link[OptimalCutpoints]{optimal.cutpoints}}
 #'

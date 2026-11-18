@@ -1,106 +1,124 @@
 #' @title Forest plot para modelos multinomiales multivariables
 #'
 #' @description
-#' Genera un forest plot (Relative Risk Ratio con IC95%) para un modelo
-#' de regresión multinomial multivariable, con un panel por cada nivel
-#' de la variable de resultado (\code{Outcome}), mediante
-#' \code{ggplot2::facet_grid()}. La estimación puntual y, opcionalmente,
-#' el intervalo de confianza y el p-valor se muestran como una etiqueta
-#' de texto anclada directamente sobre cada punto, ligeramente
-#' desplazada hacia arriba y a la derecha (al estilo de
-#' \code{sjPlot::plot_model()}), en lugar de una columna de texto
-#' alineada aparte. Este anclaje por punto evita el problema de recorte
-#' o solapamiento de texto entre paneles que aparece cuando el texto se
-#' sitúa en una columna común a una posición fija del eje X (ver
-#' \code{Details}).
+#' Genera un forest plot (Relative Risk Ratio con IC95\%) para un modelo de
+#' regresión multinomial multivariable, con un panel por cada nivel de la variable
+#' de resultado (\code{Outcome}), mediante \code{ggplot2::facet_grid()}. La
+#' estimación puntual y, opcionalmente, el intervalo de confianza y el p-valor se
+#' muestran como una etiqueta de texto anclada directamente sobre cada punto,
+#' ligeramente desplazada hacia arriba y a la derecha (al estilo de
+#' \code{sjPlot::plot_model()}), en lugar de una columna de texto alineada aparte.
+#' Este anclaje por punto evita el problema de recorte o solapamiento de texto
+#' entre paneles que aparece cuando el texto se sitúa en una columna común a una
+#' posición fija del eje X (véase \sQuote{Details}).
 #'
-#' El subtítulo incorpora la categoría de referencia de la variable
-#' resultado (\code{show.ref.outcome}), imprescindible para interpretar
-#' las RRR: cada panel compara su categoría frente a esa referencia, que
-#' por definición no tiene panel propio.
+#' El subtítulo incorpora la categoría de referencia de la variable resultado
+#' (\code{show.ref.outcome}), imprescindible para interpretar las RRR: cada panel
+#' compara su categoría frente a esa referencia, que por definición no tiene panel
+#' propio.
 #'
-#' @param x Lista resultante de \code{summarise_multivariable_model()}
-#'   para un modelo multinomial (\code{x$model_type == "multinomial"}).
-#'   Debe contener, como mínimo, un data.frame \code{x$results} con las
-#'   columnas \code{Outcome}, \code{Variable}, \code{Level},
-#'   \code{Relative Risk Ratio}, \code{Lower95}, \code{Upper95} y
-#'   \code{P.value}.
-#' @param title Título principal del gráfico.
-#' @param subtitle Subtítulo del gráfico.
-#' @param xlab Etiqueta del eje X (RRR).
-#' @param palette Paleta de colores. \code{"okabe"}/\code{"okabe_ito"}
-#'   usa la paleta Okabe-Ito; \code{NULL} usa \code{gg_color()}; o bien
-#'   un vector de colores igual o superior en longitud al número de
-#'   niveles de \code{Outcome}.
-#' @param point_size Tamaño de los puntos de estimación.
-#' @param text_size Tamaño de letra de la etiqueta anclada a cada punto.
-#' @param show.effect.column Lógico. Si es \code{TRUE}, la etiqueta
-#'   incluye la estimación puntual y el IC95%.
-#' @param show.p Lógico. Si es \code{TRUE}, la etiqueta incluye el
+#' @param x Lista resultante de \code{\link{desc_multimod}} para un modelo
+#'   multinomial (\code{x$model_type == "multinomial"}). Debe contener, como
+#'   mínimo, un data.frame \code{x$results} con las columnas \code{Outcome},
+#'   \code{Variable}, \code{Level}, \code{Relative Risk Ratio}, \code{Lower95},
+#'   \code{Upper95} y \code{P.value}. Si existen \code{x$lbls_vars},
+#'   \code{x$lbls_levels}, \code{x$model}, \code{x$N}, \code{x$R2_McFadden} y
+#'   \code{x$R2_McFadden_ajustado}, se utilizan para las etiquetas, la categoría de
+#'   referencia y el pie del gráfico.
+#' @param title Título principal del gráfico. Por defecto,
+#'   \code{"Modelo multinomial multivariable"}.
+#' @param subtitle Subtítulo del gráfico. Por defecto,
+#'   \code{"Relative Risk Ratio (IC95\%)"}.
+#' @param xlab Etiqueta del eje X. Por defecto, \code{"RRR"}.
+#' @param palette Paleta de colores. \code{"okabe"}/\code{"okabe_ito"} usa la
+#'   paleta Okabe-Ito; \code{NULL} usa \code{\link{gg_color}}; o bien un vector de
+#'   colores. En todos los casos los colores se reciclan hasta el número de niveles
+#'   de \code{Outcome}. Por defecto, \code{"okabe"}.
+#' @param point_size Tamaño de los puntos de estimación. Por defecto, 2.8.
+#' @param text_size Tamaño de letra de la etiqueta anclada a cada punto. Por
+#'   defecto, 3.
+#' @param show.effect.column Lógico. Si es \code{TRUE} (por defecto), la etiqueta
+#'   incluye la estimación puntual y el IC95\%.
+#' @param show.p Lógico. Si es \code{TRUE} (por defecto), la etiqueta incluye el
 #'   p-valor.
-#' @param show.p.label Lógico. Si es \code{TRUE}, los p-valores por
-#'   encima de \code{pval_cut} se muestran como \code{"NS"} en lugar
-#'   del valor numérico.
-#' @param hide.ns Lógico. Si es \code{TRUE}, se oculta por completo la
-#'   etiqueta de texto (aunque no el punto ni el intervalo) para las
-#'   filas no significativas.
-#' @param shape.label Lógico. Si es \code{TRUE}, se usa una forma
+#' @param show.p.label Lógico. Si es \code{TRUE} (por defecto), los p-valores por
+#'   encima de \code{pval_cut} se muestran como \code{"NS"} en lugar del valor
+#'   numérico.
+#' @param hide.ns Lógico. Si es \code{TRUE} (por defecto), se oculta por completo
+#'   la etiqueta de texto (aunque no el punto ni el intervalo) para las filas no
+#'   significativas.
+#' @param shape.label Lógico. Si es \code{TRUE} (por defecto), se usa una forma
 #'   distinta (triángulo) para los puntos significativos
 #'   (\code{P.value < pval_cut}).
-#' @param pval_cut Umbral de significación estadística. Debe ser un
-#'   único número entre 0 y 1.
-#' @param text_sep Separador entre el bloque de estimación/IC y el
-#'   p-valor dentro de la etiqueta.
+#' @param pval_cut Umbral de significación estadística. Debe ser un único número
+#'   entre 0 y 1. Por defecto, 0.05.
+#' @param text_sep Separador entre el bloque de estimación/IC y el p-valor dentro
+#'   de la etiqueta. Por defecto, \code{"; "}.
 #' @param label_dx Factor multiplicativo aplicado sobre el valor de
 #'   \code{Relative Risk Ratio} de cada fila para desplazar la etiqueta
-#'   ligeramente a la derecha del punto (la escala del eje X es log10,
-#'   por lo que el desplazamiento debe ser multiplicativo, no
-#'   aditivo). Debe ser mayor que 1.
-#' @param label_dy Desplazamiento aditivo, en unidades de \code{y}
-#'   (posiciones discretas de variable/nivel), aplicado para situar la
-#'   etiqueta por encima del punto.
-#' @param x_limit_mult Factor multiplicativo sobre \code{x_plot_max}
-#'   que determina el límite derecho del eje X, dejando margen para
-#'   que las etiquetas de los puntos más extremos no queden cortadas.
-#' @param show.null.band Lógico. Si es \code{TRUE}, se dibuja una banda
-#'   sombreada alrededor del valor nulo (\code{null_band}).
-#' @param null_band Vector numérico de longitud 2 con los límites
-#'   inferior y superior de la banda del valor nulo.
-#' @param show.model.info Lógico. Si es \code{TRUE}, se añade un pie de
-#'   página (\code{caption}) con la información del modelo (N, R2 de
-#'   McFadden y R2 de McFadden ajustado).
-#' @param show.ref.outcome Lógico. Si es \code{TRUE} (por defecto), el
-#'   subtítulo indica la categoría de referencia de la variable
-#'   resultado, frente a la cual se interpretan todas las RRR de los
-#'   paneles.
-#' @param ref_outcome Categoría de referencia de la variable resultado.
-#'   Si es \code{NULL} (por defecto), se obtiene automáticamente del
-#'   modelo almacenado en \code{x$model} (\code{model$lev[1]} para
-#'   objetos \code{nnet::multinom}; en su defecto, el primer nivel de la
-#'   variable respuesta del \code{model.frame()}). Indíquela
-#'   explícitamente solo si la detección automática no es posible.
-#' @param ref_outcome_label Texto que precede a la categoría de
-#'   referencia en el subtítulo.
+#'   ligeramente a la derecha del punto (la escala del eje X es log10, por lo que
+#'   el desplazamiento debe ser multiplicativo, no aditivo). Debe ser mayor que 1.
+#'   Por defecto, 1.05.
+#' @param label_dy Desplazamiento aditivo, en unidades de \code{y} (posiciones
+#'   discretas de variable/nivel), aplicado para situar la etiqueta por encima del
+#'   punto. Por defecto, 0.25.
+#' @param x_limit_mult Factor multiplicativo sobre el máximo redondeado de la
+#'   escala (\code{x_plot_max}) que determina el límite derecho del eje X, dejando
+#'   margen para que las etiquetas de los puntos más extremos no queden cortadas.
+#'   Debe ser mayor que 1. Por defecto, 1.8.
+#' @param show.null.band Lógico. Si es \code{TRUE} (por defecto), se dibuja una
+#'   banda sombreada alrededor del valor nulo (\code{null_band}).
+#' @param null_band Vector numérico de longitud 2 con los límites inferior y
+#'   superior de la banda del valor nulo. Por defecto, \code{c(0.95, 1.05)}.
+#' @param show.model.info Lógico. Si es \code{TRUE}, se añade un pie de página
+#'   (\code{caption}) con la información del modelo (N, R2 de McFadden y R2 de
+#'   McFadden ajustado). Por defecto, \code{FALSE}.
+#' @param show.ref.outcome Lógico. Si es \code{TRUE} (por defecto), el subtítulo
+#'   indica la categoría de referencia de la variable resultado, frente a la cual
+#'   se interpretan todas las RRR de los paneles.
+#' @param ref_outcome Categoría de referencia de la variable resultado. Si es
+#'   \code{NULL} (por defecto), se obtiene automáticamente del modelo almacenado en
+#'   \code{x$model} (\code{model$lev[1]} para objetos \code{nnet::multinom}; en su
+#'   defecto, el primer nivel de la variable respuesta del \code{model.frame()}).
+#'   Indíquela explícitamente solo si la detección automática no es posible.
+#' @param ref_outcome_label Texto que precede a la categoría de referencia en el
+#'   subtítulo. Por defecto, \code{"Categoría de referencia"}.
 #'
-#' @return Un objeto \code{ggplot} con un panel por cada nivel de
-#'   \code{Outcome} (mediante \code{facet_grid()}), eje X en escala
-#'   log10 y etiquetas de texto ancladas a cada punto.
+#' @return Un objeto \code{ggplot} con un panel por cada nivel de \code{Outcome}
+#'   (mediante \code{facet_grid()}), eje X en escala log10 y etiquetas de texto
+#'   ancladas a cada punto.
 #'
 #' @details
-#' A diferencia de una columna de texto alineada a una posición fija
-#' del eje X (idéntica para todas las filas de un panel), aquí cada
-#' etiqueta se ancla a las coordenadas \code{(Relative Risk Ratio, y)}
-#' de su propia fila, con un pequeño desplazamiento
-#' (\code{label_dx}, \code{label_dy}) hacia arriba y a la derecha. Al
-#' depender del valor de dato de cada fila y no de una posición
-#' compartida entre todas las filas de un panel, la etiqueta queda
-#' dentro del rango de datos representado en su propio panel con
-#' independencia del ancho físico que \code{facet_grid()} le asigne,
-#' evitando así el recorte o solapamiento con el panel contiguo que
-#' aparecía con el enfoque de columna común.
+#' A diferencia de una columna de texto alineada a una posición fija del eje X
+#' (idéntica para todas las filas de un panel), aquí cada etiqueta se ancla a las
+#' coordenadas \code{(Relative Risk Ratio, y)} de su propia fila, con un pequeño
+#' desplazamiento (\code{label_dx}, \code{label_dy}) hacia arriba y a la derecha.
+#' Al depender del valor de dato de cada fila y no de una posición compartida entre
+#' todas las filas de un panel, la etiqueta queda dentro del rango de datos
+#' representado en su propio panel con independencia del ancho físico que
+#' \code{facet_grid()} le asigne, evitando así el recorte o solapamiento con el
+#' panel contiguo que aparecía con el enfoque de columna común.
 #'
-#' @seealso \code{\link{plot_forest_multimods}},
-#'   \code{\link{plot_forest_unimods}}
+#' Cuando \code{show.ref.outcome = TRUE} y se conoce la categoría de referencia, se
+#' añade al subtítulo con la forma \code{"<subtitle> | <ref_outcome_label>:
+#' <categoría>"}. Se necesita el paquete \pkg{ggtext}.
+#'
+#' @seealso \code{\link{desc_multimod}}, \code{\link{plot_forest_multimods_binom}},
+#'   \code{\link{plot_forest_multimods}}, \code{\link{plot_forest_unimods}}
+#'
+#' @examples
+#' \dontrun{
+#' # Modelo multinomial resumido con desc_multimod()
+#' mod <- nnet::multinom(Species ~ Sepal.Length + Petal.Width, data = iris, trace = FALSE)
+#' res <- desc_multimod(mod)
+#'
+#' plot_forest_multimods_multi(res)
+#'
+#' # Con pie del modelo y mostrando tambien las filas no significativas
+#' plot_forest_multimods_multi(res, show.model.info = TRUE, hide.ns = FALSE)
+#' }
+#'
+#' @keywords forest-plot multinomial relative-risk-ratio multivariable ggplot
 #'
 #' @author
 #' Miquel Vázquez-Santiago \email{miquel.vazquez@vhir.org}

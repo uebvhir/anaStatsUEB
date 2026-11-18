@@ -2,7 +2,7 @@
 % Please edit documentation in R/read_df_ueb.R
 \name{read_df_ueb}
 \alias{read_df_ueb}
-\title{Read Data from Multiple File Formats}
+\title{Lectura de datos desde múltiples formatos de archivo}
 \usage{
 read_df_ueb(
   l_files,
@@ -20,81 +20,120 @@ read_df_ueb(
 )
 }
 \arguments{
-\item{l_files}{A character vector or list of file paths obtained from
-\code{amphi_list_files}.}
+\item{l_files}{Vector de caracteres (o lista) con las rutas de los archivos, por
+ejemplo el resultado de \code{\link{list_files_ueb}}.}
 
-\item{type_file}{The type of file to read. One of \code{'excel'}, \code{'csv'}, or \code{'sav'}.}
+\item{type_file}{Tipo de archivo a leer: \code{"excel"}, \code{"csv"} o
+\code{"sav"}. Es obligatorio; véase \sQuote{Details}.}
 
-\item{sep}{Field separator for CSV files. Default is \code{NULL} (auto-detection).}
+\item{sep}{Separador de campos para CSV (por defecto, \code{NULL}). En la versión
+actual \code{NULL} no autodetecta el separador; hay que indicarlo.}
 
-\item{dec}{Decimal separator for CSV files. Default is \code{NULL} (auto-detection).}
+\item{dec}{Separador decimal para CSV (por defecto, \code{NULL}). En la versión
+actual hay que indicarlo (\code{"."} o \code{","}), porque \code{NULL} produce
+un error.}
 
-\item{skip_rows}{Number of rows to skip at the beginning of the file.
-Applicable to Excel, CSV, and SAV.}
+\item{skip_rows}{Número de filas que se omiten al principio del archivo (por
+defecto, 0). Se aplica a Excel y CSV; en SAV no tiene efecto.}
 
-\item{user_na}{Logical. If \code{TRUE}, variables with user-defined missing values
-in SPSS files are returned as \code{labelled_spss()} objects. If \code{FALSE},
-user-defined missing values are converted to \code{NA}.}
+\item{user_na}{Lógico. Solo para SPSS: si es \code{TRUE} (por defecto), las
+variables con valores perdidos definidos por el usuario se devuelven como
+\code{labelled_spss()}; si es \code{FALSE}, esos valores se convierten en
+\code{NA}.}
 
-\item{na_strings}{Character vector of strings to interpret as missing values.
-Applies to Excel and CSV, and optionally to SAV files. For Excel, if \code{NULL}
-only empty cells are read as missing (\code{readxl} default).}
+\item{na_strings}{Vector de caracteres con los valores que se interpretan como
+perdidos, para Excel y CSV (no se aplica a SAV). Si es \code{NULL} (por
+defecto), en Excel solo se consideran perdidas las celdas vacías y en CSV
+\code{""} y \code{"NA"}.}
 
-\item{clean_names}{Logical. If \code{TRUE}, column names are cleaned using
-\code{janitor::clean_names()} and empty columns are removed.}
+\item{clean_names}{Lógico. Si es \code{TRUE} (por defecto), los nombres de las
+columnas se convierten a \code{snake_case} con
+\code{\link[janitor]{clean_names}} y se eliminan las columnas vacías.}
 
-\item{rm_x_cols}{Logical. If \code{FALSE}, columns names starts with 'x_' or 'X' are erased automàticaly.}
+\item{rm_x_cols}{Lógico. Si es \code{TRUE}, se eliminan las columnas cuyo nombre
+empieza por \code{"..."} (columnas sin nombre en \pkg{readxl}) o es de la forma
+\code{x<número>} (sin distinguir mayúsculas), por ejemplo \code{x1} o
+\code{X2}. Por defecto, \code{FALSE}.}
 
-\item{id_col}{Character vector. Detects 'id' columns in the datasets list and creates a column 'id'. Default is \code{NULL}.}
+\item{id_col}{Vector de caracteres con el nombre de la columna de identificador
+(por defecto, \code{NULL}). Se busca sin distinguir mayúsculas y se usa la
+primera coincidencia de cada data frame. Véase \sQuote{Details}.}
 
-\item{id_sheet}{Logical. If \code{TRUE}, homogenises the 'id' column across the
-list of data frames (e.g. Excel sheets): the id of the i-th element is offset by
-\code{i * id_step} when it is lower than that value, and the element (sheet) name
-is added to the identifier (\code{id_<sheet>_<id>}). Creates the columns
-\code{id_orig}, \code{id_num} and \code{id_sheet}. Requires \code{id_col}.
-Default is \code{FALSE} (previous behaviour unchanged).}
+\item{id_sheet}{Lógico. Si es \code{TRUE}, homogeneiza el identificador entre los
+elementos de la lista (por ejemplo, las hojas de Excel): al identificador del
+elemento \code{i} se le suma \code{i * id_step} si es menor que ese valor, y el
+nombre del elemento se añade al identificador (\code{id_<hoja>_<id>_<NN>}).
+Crea las columnas \code{id_orig}, \code{id_num} e \code{id_sheet}. Requiere
+\code{id_col}. Por defecto, \code{FALSE}.}
 
-\item{id_step}{Numeric. Offset step used when \code{id_sheet = TRUE}. Default is \code{100}
-(1st element: 101..., 2nd element: 201...).}
+\item{id_step}{Numérico. Salto usado cuando \code{id_sheet = TRUE} (por defecto,
+100: primer elemento, 101...; segundo elemento, 201...).}
 }
 \value{
-A list of data frames. For Excel files, each sheet is returned as a separate element.
+Una lista de data frames. En Excel, cada hoja es un elemento con el nombre de la
+hoja; en CSV (\code{data.table}) y SAV (tibble) los elementos no tienen nombre. Si
+\code{l_files} está vacío, devuelve \code{NULL}.
 }
 \description{
-Reads a list of files and returns their contents as a list of data frames.
-Supports Excel (\code{.xls}, \code{.xlsx}), CSV, and SPSS (\code{.sav}) formats.
-The type of file to read must be specified via \code{type_file}.
+Lee una lista de archivos y devuelve su contenido como una lista de data frames.
+Admite Excel (\code{.xls}, \code{.xlsx}), CSV y SPSS (\code{.sav}). El tipo de
+archivo debe indicarse con \code{type_file}.
 
-For Excel files, all sheets are read and returned as separate elements.
-For CSV and SAV files, each file is read into a data frame.
+En los archivos Excel se leen todas las hojas y cada una se devuelve como un
+elemento distinto. En los CSV y SAV, cada archivo se lee como un data frame.
 }
 \details{
 \itemize{
-  \item Excel files are read using \code{readxl::read_excel()}.
-  \item CSV files are read using \code{data.table::fread()}.
-  \item SAV files are read using \code{haven::read_sav()}, preserving labelled data.
-  \item When \code{clean_names = TRUE}, column names are standardized to snake_case
-        and empty columns are removed.
+  \item Los archivos Excel se leen con \code{readxl::read_excel()}, los CSV con
+    \code{data.table::fread()} y los SAV con \code{haven::read_sav()}, que
+    conserva las etiquetas.
+  \item Con \code{clean_names = TRUE}, además de pasar los nombres a
+    \code{snake_case}, se eliminan las columnas vacías con
+    \code{janitor::remove_empty()}.
+  \item Con \code{id_col}, se crean las columnas \code{id}, \code{id_ori} y
+    \code{event} (situadas al principio). \code{id} tiene el formato
+    \code{id_<valor>_<NN>}, donde \code{NN} es el número de orden dentro de cada
+    valor del identificador (útil si se repite) y el valor se rellena con ceros
+    según el máximo. Si el identificador no es numérico, aparece un aviso de
+    coerción. Los data frames sin la columna \code{id_col} no se modifican.
+  \item Nota: en la versión actual, \code{type_file} no se valida: si falta o es
+    inválido se produce un error poco claro. Si \code{l_files} es una lista,
+    se muestra un mensaje engañoso (\dQuote{No s'han trobat llistat d'arxius}),
+    aunque la lectura continúa.
 }
 }
 \examples{
-\dontrun{
-# Read Excel files
-read_df(files, type_file = "excel")
+tmp <- tempfile("read_df_ueb_")
+dir.create(tmp)
+write.csv(data.frame(ID = 1:3, Edad = c(20, 30, 40)),
+          file.path(tmp, "a.csv"), row.names = FALSE)
+write.csv(data.frame(ID = c(1, 2, 2), Peso = c(70, 80, 90)),
+          file.path(tmp, "b.csv"), row.names = FALSE)
+files <- list.files(tmp, pattern = "csv$", full.names = TRUE)
 
-# Read CSV files
-read_df(files, type_file = "csv", sep = ",", dec = ".")
+dfs <- read_df_ueb(files, type_file = "csv", sep = ",", dec = ".")
+dfs[[1]]
 
-# Read SPSS files
-read_df(files, type_file = "sav", user_na = TRUE)
+# Creación de la columna de identificador
+dfs_id <- read_df_ueb(files, type_file = "csv", sep = ",", dec = ".",
+                      id_col = "id")
+dfs_id[[2]]
+unlink(tmp, recursive = TRUE)
+
 }
-
+\seealso{
+\code{\link{list_files_ueb}}, \code{\link[readxl]{read_excel}},
+  \code{\link[data.table]{fread}}, \code{\link[haven]{read_sav}},
+  \code{\link[janitor]{clean_names}}
 }
 \author{
 Miquel Vázquez-Santiago \email{miquel.vazquez@vhir.org}
-Biomedical Data Intelligence Unit (BIDU)
-Vall d'Hebron Research Institute (VHIR)
 
-Modificaciones y mantenimiento:
-Biomedical Data Intelligence Unit (BIDU) - Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }
+\keyword{csv}
+\keyword{excel}
+\keyword{import}
+\keyword{read}
+\keyword{sav}

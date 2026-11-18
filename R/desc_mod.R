@@ -1,25 +1,79 @@
-#' A desc_mod Function
-#'
-#' Resume y formatea modelos logísticos, lineales, de supervivencia, coxph, binomial negativa y clogit, tanto univariados como multivariados.
-#' @param mod a fitted object of class inheriting from "glm", "clogit","cox" or "lm".
-#' @param xtab TRUE o FALSE, para obtener tabla en formato .tex
-#' @param title if xtab = T, Character vector containing the table's caption or title.
-#' @param label Character vector of length 1 containing the LaTeX label. Default value is NULL.
-#' @param show.intcp TRUE o FALSE, indica si se muestra o no el intercept del modelo. En ambos casos el modelo se ha calcula con intercept. Default value is "FALSE".
-#' @param show.n TRUE o FALSE muestra el total de individuos usados para el ajuste del modelo. Default value is "TRUE".
-#' @param show.aov.pval TRUE o FALSE muestra el p-valor del modelo global. Default value is "TRUE".
-#' @param show.pretty TRUE o FALSE muestra las 'labels' de las variables. Solo funciona para lm y glm . Default value is "FALSE".
-#' @param group_rw TRUE o FALSE  agrupa las filas por variables. Default value is "FALSE".
-#' @param row.names TRUE or FALSE. Show or not rownames
-#' @param digits numeric vector specifying the number of digits to display
-#' @keywords OR regresion logistica
-#' @export tabOR_lr
-#' @export desc_mod
-#' @import xtable dplyr papeR
+#' @rdname desc_mod
+#' @export
 tabOR_lr <- function(...) {
   .Deprecated("desc_mod") #include a package argument, too
   desc_mod(...)
 }
+
+#' @title Resumen y formato de modelos de regresión (OR, HR y coeficientes)
+#'
+#' @description
+#' Resume y formatea modelos logísticos, lineales, de supervivencia (coxph), binomial
+#' negativa y clogit, tanto univariados como multivariados. Devuelve una tabla con la
+#' estimación (Odds Ratio, Hazard Ratio o coeficiente según el modelo), su intervalo
+#' de confianza y el p-valor, o bien una tabla con formato \code{kable}.
+#'
+#' @param mod Objeto ajustado de clase \code{glm}, \code{clogit}, \code{coxph},
+#'   \code{negbin} o \code{lm}. La estimación mostrada es \emph{Odds Ratio} (glm),
+#'   \emph{Hazard Ratio} (clogit, coxph) o \emph{Estimate} (lm, negbin).
+#' @param xtab TRUE o FALSE. Si es \code{TRUE}, devuelve una tabla con formato
+#'   \code{kable} (mediante \code{kable_ueb()}) en lugar de un data frame. Por defecto
+#'   \code{FALSE}.
+#' @param title Vector de caracteres con el título o leyenda de la tabla. Solo se usa si
+#'   \code{xtab = TRUE}. Por defecto \code{"Model summary"}.
+#' @param font_size Tamaño de letra de la tabla. Actualmente no se utiliza. Por defecto 13.
+#' @param show.pretty TRUE o FALSE. Si es \code{TRUE}, muestra las etiquetas (\code{label})
+#'   de las variables y separa el nombre de la variable de su nivel. Solo funciona para
+#'   \code{lm} y \code{glm}. Por defecto \code{FALSE}.
+#' @param group_rw TRUE o FALSE. Si es \code{TRUE}, agrupa las filas por variable
+#'   (solo con \code{xtab = TRUE}). Por defecto \code{FALSE}.
+#' @param show.intcp TRUE o FALSE. Indica si se muestra el intercepto del modelo; en
+#'   ambos casos el modelo se ha calculado con intercepto. Por defecto \code{FALSE}.
+#' @param show.n TRUE o FALSE. Muestra el total de individuos usados para el ajuste del
+#'   modelo (columna \code{N}). Por defecto \code{TRUE}.
+#' @param show.aov.pval TRUE o FALSE. Pretende mostrar el p-valor del modelo global
+#'   (columna \code{"P-value (Global)"}). Actualmente esa columna no se calcula, por lo
+#'   que este argumento no tiene efecto. Por defecto \code{TRUE}.
+#' @param row.names TRUE o FALSE. Muestra o no los nombres de fila en la tabla con
+#'   formato \code{kable} (\code{xtab = TRUE}). Por defecto \code{FALSE}.
+#' @param digits Vector numérico con el número de decimales a mostrar. Se aplica con
+#'   \code{show.pretty = TRUE} y, con \code{xtab = TRUE} y \code{group_rw = TRUE}, a la
+#'   tabla con formato. Por defecto 2.
+#'
+#' @return Con \code{xtab = FALSE}, un data frame con las columnas \code{Variable},
+#'   la estimación (\code{Odds Ratio}, \code{Hazard Ratio} o \code{Estimate}),
+#'   \code{CI (lower)}, \code{CI (upper)}, el p-valor y \code{N}. Con
+#'   \code{xtab = TRUE}, una tabla con formato \code{kable} (\code{kable_ueb()}).
+#'
+#' @details
+#' La función \code{tabOR_lr()} está obsoleta (deprecated) y se mantiene solo por
+#' compatibilidad: llama a \code{desc_mod()} con los mismos argumentos. Utilice
+#' \code{desc_mod()}.
+#'
+#' @seealso \code{\link{kable_ueb}}, \code{\link{desc_multimod}}, \code{\link{desc_unimods}}
+#'
+#' @import xtable dplyr papeR
+#'
+#' @examples
+#' set.seed(1)
+#' dat <- data.frame(
+#'   y = factor(rep(c("No", "Si"), each = 20)),
+#'   x = rnorm(40),
+#'   g = factor(sample(c("A", "B"), 40, replace = TRUE))
+#' )
+#' mod <- glm(y ~ x + g, data = dat, family = binomial)
+#' desc_mod(mod)
+#' desc_mod(mod, show.pretty = TRUE)
+#'
+#' @keywords OR regresion logistica
+#'
+#' @author
+#' Miquel Vázquez-Santiago \email{miquel.vazquez@vhir.org}
+#'
+#' Biomedical Data Intelligence Unit (BIDU)
+#' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
+#'
+#' @export
 desc_mod <- function(mod,
                      xtab = FALSE,
                      title = "Model summary",

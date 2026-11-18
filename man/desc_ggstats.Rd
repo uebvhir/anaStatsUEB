@@ -42,7 +42,7 @@ desc_ggstats(
 \item{group}{variable de agrupación (factor). Texto o estilo tidyverse.}
 
 \item{method}{\code{'param'} o \code{'non-param'} (también \code{'nonparam'}). Debe ser el mismo que en
-\code{desc_group()}. Default value is 'non-param'.}
+\code{desc_group()}. Valor por defecto: 'non-param'.}
 
 \item{res_desc}{opcional: resultado de \code{desc_group()}. Si se indica, el test global (p, n y, si
 \code{desc_group(show.stat = TRUE)}, el estadístico) se lee de este objeto y no se recalcula; con Fisher
@@ -72,7 +72,7 @@ el de \code{desc_group_posthoc()} (\code{p.adj < pval_cut}). No se ajusta ni se 
 \item{posthoc.display}{\code{'significant'} (solo parejas con \code{p.adj < pval_cut}), \code{'all'} o
 \code{'none'} (sin corchetes; equivale a \code{show.posthoc = FALSE}).}
 
-\item{pval_cut}{punto de corte de significación (test global y \code{p.adj}). Default value is 0.05.}
+\item{pval_cut}{punto de corte de significación (test global y \code{p.adj}). Valor por defecto: 0.05.}
 
 \item{correct}{\code{logical}. Corrección de Yates en Chi-cuadrado (igual que \code{desc_group()}).}
 
@@ -159,9 +159,16 @@ con ella. Por eso los p-valores del gráfico coinciden con los de las tablas.
  # ## test global y post-hoc leidos de las tablas, sin recalcular nada
  # res <- desc_group(data = dat, covariates = c("size", "var"), group = "MUT", show.stat = TRUE)
  # gs <- desc_ggstats(dat, res_desc = res, res_posthoc = res_ph)
- # gs <- desc_ggstats(dat, res_desc = res, res_posthoc = res_ph, type.num = "box", type.cat = "dodge")
+ # gs <- desc_ggstats(dat, res_desc = res, res_posthoc = res_ph,
+ #                    type.num = "box", type.cat = "dodge")
 
 }
+\seealso{
+\code{\link{desc_group}}, \code{\link{desc_group_posthoc}}, \code{\link{ggplot_to_pdf}}
+}
 \author{
-Miquel Vazquez-Santiago <miquel.vazquez@vhir.org>. BIDU-UEB. VHIR
+Miquel Vázquez-Santiago \email{miquel.vazquez@vhir.org}
+
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }

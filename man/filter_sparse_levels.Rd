@@ -7,124 +7,123 @@
 filter_sparse_levels(data, vars, outcome, min_cell = 2)
 }
 \arguments{
-\item{data}{data.frame que contiene las variables a analizar.}
+\item{data}{Data frame que contiene las variables a analizar.}
 
-\item{vars}{vector de caracteres con los nombres de las variables
-categóricas a evaluar.}
+\item{vars}{Vector de caracteres con los nombres de las variables categóricas
+a evaluar.}
 
-\item{outcome}{nombre de la variable de resultado utilizada para construir
-las tablas de contingencia.}
+\item{outcome}{Nombre de la variable de resultado utilizada para construir las
+tablas de contingencia.}
 
-\item{min_cell}{frecuencia mínima permitida en cada celda de la tabla de
-contingencia. Los niveles que presenten alguna celda con una frecuencia
-inferior a este valor serán excluidos. Por defecto \code{2}.}
+\item{min_cell}{Frecuencia mínima permitida en cada celda de la tabla de
+contingencia. Los niveles con alguna celda con una frecuencia inferior a este
+valor se convierten en \code{NA}. Por defecto, 2.}
 }
 \value{
 Una lista con dos elementos:
 \describe{
-  \item{data}{Data frame modificado tras eliminar los niveles escasos.}
-  \item{vars_validas}{Vector con las variables que conservan al menos dos
-  categorías observadas después del filtrado.}
+  \item{data}{Data frame modificado: los niveles escasos de las variables
+    factor evaluadas se han convertido en \code{NA}. Ninguna columna se
+    elimina.}
+  \item{vars_validas}{Vector con las variables de \code{vars} que no se han
+    excluido: las que conservan al menos dos categorías observadas tras el
+    filtrado y las que no son factor, que no se evalúan.}
 }
 }
 \description{
-Esta función identifica y elimina automáticamente los niveles poco frecuentes
-de variables categóricas en relación con una variable de resultado.
+Identifica y elimina automáticamente los niveles poco frecuentes de variables
+categóricas en relación con una variable de resultado.
 
-Para cada variable incluida en \code{vars}, se construye una tabla de
+Para cada variable de \code{vars} que sea un factor, se construye una tabla de
 contingencia frente a la variable de resultado (\code{outcome}) y se
-identifican aquellos niveles que presentan al menos una celda con un número
-de observaciones inferior al valor especificado en \code{min_cell}.
+identifican los niveles con al menos una celda con menos observaciones que
+\code{min_cell}.
 
-Los niveles identificados como escasos se recodifican como valores perdidos
-(\code{NA}) y posteriormente se evalúa si la variable conserva suficientes
-categorías para continuar en el análisis. Si tras la eliminación de dichos
-niveles queda menos de dos categorías observadas, la variable se excluye
-automáticamente.
+Los niveles escasos se recodifican como valores perdidos (\code{NA}) y después
+se evalúa si la variable conserva suficientes categorías. Si tras el filtrado
+quedan menos de dos categorías observadas, la variable se excluye de la lista
+de variables válidas (\code{vars_validas}), aunque permanece en \code{data}.
 
-La función preserva las etiquetas (\code{label}) y el orden original de los
+La función conserva las etiquetas (\code{label}) y el orden original de los
 niveles de las variables factor.
 }
 \details{
 El flujo interno de la función es el siguiente:
 \enumerate{
-  \item \strong{Almacenamiento de metadatos:} Se guardan las etiquetas
-  (\code{Hmisc::label}) y los niveles originales de las variables para poder
-  restaurarlos posteriormente.
-
-  \item \strong{Construcción de tablas de contingencia:} Para cada variable
-  categórica se calcula una tabla de contingencia frente a la variable de
-  resultado especificada en \code{outcome}.
-
-  \item \strong{Detección de niveles escasos:} Se identifican los niveles
-  cuya frecuencia es inferior a \code{min_cell} en al menos una de las
-  categorías del resultado.
-
-  \item \strong{Recodificación de niveles:} Los niveles identificados se
-  convierten en \code{NA}, preservando el orden original de los niveles
-  restantes.
-
-  \item \strong{Validación de variables:} Si tras eliminar los niveles
-  escasos solo queda una categoría observada, la variable se elimina de la
-  lista de variables válidas.
-
-  \item \strong{Restauración de metadatos:} Se restauran las etiquetas
-  originales de todas las variables conservadas.
+  \item \strong{Almacenamiento de metadatos:} se guardan las etiquetas
+    (\code{Hmisc::label}) de las variables de \code{vars} y de \code{outcome}, y
+    los niveles originales de los factores.
+  \item \strong{Tablas de contingencia:} para cada variable factor se calcula
+    la tabla frente a \code{outcome} (sin contar los \code{NA}).
+  \item \strong{Detección de niveles escasos:} se marcan los niveles con
+    alguna celda inferior a \code{min_cell}, incluidas las celdas con 0
+    observaciones.
+  \item \strong{Recodificación:} los niveles marcados pasan a \code{NA} y se
+    conserva el orden original del resto. Por cada nivel eliminado se emite un
+    mensaje con \code{message_ueb()}.
+  \item \strong{Validación:} si queda menos de dos categorías observadas, la
+    variable se quita de \code{vars_validas} y se emite un mensaje.
+  \item \strong{Restauración de metadatos:} se restauran las etiquetas
+    originales.
 }
 
 \strong{Puntos fuertes}
 
 \itemize{
   \item Reduce problemas de separación completa o cuasi-separación en modelos
-  de regresión logística.
+    de regresión logística.
   \item Disminuye la aparición de celdas escasamente pobladas en tablas de
-  contingencia.
-  \item Conserva el nivel de referencia y el orden original de los factores.
-  \item Preserva las etiquetas (\code{label}) utilizadas en otras funciones
-  descriptivas y de modelización.
-  \item Facilita la preparación automática de datos para análisis
-  multivariables.
+    contingencia.
+  \item Conserva el orden original de los niveles y las etiquetas utilizadas en
+    otras funciones descriptivas y de modelización.
 }
 
 \strong{Limitaciones}
 
 \itemize{
-  \item Solo actúa sobre variables de tipo factor. Las variables numéricas
-  se ignoran automáticamente.
-  \item La detección de niveles escasos se basa exclusivamente en las
-  frecuencias observadas respecto a la variable de resultado y no considera
-  criterios clínicos o de relevancia conceptual.
-  \item Los niveles eliminados se transforman en \code{NA}, por lo que pueden
-  incrementar el número de valores perdidos en análisis posteriores.
-  \item En variables con muchos niveles poco frecuentes pueden eliminarse
-  numerosas categorías simultáneamente.
-  \item No realiza agrupación automática de niveles; únicamente los elimina.
+  \item Solo evalúa variables de tipo factor. Las demás (por ejemplo, las
+    numéricas) no se modifican y permanecen en \code{vars_validas}.
+  \item El criterio se basa solo en las frecuencias observadas respecto a
+    \code{outcome}; no considera criterios clínicos o de relevancia
+    conceptual.
+  \item Los niveles eliminados pasan a \code{NA}, lo que puede aumentar los
+    valores perdidos en análisis posteriores.
+  \item No agrupa niveles; únicamente los elimina.
+  \item Al reconstruir el factor, una variable ordinal (\code{ordered}) se
+    devuelve como factor sin ordenar.
 }
 }
 \examples{
-\dontrun{
-data(iris)
-iris$Species <- factor(iris$Species)
-iris$outcome <- rbinom(nrow(iris), 1, 0.5)
+set.seed(1)
+dat <- data.frame(
+  outcome = factor(sample(c("No", "Si"), 120, replace = TRUE)),
+  grupo = factor(c(rep("A", 60), rep("B", 50), rep("C", 4), rep("D", 6)))
+)
+Hmisc::label(dat$grupo) <- "Grupo de estudio"
 
 res <- filter_sparse_levels(
-  data    = iris,
-  vars    = "Species",
+  data = dat,
+  vars = "grupo",
   outcome = "outcome",
-  min_cell = 5)
+  min_cell = 3
+)
 
-res$data
+levels(res$data$grupo)
 res$vars_validas
-}
 
+}
+\seealso{
+\code{\link{message_ueb}}, \code{\link{desc_group}},
+  \code{\link{factor_ueb}}
 }
 \author{
 Marcos Esteve \email{marcos.esteve@vhir.org}
-Biomedical Data Intelligence Unit (BIDU)
-Vall d'Hebron Research Institute (VHIR)
 
-Modificaciones y mantenimiento:
-Biomedical Data Intelligence Unit (BIDU) 
-Vall d'Hebron Research Institute (VHIR) | 
-Vall d'Hebron Barcelona Hospital Campus.
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }
+\keyword{contingency}
+\keyword{data-cleaning}
+\keyword{factor}
+\keyword{levels}
+\keyword{sparse}

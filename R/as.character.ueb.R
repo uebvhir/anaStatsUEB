@@ -1,22 +1,34 @@
-#' as.character.ueb Function
+#' @title Conversión a character conservando las etiquetas (labels)
 #'
-#' Create objects of type "character". Conserve labels
-#' @param x   object to be coerced
-#' @export as.character.ueb
+#' @description
+#' Convierte un objeto a tipo \code{character}, conservando sus etiquetas (\code{label}).
+#'
+#' @param x Objeto a convertir.
+#'
+#' @return Intenta convertir su argumento a tipo \code{character}; igual que
+#'   \code{as.vector}, elimina los atributos, incluidos los nombres. Para listas y
+#'   pairlists (incluidos objetos de lenguaje como las llamadas), deparsea los elementos
+#'   individualmente, salvo que extrae el primer elemento de los vectores de caracteres
+#'   de longitud uno.
+#'
 #' @import Hmisc
-#' @author Miriam Mota  \email{miriam.mota@@vhir.org}
+#'
 #' @examples
 #' #create variable
 #' variable <- factor(c(0,0,0,1,1,1,0,"a",1,0, "B"))
 #' Hmisc::label(variable) <- "label de la variable"
 #' # automatic character
 #' variable <- as.character.ueb(variable)
-#' @return  attempts to coerce its argument to character type; like as.vector it strips attributes including names. For lists and pairlists (including language objects such as calls) it deparses the elements individually, except that it extracts the first element of length-one character vectors.
+#'
+#' @keywords factor variable class levels labels
 #'
 #' @author
-#' Miriam Mota-Foix <mmota.foix@gmail.com>
-#' @keywords factor variable class levels labels
-
+#' Miriam Mota \email{miriam.mota@vhir.org}
+#'
+#' Biomedical Data Intelligence Unit (BIDU)
+#' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
+#'
+#' @export
 as.character.ueb <- function(x){
   lab_var <- Hmisc::label(x)
   var_chr <- as.character(x)

@@ -13,50 +13,97 @@ test_numericas(
 )
 }
 \arguments{
-\item{data}{Un `data.frame` que contenga la variable numérica y la variable categórica.}
+\item{data}{Data frame que contiene la variable numérica y la variable
+categórica.}
 
-\item{factor_col}{Nombre de la columna categórica (debe ser un factor).}
+\item{factor_col}{Cadena de texto con el nombre de la columna categórica en
+\code{data}. Debe ser de tipo factor.}
 
-\item{numerica_col}{Nombre de la columna numérica (debe ser numérica).}
+\item{numerica_col}{Cadena de texto con el nombre de la columna numérica en
+\code{data}. Debe ser numérica.}
 
-\item{parametrico}{Lógico. Si `FALSE`, se usan pruebas paramétricas (t-test, ANOVA); si `FALSE`, se usan pruebas no paramétricas (Mann-Whitney, Kruskal-Wallis). Por defecto es `TRUE`.}
+\item{parametrico}{Valor lógico. Si es \code{TRUE}, se usan pruebas
+paramétricas (t-test, ANOVA); si es \code{FALSE}, pruebas no paramétricas
+(Mann-Whitney, Wilcoxon, Kruskal-Wallis). Por defecto \code{FALSE}.}
 
-\item{paired}{Lógico. Si `TRUE`, se realizan pruebas apareadas (t-test pareado o Wilcoxon pareado). Solo válido si el factor tiene exactamente 2 niveles. Por defecto es `FALSE`.}
+\item{paired}{Valor lógico. Si es \code{TRUE}, se realizan pruebas apareadas
+(t-test pareado o Wilcoxon pareado). Solo es válido si el factor tiene
+exactamente 2 niveles. Por defecto \code{FALSE}.}
 }
 \value{
-Una lista con los siguientes elementos:
-\itemize{
-  \item `pvalor`: P-valor de la prueba.
-  \item `estadistica`: Estadístico de la prueba (si aplica).
-  \item `test`: Nombre de la prueba utilizada.
+Una lista con los elementos:
+\describe{
+  \item{pvalor}{P-valor de la prueba.}
+  \item{estadistica}{Estadístico de la prueba (con nombre: \code{t}, \code{W}
+    o \code{V}). Solo está presente en los tests de 2 grupos.}
+  \item{test}{Nombre del test aplicado: \code{"t-test de Student"},
+    \code{"U de Mann-Whitney"}, \code{"t-test pareado"},
+    \code{"Wilcoxon pareado"}, \code{"ANOVA"} o \code{"Kruskal-Wallis"}.}
 }
 }
 \description{
-Realiza pruebas estadísticas para comparar una variable numérica entre niveles de un factor categórico.
-Soporta datos apareados y selecciona automáticamente entre pruebas paramétricas y no paramétricas según el número de niveles del factor.
+Compara una variable numérica entre los niveles de un factor categórico y
+devuelve el p-valor y el nombre del test aplicado. Admite datos apareados y
+selecciona el test según el número de niveles del factor y el argumento
+\code{parametrico}: t-test o ANOVA (paramétricos) y Wilcoxon/Mann-Whitney o
+Kruskal-Wallis (no paramétricos).
 }
 \details{
-- Si el factor tiene **2 niveles**:
-  - **Datos NO apareados**: Se usa `t.test` (paramétrico) o `wilcox.test` (no paramétrico).
-  - **Datos apareados**: Se usa `t.test` con `paired = TRUE` o `wilcox.test` con `paired = TRUE`.
-
-- Si el factor tiene **3 o más niveles**:
-  - Se usa `aov` (ANOVA) si es paramétrico o `kruskal.test` si es no paramétrico.
+\itemize{
+  \item Factor con \strong{2 niveles}, datos no apareados:
+    \code{\link[stats]{t.test}} (paramétrico) o \code{\link[stats]{wilcox.test}}
+    (no paramétrico).
+  \item Factor con \strong{2 niveles}, datos apareados: \code{t.test} o
+    \code{wilcox.test} con \code{paired = TRUE}.
+  \item Factor con \strong{3 o más niveles}: \code{\link[stats]{aov}}
+    (paramétrico, se devuelve el p-valor del factor) o
+    \code{\link[stats]{kruskal.test}} (no paramétrico). En este caso no se
+    devuelve \code{estadistica}.
+}
+Notas:
+\itemize{
+  \item El test llamado \code{"t-test de Student"} es en realidad el t-test de
+    Welch (varianzas no asumidas iguales), que es el valor por defecto de
+    \code{t.test}.
+  \item En datos apareados el emparejamiento se hace por la posición de las
+    filas dentro de cada nivel (no por un identificador de sujeto): las
+    observaciones de ambos niveles deben estar en el mismo orden.
+  \item El número de niveles se calcula con \code{unique(factor)}, por lo que
+    un \code{NA} en el factor cuenta como un nivel adicional (con 2 grupos y
+    algún \code{NA} se aplica ANOVA o Kruskal-Wallis en lugar de un test de
+    2 grupos; con \code{paired = TRUE} da error). Elimine antes los \code{NA}
+    del factor.
+  \item Si el factor tiene un único nivel, la función devuelve \code{NULL}
+    sin aviso.
+  \item Con empates, \code{wilcox.test} avisa de que no puede calcular el
+    p-valor exacto.
+}
 }
 \examples{
-# Ejemplo con datos NO apareados (2 grupos, t-test)
-data <- data.frame(
+set.seed(1)
+# Datos no apareados (2 grupos, t-test)
+datos <- data.frame(
   Grupo = factor(rep(c("A", "B"), each = 10)),
   Medida = c(rnorm(10, mean = 5), rnorm(10, mean = 6))
 )
-test_numericas(data, "Grupo", "Medida", parametrico = TRUE, paired = FALSE)
+test_numericas(datos, "Grupo", "Medida", parametrico = TRUE)
 
-# Ejemplo con datos apareados (t-test pareado)
-data_pareada <- data.frame(
+# Datos apareados (t-test pareado)
+datos_par <- data.frame(
   Sujeto = factor(rep(1:10, times = 2)),
   Momento = factor(rep(c("Antes", "Despues"), each = 10)),
   Medida = c(rnorm(10, mean = 5), rnorm(10, mean = 6))
 )
-test_numericas(data_pareada, "Momento", "Medida", parametrico = TRUE, paired = TRUE)
+test_numericas(datos_par, "Momento", "Medida", parametrico = TRUE, paired = TRUE)
 
 }
+\seealso{
+\code{\link[stats]{t.test}}, \code{\link[stats]{wilcox.test}},
+  \code{\link[stats]{aov}}, \code{\link[stats]{kruskal.test}},
+  \code{\link{test_categoricas}}
+}
+\author{
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
+}
+\keyword{htest}

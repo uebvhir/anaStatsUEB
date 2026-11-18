@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_evolucion.R
 \name{plot_evolucion}
 \alias{plot_evolucion}
-\title{A plot_evolucion Function}
+\title{Gráficos de evolución longitudinal de variables numéricas}
 \usage{
 plot_evolucion(
   df,
@@ -14,54 +14,68 @@ plot_evolucion(
 )
 }
 \arguments{
-\item{df}{data frame que contiene las variables a analizar.}
+\item{df}{Data frame que contiene las variables a analizar.}
 
-\item{vars_y}{vector de caracteres con los nombres de las variables numéricas
+\item{vars_y}{Vector de caracteres con los nombres de las variables numéricas
 cuya evolución se desea representar.}
 
-\item{vars_x}{variable temporal o de visitas utilizada en el eje X.
-Por defecto \code{"redcap_event_name"}.}
+\item{vars_x}{Variable temporal o de visitas utilizada en el eje X. Por
+defecto, \code{"redcap_event_name"}.}
 
-\item{var_id}{identificador único de sujeto. Por defecto \code{"id"}.}
+\item{var_id}{Identificador único de sujeto. Por defecto, \code{"id"}. Solo se
+utiliza cuando \code{vars_y} tiene varias variables: con una única variable,
+la función usa siempre la columna llamada \code{id}.}
 
-\item{test_name}{texto utilizado en los títulos de los gráficos.
-Por defecto \code{"Results"}.}
+\item{test_name}{Texto utilizado en los títulos de los gráficos
+(\code{"<test_name> evolution"} o \code{"<test_name> combined"}). Por
+defecto, \code{"Results"}.}
 
-\item{show.title}{TRUE o FALSE indicando si se muestra el título con la etiqueta
-de la variable antes de los resultados. Por defecto TRUE.}
+\item{show.title}{Lógico. Si es \code{TRUE} (por defecto), antes de los
+resultados se muestra un título con la etiqueta de la variable. Solo se aplica
+con una única variable.}
 }
 \value{
-La función genera gráficos y resultados estadísticos directamente en la salida.
-No devuelve explícitamente ningún objeto.
+\code{NULL}, de forma invisible. Los gráficos y resultados se muestran
+directamente en la salida.
 }
 \description{
-Genera gráficos de evolución longitudinal para una o varias variables numéricas
-a lo largo de diferentes visitas o momentos temporales. Cuando se analiza una
-única variable, además ajusta un modelo lineal mixto para evaluar la evolución
-temporal y muestra tanto la tabla de resultados como el gráfico de efectos del modelo.
+Genera gráficos de evolución longitudinal para una o varias variables
+numéricas a lo largo de distintas visitas o momentos temporales. Con una sola
+variable, además ajusta un modelo lineal mixto para evaluar la evolución
+temporal y muestra la tabla de resultados y el gráfico de efectos del modelo.
 }
 \details{
-Cuando \code{vars_y} contiene una única variable:
+Con una única variable en \code{vars_y}:
 \itemize{
-  \item Se representa la media en cada visita.
-  \item Se muestran barras de error correspondientes al error estándar.
-  \item Se ajusta un modelo lineal mixto con intercepto aleatorio.
-  \item Si existen suficientes sujetos, también se ajusta un modelo con pendiente
-  aleatoria y se selecciona automáticamente el mejor modelo mediante comparación
-  de verosimilitud.
-  \item Se muestran los coeficientes estimados y un gráfico de efectos.
+  \item se representa la media en cada visita, con barras de error del error
+    estándar;
+  \item se ajusta un modelo lineal mixto (\code{nlme::lme()}, REML) con
+    intercepto aleatorio por \code{id};
+  \item si hay al menos 3 valores distintos de \code{id}, se ajusta también un
+    modelo con pendiente aleatoria y se elige el mejor mediante el contraste de
+    razón de verosimilitudes (se usa el de pendiente aleatoria si p < 0.05);
+  \item se muestran la tabla de coeficientes (\code{sjPlot::tab_model()}) y el
+    gráfico de efectos (\code{sjPlot::plot_model()}).
 }
 
-Cuando \code{vars_y} contiene varias variables:
+Con varias variables en \code{vars_y}:
 \itemize{
-  \item Se genera un único gráfico combinado.
-  \item Cada variable se representa con un color diferente.
-  \item Se muestran medias y errores estándar para cada visita.
-  \item No se ajustan modelos estadísticos.
+  \item se genera un único gráfico combinado, con un color por variable
+    (paleta \code{"Dark2"}, de 8 colores como máximo);
+  \item se muestran medias y errores estándar por visita, usando las
+    etiquetas (\code{Hmisc::label}) de las variables;
+  \item no se ajustan modelos.
 }
+
+\code{vars_x} debe ser una variable categórica (por ejemplo, un factor de
+visitas). La salida está pensada para un informe de R Markdown con
+\code{results = 'asis'}. Los ejes tienen etiquetas fijas en inglés
+(\code{"Visit"} y \code{"Puntuation"}). Si el modelo con pendiente aleatoria no
+converge con pocos datos, el error no se controla.
 }
 \examples{
 \dontrun{
+set.seed(1)
 data_long <- data.frame(
   id = rep(1:20, each = 3),
   visita = factor(rep(c("Basal", "Mes1", "Mes3"), 20)),
@@ -72,7 +86,7 @@ data_long <- data.frame(
 Hmisc::label(data_long$score) <- "Test score"
 Hmisc::label(data_long$score2) <- "Secondary score"
 
-# Evolución de una única variable
+# Evolucion de una unica variable
 plot_evolucion(
   df = data_long,
   vars_y = "score",
@@ -80,7 +94,7 @@ plot_evolucion(
   var_id = "id"
 )
 
-# Evolución conjunta de varias variables
+# Evolucion conjunta de varias variables
 plot_evolucion(
   df = data_long,
   vars_y = c("score", "score2"),
@@ -91,8 +105,16 @@ plot_evolucion(
 }
 
 }
+\seealso{
+\code{\link[nlme]{lme}}, \code{\link[sjPlot]{tab_model}},
+  \code{\link[sjPlot]{plot_model}}, \code{\link[ggplot2]{stat_summary}},
+  \code{\link{desc_group_rep}}
+}
 \author{
-Miriam Mota \email{mmota.foix@gmail.com}
+Miriam Mota \email{miriam.mota@vhir.org}
+
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }
 \keyword{evolution}
 \keyword{longitudinal}

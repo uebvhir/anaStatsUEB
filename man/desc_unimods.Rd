@@ -2,7 +2,7 @@
 % Please edit documentation in R/desc_unimods.R
 \name{desc_unimods}
 \alias{desc_unimods}
-\title{Descripción de modelos univariados (regresión logística o lineal), con soporte para efectos aleatorios}
+\title{Descripción de modelos univariables (logísticos o lineales)}
 \usage{
 desc_unimods(
   y,
@@ -20,91 +20,140 @@ desc_unimods(
 )
 }
 \arguments{
-\item{y}{Character. Nombre de la variable dependiente en data.}
+\item{y}{Cadena de texto con el nombre de la variable dependiente en
+\code{data}. Para \code{type = "logistic"} debe ser un factor de dos niveles.}
 
-\item{var2test}{Character vector. Nombres de las variables explicativas a testear univariadamente.}
+\item{var2test}{Vector de caracteres con los nombres de las variables
+explicativas a evaluar de forma univariable.}
 
-\item{data}{Data.frame. Conjunto de datos con las variables.}
+\item{data}{Data frame con las variables del estudio.}
 
-\item{type}{Character. Tipo de modelo: "logistic" para regresión logística binaria, "linear" para regresión lineal.}
+\item{type}{Cadena de texto con el tipo de modelo: \code{"logistic"} para
+regresión logística binaria o \code{"linear"} para regresión lineal. Es
+obligatorio: aunque su valor por defecto es \code{NULL}, la función requiere
+que se indique.}
 
-\item{adjust_vars}{Character vector o `NULL`. Variables de ajuste que se incluirán en todos los modelos además de cada variable de `var2test`. Por defecto `NULL`, en cuyo caso se ajustan modelos estrictamente univariados.}
+\item{adjust_vars}{Vector de caracteres o \code{NULL}. Variables de ajuste
+incluidas en todos los modelos además de cada variable de \code{var2test}.
+Por defecto, \code{NULL}, es decir, modelos estrictamente univariables.}
 
-\item{size}{Numeric. Tamaño de fuente para la tabla HTML generada (por defecto 8.5).}
+\item{size}{Valor numérico con el tamaño de fuente de la tabla HTML. Por
+defecto, 8.5.}
 
-\item{format}{Character. Formato de salida para la tabla (por defecto "html").}
+\item{format}{Cadena de texto con el formato de salida de la tabla. Por
+defecto, \code{"html"}. Actualmente la función no lo utiliza.}
 
-\item{caption}{Character. Texto para el título (caption) de la tabla. Si 'NULL', se genera automáticamente.}
+\item{caption}{Cadena de texto con el título de la tabla. Si es \code{NULL},
+se genera automáticamente.}
 
-\item{show.n}{Logical. Indica si mostrar el número de observaciones (no implementado en la función actual).}
+\item{show.n}{Lógico. Reservado para mostrar el número de observaciones.
+Actualmente la función no lo utiliza.}
 
-\item{show.p.global}{Logical. Indica si se calcula y muestra el p-valor global para variables categóricas (solo si no hay efectos aleatorios).}
+\item{show.p.global}{Lógico. Si es \code{TRUE}, se calcula y muestra el
+p-valor global de cada variable explicativa (solo sin efectos aleatorios).
+Por defecto, \code{FALSE}.}
 
-\item{group}{Logical. Si `TRUE`, agrupa las filas de la tabla por variable explicativa.}
+\item{group}{Lógico. Si es \code{TRUE} (por defecto), las filas de la tabla
+se agrupan por variable explicativa.}
 
-\item{random_effect}{Character or NULL. Nombre de la variable para el efecto aleatorio (si se desea un modelo mixto). Si 'NULL', se ajusta modelo clásico.}
+\item{random_effect}{Cadena de texto o \code{NULL}. Nombre de la variable
+usada como efecto aleatorio (intercepto aleatorio) en un modelo mixto. Si
+es \code{NULL} (por defecto), se ajusta un modelo clásico.}
 }
 \value{
 Lista con tres elementos:
 \describe{
-  \item{unimod_ci_df}{Data.frame con los resultados de los modelos univariados (estimates, IC, p-valores, etc.).}
-  \item{xtab}{Objeto 'kableExtra' con la tabla HTML formateada.}
-  \item{mods}{Lista con los modelos ajustados para cada variable en 'var2test'.}
+  \item{unimod_ci_df}{Data frame con los resultados de los modelos
+    univariables: etiqueta de la variable (\code{vars_label}), nivel
+    (\code{levs}), estimador (por ejemplo \code{Odds Ratio} en modelos
+    logísticos), límites del intervalo de confianza, p-valor y \code{N}. Si
+    \code{show.p.global = TRUE} incluye además \code{p.global}.}
+  \item{xtab}{Objeto \code{kableExtra} con la tabla HTML formateada.}
+  \item{mods}{Lista con nombre con los modelos ajustados para cada variable
+    de \code{var2test}.}
 }
 }
 \description{
-Esta función ajusta modelos univariados para una variable dependiente 'y' y un conjunto
-de variables explicativas `var2test`. Opcionalmente, cada modelo puede ajustarse por un
-conjunto de covariables especificadas mediante `adjust_vars`. Puede trabajar con modelos
-lineales, logísticos y modelos mixtos con efectos aleatorios.
+Ajusta un modelo para cada variable explicativa de \code{var2test} frente a la
+variable dependiente \code{y}. Opcionalmente, cada modelo se ajusta por un
+conjunto común de covariables (\code{adjust_vars}) y puede incluir un efecto
+aleatorio (\code{random_effect}). Admite modelos lineales y logísticos.
+
+Devuelve los resultados numéricos, una tabla HTML formateada y los modelos
+ajustados. Se resaltan las filas de las variables con al menos un p-valor
+significativo y, de forma opcional, se añade el p-valor global de las
+variables categóricas (solo para modelos sin efectos aleatorios).
 }
 \details{
-Incluye la opción de calcular p-valores globales para variables categóricas (solo para modelos sin efectos aleatorios),
-generar tablas con resultados formateados en HTML y remarcar variables con p-valores significativos.
-
-
-- Si `adjust_vars` no es `NULL`, cada modelo incluye la variable de interés y todas las covariables de ajuste especificadas.
-- Cuando `show.p.global = TRUE` y existen variables de ajuste, el p-valor global de la variable de interés se obtiene comparando el modelo completo frente a un modelo reducido que contiene únicamente las covariables de ajuste (test de razón de verosimilitudes para modelos logísticos).
-- Si `random_effect` no es `NULL` y `show.p.global = TRUE`, la función produce un error porque el p-valor global no está implementado para modelos mixtos.
-- El p-valor global se añade solo a la primera fila de cada variable para evitar redundancia en variables con múltiples niveles.
-- Se remarcan todas las filas de las variables que tengan al menos un nivel con p-valor significativo (≤ 0.05).
-- Se soportan modelos ajustados con `glm`, `lm`, `glmer` o `lmer` según los parámetros especificados.
+\itemize{
+  \item Si \code{adjust_vars} no es \code{NULL}, cada modelo incluye la
+    variable de interés y todas las covariables de ajuste.
+  \item Con \code{show.p.global = TRUE} y \code{type = "logistic"}, el
+    p-valor global se obtiene comparando el modelo completo con un modelo
+    reducido (sin covariables, o solo con \code{adjust_vars}) mediante un test
+    de razón de verosimilitudes. Con \code{type = "linear"} se toma el
+    p-valor F de la primera fila de \code{anova()} del modelo.
+  \item Si \code{random_effect} no es \code{NULL} y \code{show.p.global =
+    TRUE}, la función produce un error, porque el p-valor global no está
+    implementado para modelos mixtos.
+  \item El p-valor global se añade solo a la primera fila de cada variable
+    para evitar redundancia en variables con varios niveles.
+  \item Se resaltan todas las filas de las variables con al menos un nivel
+    con p-valor menor o igual que 0.05 (umbral fijo).
+  \item Los modelos se ajustan con \code{glm} o \code{lm}, o con
+    \code{glmer} o \code{lmer} (paquete \pkg{lme4}) si se indica
+    \code{random_effect}.
+}
 }
 \examples{
-\dontrun{
-library(lme4)
-data(iris)
+iris$Species_bin <- factor(ifelse(iris$Species == "setosa", "setosa", "others"))
 
-iris$Species_bin <- ifelse(iris$Species == "setosa", "setosa", "others")
-iris$Species_bin <- factor(iris$Species_bin)
-
-# Modelo logístico simple
+# Modelos logisticos univariables
 res <- desc_unimods(
   y = "Species_bin",
   var2test = c("Sepal.Length", "Petal.Width"),
   data = iris,
   type = "logistic"
 )
+res$xtab
 
-# Modelo logístico ajustado por covariables
+# Modelo logistico ajustado por covariables
 res_adj <- desc_unimods(
   y = "Species_bin",
-  var2test = c("Petal.Width"),
+  var2test = "Petal.Width",
   adjust_vars = c("Sepal.Length", "Sepal.Width"),
   data = iris,
   type = "logistic"
 )
 
-# Modelo lineal mixto con efecto aleatorio
-# Suponiendo que "Group" es el efecto aleatorio
-# res_mix <- desc_unimods(
-#   y = "Sepal.Length",
-#   var2test = c("Petal.Width"),
-#   adjust_vars = c("Sepal.Width"),
-#   data = iris,
-#   type = "linear",
-#   random_effect = "Group"
-# )
+\dontrun{
+# Modelo lineal mixto con efecto aleatorio (grupo ficticio)
+set.seed(1)
+iris$Group <- factor(sample(letters[1:5], nrow(iris), replace = TRUE))
+res_mix <- desc_unimods(
+  y = "Sepal.Length",
+  var2test = "Petal.Width",
+  adjust_vars = "Sepal.Width",
+  data = iris,
+  type = "linear",
+  random_effect = "Group"
+)
 }
 
 }
+\seealso{
+\code{\link{desc_mod}}, \code{\link{kable_ueb}},
+  \code{\link{desc_unimods_multi}}, \code{\link{desc_multimod}},
+  \code{\link{plot_forest_unimods}}
+}
+\author{
+Miquel Vázquez-Santiago \email{miquel.vazquez@vhir.org}
+
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
+}
+\keyword{linear}
+\keyword{logistic}
+\keyword{mixed-model}
+\keyword{regression}
+\keyword{univariate}

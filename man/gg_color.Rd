@@ -2,18 +2,40 @@
 % Please edit documentation in R/gg_color.R
 \name{gg_color}
 \alias{gg_color}
-\title{A gg_color Function}
+\title{Colores por defecto de ggplot2}
 \usage{
 gg_color(n)
 }
 \arguments{
-\item{n}{número total de colores a generar}
+\item{n}{Número entero positivo con el total de colores a generar.}
+}
+\value{
+Vector de caracteres de longitud \code{n} con los colores en formato
+  hexadecimal (por ejemplo, \code{"#F8766D"}).
 }
 \description{
-Genera el código de colores que usa la libreria ggplot
+Genera la paleta de colores que usa \pkg{ggplot2} por defecto para variables
+discretas: \code{n} tonos equidistantes en la rueda de color HCL.
+}
+\details{
+Los colores se calculan con \code{grDevices::hcl()}, con tonos entre 15 y 375
+grados, luminancia 65 y croma 100. Con \code{n = 3} el resultado coincide con
+el de \code{scales::hue_pal()(3)}. La función espera un \code{n} positivo: con
+\code{n = 0} devuelve un color en lugar de un vector vacío.
 }
 \examples{
 gg_color(3)
+gg_color(5)
+
+}
+\seealso{
+\code{\link[ggplot2]{scale_colour_hue}}, \code{\link[grDevices]{hcl}},
+  \code{\link{plot_forest_unimods}}, \code{\link{plot_forest_multimods}},
+  \code{\link{plot_multi_roc}}
+}
+\author{
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }
 \keyword{color}
 \keyword{descriptive}

@@ -2,26 +2,25 @@
 % Please edit documentation in R/desc_plot_lasso.R
 \name{desc_plot_lasso}
 \alias{desc_plot_lasso}
-\title{Representación gráfica de la trayectoria de regularización LASSO}
+\title{Gráfico de la trayectoria de regularización LASSO}
 \usage{
 desc_plot_lasso(res, nresponse = 1)
 }
 \arguments{
-\item{res}{objeto generado por \code{desc_lasso()}.
-Debe contener como mínimo los elementos:
+\item{res}{Objeto generado por \code{desc_lasso()}. Debe contener como
+mínimo los elementos:
 \itemize{
   \item \code{model}: objeto \code{glmnet}.
   \item \code{lambda}: valor de \eqn{\lambda} seleccionado.
 }}
 
-\item{nresponse}{respuesta a representar en modelos multinomiales.
-Puede indicarse mediante índice numérico o mediante el nivel correspondiente
-según la implementación de \code{plotmo::plot_glmnet()}.
-Por defecto \code{1}.}
+\item{nresponse}{Respuesta a representar en modelos multinomiales. Puede
+indicarse mediante índice numérico o mediante el nivel correspondiente,
+según la implementación de \code{plotmo::plot_glmnet()}. Por defecto, 1.}
 }
 \value{
-No devuelve ningún objeto. La función genera una representación gráfica
-de la trayectoria de regularización LASSO.
+No devuelve ningún objeto útil (\code{NULL} de forma invisible). La función
+genera una representación gráfica de la trayectoria de regularización LASSO.
 }
 \description{
 Genera una representación gráfica de la trayectoria de coeficientes de un
@@ -52,12 +51,12 @@ qué categoría de respuesta debe visualizarse.
 \itemize{
   \item Solo acepta objetos creados por \code{desc_lasso()}.
   \item En modelos multinomiales únicamente se representa una categoría de
-  respuesta cada vez.
+    respuesta cada vez.
   \item La visualización depende de la disponibilidad del paquete
-  \pkg{plotmo}. Si no está instalado se utilizará la representación estándar
-  de \pkg{glmnet}, con menor capacidad de etiquetado.
+    \pkg{plotmo}. Si no está instalado se utilizará la representación
+    estándar de \pkg{glmnet}, con menor capacidad de etiquetado.
   \item La función tiene finalidad descriptiva y no realiza ninguna selección
-  adicional de variables ni recalcula el modelo.
+    adicional de variables ni recalcula el modelo.
 }
 }
 \examples{
@@ -65,12 +64,7 @@ qué categoría de respuesta debe visualizarse.
 # Ajustar modelo LASSO
 res <- desc_lasso(
   var_out = "Species",
-  var_comp = c(
-    "Sepal.Length",
-    "Sepal.Width",
-    "Petal.Length",
-    "Petal.Width"
-  ),
+  var_comp = c("Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width"),
   data = iris,
   show.plot = FALSE
 )
@@ -84,10 +78,14 @@ desc_plot_lasso(res, nresponse = 2)
 
 }
 \seealso{
-\code{\link{desc_lasso}}
+\code{\link{desc_lasso}}, \code{\link[plotmo]{plot_glmnet}},
+\code{\link[glmnet]{glmnet}}
 }
 \author{
-Miquel Vazquez
+Miquel Vázquez-Santiago \email{miquel.vazquez@vhir.org}
+
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }
 \keyword{glmnet}
 \keyword{lasso}

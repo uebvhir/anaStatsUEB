@@ -28,109 +28,135 @@ plot_forest_multimods_binom(
 )
 }
 \arguments{
-\item{x}{Lista resultante de \code{summarise_multivariable_model()}
-para un modelo binomial (\code{x$model_type == "binomial"}). Debe
-contener, como mínimo, un data.frame \code{x$results} con las
-columnas \code{Variable}, \code{Level}, \code{Odds Ratio},
-\code{CI (lower)}, \code{CI (upper)} y \code{Pr(>|z|)}.}
+\item{x}{Lista resultante de \code{\link{desc_multimod}} para un modelo
+binomial (\code{x$model_type == "binomial"}). Debe contener, como mínimo, un
+data.frame \code{x$results} con las columnas \code{Variable}, \code{Level},
+\code{Odds Ratio}, \code{CI (lower)}, \code{CI (upper)} y \code{Pr(>|z|)}.
+Si existen \code{x$lbls_vars}, \code{x$lbls_levels}, \code{x$N},
+\code{x$R2_McFadden} y \code{x$R2_McFadden_ajustado}, se utilizan para las
+etiquetas y el pie del gráfico.}
 
-\item{title}{Título principal del gráfico.}
+\item{title}{Título principal del gráfico. Por defecto,
+\code{"Modelo binomial multivariable"}.}
 
-\item{subtitle}{Subtítulo del gráfico.}
+\item{subtitle}{Subtítulo del gráfico. Por defecto,
+\code{"Odds Ratio (IC95\%)"}.}
 
-\item{xlab}{Etiqueta del eje X.}
+\item{xlab}{Etiqueta del eje X. Por defecto, \code{"OR"}.}
 
 \item{palette}{Color de los puntos e intervalos. Acepta
-\code{"okabe"}/\code{"okabe_ito"} (se usa un único color fijo de
-la paleta Okabe-Ito), \code{NULL} (color por defecto de
-\pkg{ggplot2}), o un vector de color del que se toma el primer
-elemento. A diferencia de
-\code{\link{plot_forest_multimods_multi}}, aquí no existe una
-variable de agrupación (\code{Outcome}), por lo que solo se
-utiliza un único color para todo el gráfico.}
+\code{"okabe"}/\code{"okabe_ito"} (un único color fijo de la paleta
+Okabe-Ito, el azul \code{"#0072B2"}), \code{NULL} (color por defecto de
+\pkg{ggplot2}) o un vector de colores del que se toma el primer elemento. A
+diferencia de \code{\link{plot_forest_multimods_multi}}, aquí no existe una
+variable de agrupación (\code{Outcome}), por lo que se usa un único color
+para todo el gráfico. Por defecto, \code{"okabe"}.}
 
-\item{point_size}{Tamaño de los puntos de estimación.}
+\item{point_size}{Tamaño de los puntos de estimación. Por defecto, 2.8.}
 
-\item{text_size}{Tamaño de letra de la etiqueta anclada a cada punto.}
+\item{text_size}{Tamaño de letra de la etiqueta anclada a cada punto. Por
+defecto, 3.}
 
-\item{show.effect.column}{Lógico. Si es \code{TRUE}, la etiqueta
-incluye la estimación puntual y el IC95%.}
+\item{show.effect.column}{Lógico. Si es \code{TRUE} (por defecto), la etiqueta
+incluye la estimación puntual y el IC95\%.}
 
-\item{show.p}{Lógico. Si es \code{TRUE}, la etiqueta incluye el
+\item{show.p}{Lógico. Si es \code{TRUE} (por defecto), la etiqueta incluye el
 p-valor.}
 
-\item{show.p.label}{Lógico. Si es \code{TRUE}, los p-valores por
-encima de \code{pval_cut} se muestran como \code{"NS"} en lugar
-del valor numérico.}
+\item{show.p.label}{Lógico. Si es \code{TRUE} (por defecto), los p-valores por
+encima de \code{pval_cut} se muestran como \code{"NS"} en lugar del valor
+numérico.}
 
-\item{hide.ns}{Lógico. Si es \code{TRUE}, se oculta por completo la
-etiqueta de texto (aunque no el punto ni el intervalo) para las
-filas no significativas.}
+\item{hide.ns}{Lógico. Si es \code{TRUE}, se oculta por completo la etiqueta de
+texto (aunque no el punto ni el intervalo) para las filas no significativas.
+Por defecto, \code{FALSE}.}
 
-\item{shape.label}{Lógico. Si es \code{TRUE}, se usa una forma
+\item{shape.label}{Lógico. Si es \code{TRUE} (por defecto), se usa una forma
 distinta (triángulo) para los puntos significativos
-(\code{P.value < pval_cut}).}
+(\code{Pr(>|z|) < pval_cut}).}
 
-\item{pval_cut}{Umbral de significación estadística. Debe ser un
-único número entre 0 y 1.}
+\item{pval_cut}{Umbral de significación estadística. Debe ser un único número
+entre 0 y 1. Por defecto, 0.05.}
 
-\item{text_sep}{Separador entre el bloque de estimación/IC y el
-p-valor dentro de la etiqueta.}
+\item{text_sep}{Separador entre el bloque de estimación/IC y el p-valor dentro
+de la etiqueta. Por defecto, \code{"; "}.}
 
 \item{label_dx}{Factor multiplicativo aplicado sobre el valor de
-\code{Odds Ratio} de cada fila para desplazar la etiqueta
-ligeramente a la derecha del punto (la escala del eje X es log10,
-por lo que el desplazamiento debe ser multiplicativo, no
-aditivo). Debe ser mayor que 1.}
+\code{Odds Ratio} de cada fila para desplazar la etiqueta ligeramente a la
+derecha del punto (la escala del eje X es log10, por lo que el desplazamiento
+debe ser multiplicativo, no aditivo). Debe ser mayor que 1. Por defecto, 1.05.}
 
-\item{label_dy}{Desplazamiento aditivo, en unidades de \code{y}
-(posiciones discretas de variable/nivel), aplicado para situar la
-etiqueta por encima del punto.}
+\item{label_dy}{Desplazamiento aditivo, en unidades de \code{y} (posiciones
+discretas de variable/nivel), aplicado para situar la etiqueta por encima del
+punto. Por defecto, 0.25.}
 
-\item{x_limit_mult}{Factor multiplicativo sobre el máximo de la
-escala que determina el límite derecho del eje X, dejando margen
-para que las etiquetas de los puntos más extremos no queden
-cortadas.}
+\item{x_limit_mult}{Factor multiplicativo sobre el máximo de la escala que
+determina el límite derecho del eje X, dejando margen para que las etiquetas
+de los puntos más extremos no queden cortadas. Debe ser mayor que 1. Por
+defecto, 1.8.}
 
-\item{show.null.band}{Lógico. Si es \code{TRUE}, se dibuja una banda
-sombreada alrededor del valor nulo (\code{null_band}).}
+\item{show.null.band}{Lógico. Si es \code{TRUE} (por defecto), se dibuja una
+banda sombreada alrededor del valor nulo (\code{null_band}).}
 
-\item{null_band}{Vector numérico de longitud 2 con los límites
-inferior y superior de la banda del valor nulo.}
+\item{null_band}{Vector numérico de longitud 2 con los límites inferior y
+superior de la banda del valor nulo. Deben ser positivos, finitos y estar
+ordenados. Por defecto, \code{c(0.95, 1.05)}.}
 
-\item{show.model.info}{Lógico. Si es \code{TRUE}, se añade un pie de
-página (\code{caption}) con la información del modelo (N, R2 de
-McFadden y R2 de McFadden ajustado).}
+\item{show.model.info}{Lógico. Si es \code{TRUE} (por defecto), se añade un pie
+de página (\code{caption}) con la información del modelo (N, R2 de McFadden y
+R2 de McFadden ajustado), solo para los elementos disponibles en \code{x}.}
 }
 \value{
-Un objeto \code{ggplot} con eje X en escala log10 y
-  etiquetas de texto ancladas a cada punto.
+Un objeto \code{ggplot} con eje X en escala log10 y etiquetas de texto
+  ancladas a cada punto.
 }
 \description{
-Genera un forest plot (Odds Ratio con IC95%) para un modelo de
-regresión logística binomial multivariable. La estimación puntual y,
-opcionalmente, el intervalo de confianza y el p-valor se muestran
-como una etiqueta de texto anclada directamente sobre cada punto,
-ligeramente desplazada hacia arriba y a la derecha, siguiendo el
-mismo estilo que \code{\link{plot_forest_multimods_multi}}. A
-diferencia de esta última, al tratarse de un modelo con una única
-categoría de resultado no se generan paneles por \code{Outcome}.
+Genera un forest plot (Odds Ratio con IC95\%) para un modelo de regresión
+logística binomial multivariable. La estimación puntual y, opcionalmente, el
+intervalo de confianza y el p-valor se muestran como una etiqueta de texto
+anclada directamente sobre cada punto, ligeramente desplazada hacia arriba y a
+la derecha, siguiendo el mismo estilo que
+\code{\link{plot_forest_multimods_multi}}. A diferencia de esta última, al
+tratarse de un modelo con una única categoría de resultado no se generan
+paneles por \code{Outcome}.
 }
 \details{
 Esta función comparte la lógica de etiquetado de
-\code{\link{plot_forest_multivariable_multi}}: cada etiqueta se
-ancla a las coordenadas \code{(Odds Ratio, y)} de su propia fila,
-con un pequeño desplazamiento (\code{label_dx}, \code{label_dy})
-hacia arriba y a la derecha, en lugar de usar una columna de texto
-común a una posición fija del eje X. Al no existir una variable
-\code{Outcome} en un modelo binomial, no se utiliza
-\code{ggplot2::facet_grid()} y todo el gráfico se representa en un
-único panel.
+\code{\link{plot_forest_multimods_multi}}: cada etiqueta se ancla a las
+coordenadas \code{(Odds Ratio, y)} de su propia fila, con un pequeño
+desplazamiento (\code{label_dx}, \code{label_dy}) hacia arriba y a la derecha,
+en lugar de usar una columna de texto común a una posición fija del eje X. Al
+no existir una variable \code{Outcome} en un modelo binomial, no se utiliza
+\code{ggplot2::facet_grid()} y todo el gráfico se representa en un único panel.
+
+Los p-valores se muestran con tres cifras y los inferiores a 0.001 como
+\code{<0.001}. Las filas con OR o IC no positivos o no finitos no se pueden
+representar en escala logarítmica: se excluyen del gráfico con un aviso. Los
+textos de la leyenda de significación son siempre \code{"p < 0.05"} y
+\code{"p >= 0.05"}, aunque se modifique \code{pval_cut}. Se necesita el paquete
+\pkg{ggtext}.
+}
+\examples{
+set.seed(1)
+dat <- data.frame(
+  y = factor(rep(c("No", "Si"), each = 30)),
+  x = rnorm(60),
+  g = factor(sample(c("A", "B", "C"), 60, replace = TRUE))
+)
+Hmisc::label(dat$x) <- "Biomarcador"
+
+mod <- glm(y ~ x + g, data = dat, family = binomial)
+res <- desc_multimod(mod)
+
+plot_forest_multimods_binom(res)
+
+# Sin etiquetas de las filas no significativas y otro umbral
+plot_forest_multimods_binom(res, hide.ns = TRUE, pval_cut = 0.1)
+
 }
 \seealso{
-\code{\link{plot_forest_multimods_multi}},
-  \code{\link{plot_forest_multimods}},
-  \code{\link{plot_forest_uniimods}}
+\code{\link{desc_multimod}}, \code{\link{plot_forest_multimods_multi}},
+  \code{\link{plot_forest_multimods}}, \code{\link{plot_forest_unimods}}
 }
 \author{
 Miquel Vázquez-Santiago \email{miquel.vazquez@vhir.org}
@@ -138,3 +164,8 @@ Miquel Vázquez-Santiago \email{miquel.vazquez@vhir.org}
 Biomedical Data Intelligence Unit (BIDU)
 Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }
+\keyword{forest-plot}
+\keyword{ggplot}
+\keyword{logistic}
+\keyword{multivariable}
+\keyword{odds-ratio}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/desc_group_rep.R
 \name{desc_group_rep}
 \alias{desc_group_rep}
-\title{A desc_group_rep Function}
+\title{Tabla descriptiva para datos longitudinales o de medidas repetidas}
 \usage{
 desc_group_rep(
   data,
@@ -98,7 +98,7 @@ Para variables numéricas realiza comparaciones de medidas repetidas y para
 variables categóricas compara la distribución de frecuencias entre tiempos.
 }
 \details{
-Actualmente la funcion únicamente admite que la variable tiempo contenga 2 niveles.
+Actualmente la función únicamente admite que la variable tiempo contenga 2 niveles.
 }
 \examples{
 set.seed(1111)
@@ -138,7 +138,12 @@ desc_group_rep(
 
 }
 \author{
-Àlex Martí Barrera, Miriam Mota \email{mmota.foix@gmail.com}
+Àlex Martí Barrera
+
+Miriam Mota \email{mmota.foix@gmail.com}
+
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }
 \keyword{descriptives}
 \keyword{longitudinal}

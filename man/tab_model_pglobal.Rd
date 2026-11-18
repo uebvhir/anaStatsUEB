@@ -2,7 +2,7 @@
 % Please edit documentation in R/tab_model_pglobal.R
 \name{tab_model_pglobal}
 \alias{tab_model_pglobal}
-\title{A tab_model_pglobal Function}
+\title{Tabla de un modelo de regresión con el p-valor global de cada predictor}
 \usage{
 tab_model_pglobal(
   model,
@@ -11,79 +11,78 @@ tab_model_pglobal(
 )
 }
 \arguments{
-\item{model}{objeto modelo ajustado mediante funciones compatibles con
+\item{model}{Modelo ajustado: un \code{glm} binomial si \code{type = "logistic"}
+o un \code{lm} si \code{type = "linear"}. Debe ser compatible con
 \code{broom::tidy()} y \code{car::Anova()}.}
 
-\item{type}{tipo de modelo. Puede ser \code{"logistic"} para modelos
-logísticos o \code{"linear"} para modelos lineales. Por defecto
-\code{"logistic"}.}
+\item{type}{Tipo de modelo: \code{"logistic"} (por defecto) o \code{"linear"}.
+Debe corresponder a la clase del modelo; véase \sQuote{Details}.}
+
+\item{caption}{Título de la tabla (por defecto,
+\code{"Modelo multivariante con P global"}).}
 }
 \value{
-Una tabla formateada mediante \code{kableExtra} que incluye:
-\itemize{
-  \item Nombre de los predictores.
-  \item Odds Ratio o estimación del coeficiente.
-  \item Intervalo de confianza del 95\%.
-  \item P-valor global de cada variable.
-  \item Estadísticos globales del modelo.
-}
+Un objeto \code{kableExtra} (creado con \code{\link{kable_ueb}}) con las
+columnas \code{Predictors}, \code{Odds Ratio} (logístico) o \code{Estimate}
+(lineal), \code{CI} (intervalo de confianza al 95 \%, con los valores
+redondeados a 2 decimales) y \code{P global}. Se añaden dos filas finales de
+estadísticos: \code{Observations} y \code{R² Tjur} (logístico) o \code{R²}
+(lineal).
 }
 \description{
-Genera una tabla resumen de un modelo de regresión logística o lineal,
-mostrando los coeficientes estimados, intervalos de confianza y el
-p-valor global de cada predictor obtenido mediante \code{car::Anova()}.
-Las variables con asociación global significativa se resaltan visualmente
-en la tabla final.
+Genera una tabla resumen de un modelo de regresión logística o lineal con los
+coeficientes estimados, los intervalos de confianza al 95 \% y el p-valor global
+de cada predictor, obtenido con \code{car::Anova()}. Las filas de las variables
+con asociación global significativa (p < 0.05) se resaltan en la tabla final.
 }
 \details{
-Para modelos logísticos:
 \itemize{
-  \item Se muestran Odds Ratios e intervalos de confianza exponenciados.
-  \item Se añade el número de observaciones.
-  \item Se añade el coeficiente de determinación de Tjur (\code{R² Tjur}).
+  \item Modelos logísticos: se muestran las odds ratio y sus intervalos de
+    confianza exponenciados, el número de observaciones y el R² de Tjur
+    (\code{performance::r2_tjur()}).
+  \item Modelos lineales: se muestran los coeficientes y sus intervalos de
+    confianza, el número de observaciones y el R² (\code{performance::r2()}, sin
+    ajustar).
+  \item Los p-valores globales se obtienen con \code{car::Anova(type = 3)}: test
+    F para \code{lm} y test de razón de verosimilitudes para \code{glm}. Se
+    muestran redondeados a 3 cifras significativas, solo en la primera fila de
+    cada variable.
+  \item Si el p-valor global de una variable es inferior a 0.05, se resaltan con
+    un color de fondo todas las filas de esa variable. Una línea separa las
+    filas de estadísticos del resto de la tabla.
+  \item Nota: el p global se asigna a cada término mediante \code{startsWith()},
+    por lo que los términos de interacción (por ejemplo, \code{wt:hp}) y las
+    variables cuyo nombre empieza igual que otra (\code{hp} y \code{hp2}) no
+    muestran su propio p global. \code{type} debe coincidir con la clase del
+    modelo; en caso contrario se produce un error poco claro. Los valores muy
+    grandes o muy pequeños se muestran sin formato especial.
 }
-
-Para modelos lineales:
-\itemize{
-  \item Se muestran los coeficientes estimados e intervalos de confianza.
-  \item Se añade el número de observaciones.
-  \item Se añade una medida de pseudo-\eqn{R^2}.
-}
-
-Los p-valores globales se obtienen mediante \code{car::Anova(type = 3)}.
-Cuando el p-valor global de una variable es inferior a 0.05, todas las filas
-correspondientes a dicha variable se resaltan con un color de fondo.
 }
 \examples{
-## Modelo logístico
-data(mtcars)
-mtcars$am <- factor(mtcars$am)
+set.seed(1)
+dat <- data.frame(x1 = rnorm(100),
+                  grupo = factor(sample(c("A", "B", "C"), 100, replace = TRUE)))
+dat$y <- factor(rbinom(100, 1, plogis(1.5 * dat$x1)))
 
-mod_log <- glm(
-  am ~ wt + hp + factor(cyl),
-  data = mtcars,
-  family = binomial()
-)
+# Modelo logístico
+mod_log <- glm(y ~ x1 + grupo, data = dat, family = binomial())
+tab_model_pglobal(model = mod_log, type = "logistic")
 
-tab_model_pglobal(
-  model = mod_log,
-  type = "logistic"
-)
+# Modelo lineal
+mod_lin <- lm(mpg ~ wt + hp + factor(cyl), data = mtcars)
+tab_model_pglobal(model = mod_lin, type = "linear", caption = "Modelo lineal")
 
-## Modelo lineal
-mod_lin <- lm(
-  mpg ~ wt + hp + factor(cyl),
-  data = mtcars
-)
-
-tab_model_pglobal(
-  model = mod_lin,
-  type = "linear"
-)
-
+}
+\seealso{
+\code{\link{kable_ueb}}, \code{\link[car]{Anova}},
+  \code{\link[broom]{tidy}}, \code{\link[performance]{r2_tjur}},
+  \code{\link[performance]{r2}}, \code{\link{tab_model_segmented}}
 }
 \author{
 Alba García Zarzosa
+
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }
 \keyword{anova}
 \keyword{linear}

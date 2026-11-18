@@ -2,24 +2,64 @@
 % Please edit documentation in R/tab_model_segmented.R
 \name{tab_model_segmented}
 \alias{tab_model_segmented}
-\title{Crear una tabla sjPlot::tab_model limpia para un modelo segmentado}
+\title{Tabla sjPlot limpia para un modelo segmentado}
 \usage{
 tab_model_segmented(mod_segm, show.df = F)
 }
 \arguments{
-\item{mod_segm}{Un objeto de clase `segmented`, creado con la función `segmented()`.}
+\item{mod_segm}{Objeto de clase \code{segmented}, creado con
+\code{segmented::segmented()} a partir de un modelo lineal.}
+
+\item{show.df}{Lógico. Si es \code{TRUE}, añade a la tabla la columna con los
+grados de libertad (\code{df}). Por defecto, \code{FALSE}.}
 }
 \value{
-Una tabla HTML creada con `sjPlot::tab_model()` que muestra los coeficientes del modelo,
-incluyendo los puntos de corte `psi` con sus estimaciones correctas.
+Un objeto \code{sjTable}, la tabla HTML creada con
+\code{sjPlot::tab_model()}, con los coeficientes del modelo y las estimaciones
+correctas de los puntos de corte \code{psi}.
 }
 \description{
-Esta función toma un modelo segmentado (`segmented::segmented`) y prepara una tabla con los coeficientes,
-reemplazando los valores `Estimate` de los puntos de corte (`psi`) por los valores estimados reales,
-ya que sjPlot::tab_model no los muestra correctamente por defecto.
+Prepara una tabla con \code{sjPlot::tab_model()} para un modelo ajustado con
+\code{segmented::segmented()}. Los coeficientes de los puntos de corte
+(\code{psi}) que \code{tab_model()} no muestra correctamente se sustituyen por
+sus estimaciones reales, tomadas del resumen del modelo.
+}
+\details{
+\itemize{
+  \item En las filas de \code{psi}, la columna \code{Estimates} contiene la
+    estimación del punto de corte (\code{summary(mod_segm)$psi[, "Est."]}); el
+    intervalo de confianza y el p-valor quedan en blanco.
+  \item Con \code{sjPlot::tab_model()} directamente, la fila de \code{psi}
+    muestra una estimación de 0 con un intervalo y un p-valor sin sentido.
+  \item La función está pensada para modelos \code{segmented} basados en
+    \code{lm}. Con un \code{segmented} basado en \code{glm} se produce un error
+    (clase \code{summary.segmented} no admitida).
+}
 }
 \examples{
-#modelo_segmentado <- segmented(lm(y ~ x, data = datos), seg.Z = ~x, npsi = 1)
-#tab_model_segmented(modelo_segmentado)
+if (requireNamespace("segmented", quietly = TRUE)) {
+  set.seed(12)
+  x <- 1:100
+  y <- 2 + 1.5 * pmin(x, 50) + 0.2 * pmax(x - 50, 0) + rnorm(100, sd = 3)
+  datos <- data.frame(x = x, y = y)
+  mod_lm <- lm(y ~ x, data = datos)
+  modelo_segmentado <- segmented::segmented(mod_lm, seg.Z = ~x, npsi = 1)
+  tab_model_segmented(modelo_segmentado)
+  tab_model_segmented(modelo_segmentado, show.df = TRUE)
+}
 
 }
+\seealso{
+\code{\link[segmented]{segmented}}, \code{\link[sjPlot]{tab_model}},
+  \code{\link{tab_model_pglobal}}
+}
+\author{
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
+}
+\keyword{breakpoint}
+\keyword{psi}
+\keyword{regression}
+\keyword{segmented}
+\keyword{sjPlot}
+\keyword{table}

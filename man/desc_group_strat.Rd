@@ -2,7 +2,7 @@
 % Please edit documentation in R/desc_group_strat.R
 \name{desc_group_strat}
 \alias{desc_group_strat}
-\title{A desc_group_strat Function}
+\title{Tablas descriptivas estratificadas por una variable de estratificación}
 \usage{
 desc_group_strat(
   data,
@@ -127,6 +127,7 @@ data(mtcars)
 mtcars$am <- factor(mtcars$am)
 mtcars$vs <- factor(mtcars$vs)
 mtcars$cyl <- factor(mtcars$cyl)
+
 # Análisis estratificado básico
 desc_group_strat(
   data = mtcars,
@@ -162,8 +163,14 @@ desc_group_strat(
 )
 
 }
+\seealso{
+\code{\link{desc_group}}
+}
 \author{
 Marcos Esteve \email{marcos.esteve@vhir.org}
+
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 }
 \keyword{descriptives}
 \keyword{stratified}

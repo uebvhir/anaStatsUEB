@@ -1,129 +1,158 @@
-#' Forest plot para modelos de regresión logística binomial (univariados)
+#' @title Forest plot para modelos de regresión logística binomial (univariables)
 #'
 #' @description
-#' Genera un forest plot a partir de resultados de modelos de regresión
-#' logística binomial (odds ratios con IC95%), con una columna de texto
-#' combinada OR(IC95%) [; p-valor] al estilo \code{summata}, alineada a la
-#' derecha del panel gráfico. Comparte estilo y argumentario con
-#' \code{plot_forest_multimods()}.
+#' Genera un forest plot a partir de resultados de modelos de regresión logística
+#' binomial (odds ratios con IC95\%), con una columna de texto combinada
+#' OR(IC95\%) [; p-valor] al estilo \code{summata}, alineada a la derecha del
+#' panel gráfico. Comparte estilo y argumentario con
+#' \code{\link{plot_forest_multimods}}.
 #'
-#' @details
-#'
-#' \strong{Columnas de datos frente a etiquetas de visualización}: los
-#' argumentos \code{estimate}, \code{lower}, \code{upper}, \code{p},
-#' \code{variable} y \code{level} son \strong{nombres de columna}: deben
-#' coincidir EXACTAMENTE con \code{names(results_df)}. En cambio,
-#' \code{header.est.text}, \code{header.ic.text} y \code{header.pval.text}
-#' son \strong{texto de visualización} para la cabecera de la columna
-#' combinada; no tienen que coincidir con ningún nombre de columna. Por
-#' ejemplo, \code{estimate = "Odds Ratio"} (columna real) +
-#' \code{header.est.text = "OR"} (lo que se lee en la cabecera) es la
-#' combinación habitual.
-#'
-#' \strong{Visualización de resultados}: igual que en
-#' \code{plot_forest_multimods()}, la combinación de
-#' \code{show.effect.column}, \code{show.p}, \code{show.p.label} y
-#' \code{hide.ns} permite distintos modos:
-#'
-#' \itemize{
-#'   \item \code{show.effect.column = TRUE}, \code{show.p = TRUE},
-#'   \code{show.p.label = FALSE}, \code{hide.ns = FALSE}:
-#'   \code{1.03 (1.00, 1.06); 0.072}
-#'   \item \code{show.p.label = TRUE}, \code{hide.ns = FALSE}: los no
-#'   significativos se muestran como \code{NS}: \code{1.03 (1.00, 1.06); NS}
-#'   \item \code{show.effect.column = TRUE}, \code{show.p = FALSE}: solo
-#'   \code{1.03 (1.00, 1.06)}
-#'   \item \code{show.effect.column = FALSE}, \code{show.p = TRUE}: solo
-#'   \code{0.072} (o \code{NS})
-#'   \item \code{hide.ns = TRUE}: las asociaciones no significativas se
-#'   eliminan del texto (\code{NA}), pero el punto y el IC se siguen
-#'   dibujando.
-#' }
-#'
-#' Cuando \code{hide.ns = TRUE}, los puntos y los intervalos de confianza
-#' continúan representándose en el forest plot; solo se oculta el texto de
-#' los resultados no significativos. Al ser un \code{NA} intencionado,
-#' \code{geom_richtext()} se llama con \code{na.rm = TRUE} para no generar
-#' el aviso \code{"Removed N rows containing missing values"}.
-#'
-#' \strong{Limitaciones}
-#' \itemize{
-#'   \item \code{estimate}, \code{lower} y \code{upper} deben ser
-#'   estrictamente positivos (escala log10).
-#'   \item Requiere el paquete \pkg{ggtext} (para \code{geom_richtext()});
-#'   si no está instalado, la función lanza un error explicativo.
-#'   \item Asume una única fila por combinación variable/nivel (sin
-#'   dimensión de outcome, a diferencia de \code{plot_forest_multimods()}).
-#'   \item La paleta \code{'okabe_ito'} tiene 8 colores; con más de 8
-#'   variables se recicla (con aviso).
-#'   \item El color del texto de la columna es fijo (\code{'black'}); el
-#'   color por variable se aplica solo a puntos y barras de error.
-#'   \item \code{'text_size'} acepta valores inferiores a 3.75 sin solapamientos
-#'   en etiquetas.
-#' }sa
-#'
-#' @param results_df Data frame con los resultados del modelo binomial (una
-#'   fila por variable/nivel).
-#' @param lbls_vars Vector con nombres (columna \code{variable} -> etiqueta).
-#'   Se pasa a \code{forest_build_labels()}.
-#' @param lbls_levels Lista con nombres (columna \code{variable} -> vector
-#'   nivel -> etiqueta). Se pasa a \code{forest_build_labels()}.
-#' @param estimate Nombre EXACTO de columna con el odds ratio.
-#' @param lower Nombre EXACTO de columna con el límite inferior del IC95%.
-#' @param upper Nombre EXACTO de columna con el límite superior del IC95%.
-#' @param p Nombre EXACTO de columna con los p-valores.
-#' @param header.est.text Etiqueta de VISUALIZACIÓN para la medida de
-#'   efecto en la cabecera (por defecto \code{"OR"}).
-#' @param header.ic.text Etiqueta de VISUALIZACIÓN para el intervalo de
-#'   confianza en la cabecera (por defecto \code{"IC95\%"}).
+#' @param results_df Data frame con los resultados del modelo binomial (una fila
+#'   por variable/nivel). Con los valores por defecto de los argumentos de
+#'   columnas, admite directamente el elemento \code{unimod_ci_df} devuelto por
+#'   \code{\link{desc_unimods}}.
+#' @param lbls_vars Vector con nombres (columna \code{variable} -> etiqueta). Se
+#'   pasa a \code{\link{forest_build_labels}}. Por defecto, \code{NULL}.
+#' @param lbls_levels Lista con nombres (columna \code{variable} -> vector nivel
+#'   -> etiqueta). Se pasa a \code{\link{forest_build_labels}}. Por defecto,
+#'   \code{NULL}.
+#' @param estimate Nombre EXACTO de la columna con el odds ratio. Por defecto,
+#'   \code{"Odds Ratio"}.
+#' @param lower Nombre EXACTO de la columna con el límite inferior del IC95\%. Por
+#'   defecto, \code{"CI (lower)"}.
+#' @param upper Nombre EXACTO de la columna con el límite superior del IC95\%. Por
+#'   defecto, \code{"CI (upper)"}.
+#' @param p Nombre EXACTO de la columna con los p-valores. Por defecto,
+#'   \code{"Pr(>|z|)"}.
+#' @param header.est.text Etiqueta de VISUALIZACIÓN para la medida de efecto en la
+#'   cabecera. Por defecto, \code{"OR"}.
+#' @param header.ic.text Etiqueta de VISUALIZACIÓN para el intervalo de confianza
+#'   en la cabecera. Por defecto, \code{"IC95\%"}.
 #' @param header.pval.text Etiqueta de VISUALIZACIÓN para el p-valor en la
-#'   cabecera (por defecto \code{"P.value"}).
-#' @param text_sep Separador entre la parte de efecto/IC y la de p-valor,
-#'   usado en cada fila y en la cabecera (por defecto \code{"; "}).
-#' @param variable Nombre EXACTO de columna que identifica la variable.
-#' @param level Nombre EXACTO de columna con el nivel dentro de la
-#'   variable (\code{NA} en variables continuas).
-#' @param pval_cut Punto de corte de significación (por defecto 0.05).
-#' @param vars_plot Variables a representar (subconjunto opcional).
-#' @param title Título principal.
-#' @param subtitle Subtítulo.
-#' @param xlab Título eje X. Si \code{NULL} (por defecto), se usa
+#'   cabecera. Por defecto, \code{"P.value"}.
+#' @param text_sep Separador entre la parte de efecto/IC y la de p-valor, usado en
+#'   cada fila y en la cabecera. Por defecto, \code{"; "}.
+#' @param variable Nombre EXACTO de la columna que identifica la variable. Por
+#'   defecto, \code{"vars_label"}.
+#' @param level Nombre EXACTO de la columna con el nivel dentro de la variable
+#'   (\code{NA} en variables continuas). Por defecto, \code{"levs"}.
+#' @param pval_cut Punto de corte de significación. Por defecto, 0.05.
+#' @param vars_plot Vector con las variables a representar (subconjunto opcional),
+#'   según los valores de la columna \code{variable}. Por defecto, \code{NULL}
+#'   (todas).
+#' @param title Título principal. Por defecto, \code{"Análisis Binomial"}.
+#' @param subtitle Subtítulo. Por defecto, \code{"Odds Ratio (IC95\%)"}.
+#' @param xlab Título del eje X. Si es \code{NULL} (por defecto), se usa
 #'   \code{header.est.text}.
-#' @param show.effect.column Mostrar la medida de efecto y su IC95\% en la
-#'   columna de texto.
-#' @param show.p Mostrar el p-valor en la columna de texto.
-#' @param show.p.label Lógico. Si \code{TRUE}, los p-valores no
-#'   significativos se muestran como \code{"NS"} (salvo si
-#'   \code{hide.ns = TRUE}).
-#' @param hide.ns Lógico. Si \code{TRUE}, no se muestra texto para los
-#'   resultados no significativos; el punto y el IC se siguen dibujando.
-#' @param show.null.band Mostrar banda sombreada alrededor de OR=1.
-#' @param palette Paleta de color para las variables. \code{NULL} (usa
-#'   \code{gg_color(n)}), \code{"okabe"}/\code{"okabe_ito"} (paleta
-#'   accesible Okabe-Ito), o un vector de colores propio.
-#' @param point_size Tamaño de los puntos.
-#' @param text_size Tamaño del texto de la columna de resultados. Si
-#'   \code{NULL} (por defecto), se calcula dinámicamente según el número de
-#'   filas.
-#' @param text_spacing Separación de la columna de texto respecto al IC
-#'   máximo, en DÉCADAS log10 (por defecto 0.4).
+#' @param show.effect.column Lógico. Mostrar la medida de efecto y su IC95\% en la
+#'   columna de texto. Por defecto, \code{TRUE}.
+#' @param show.p Lógico. Mostrar el p-valor en la columna de texto. Por defecto,
+#'   \code{FALSE}.
+#' @param show.p.label Lógico. Si es \code{TRUE}, los p-valores no significativos
+#'   se muestran como \code{"NS"} (salvo si \code{hide.ns = TRUE}). Por defecto,
+#'   \code{FALSE}.
+#' @param hide.ns Lógico. Si es \code{TRUE}, no se muestra texto para los
+#'   resultados no significativos; el punto y el IC se siguen dibujando. Por
+#'   defecto, \code{FALSE}.
+#' @param show.null.band Lógico. Mostrar una banda sombreada alrededor de OR = 1
+#'   (de 0.95 a 1.05, no configurable). Por defecto, \code{TRUE}.
+#' @param palette Paleta de color para las variables. \code{NULL} (por defecto)
+#'   usa \code{\link{gg_color}}; \code{"okabe"}/\code{"okabe_ito"} usa la paleta
+#'   accesible Okabe-Ito; también admite un vector de colores propio.
+#' @param point_size Tamaño de los puntos. Por defecto, 2.8.
+#' @param text_size Tamaño del texto de la columna de resultados. Por defecto,
+#'   3.75. Si es \code{NULL}, se calcula dinámicamente según el número de filas
+#'   (entre 2.2 y 3.8).
+#' @param text_spacing Separación de la columna de texto respecto al IC máximo, en
+#'   DÉCADAS log10. Por defecto, 0.4.
 #'
 #' @return Objeto \code{ggplot}.
 #'
-#' @seealso \code{\link{forest_build_labels}}, \code{\link{plot_forest_multimods}}
-#' @importFrom ggtext geom_richtext
+#' @details
+#' \strong{Columnas de datos frente a etiquetas de visualización}: los argumentos
+#' \code{estimate}, \code{lower}, \code{upper}, \code{p}, \code{variable} y
+#' \code{level} son \strong{nombres de columna}: deben coincidir EXACTAMENTE con
+#' \code{names(results_df)}. En cambio, \code{header.est.text},
+#' \code{header.ic.text} y \code{header.pval.text} son \strong{texto de
+#' visualización} para la cabecera de la columna combinada; no tienen que coincidir
+#' con ningún nombre de columna. Por ejemplo, \code{estimate = "Odds Ratio"}
+#' (columna real) + \code{header.est.text = "OR"} (lo que se lee en la cabecera) es
+#' la combinación habitual.
+#'
+#' \strong{Visualización de resultados}: igual que en
+#' \code{\link{plot_forest_multimods}}, la combinación de
+#' \code{show.effect.column}, \code{show.p}, \code{show.p.label} y \code{hide.ns}
+#' permite distintos modos:
+#'
+#' \itemize{
+#'   \item \code{show.effect.column = TRUE}, \code{show.p = TRUE},
+#'     \code{show.p.label = FALSE}, \code{hide.ns = FALSE}:
+#'     \code{1.03 (1.00, 1.06); 0.072}
+#'   \item \code{show.p.label = TRUE}, \code{hide.ns = FALSE}: los no
+#'     significativos se muestran como \code{NS}: \code{1.03 (1.00, 1.06); NS}
+#'   \item \code{show.effect.column = TRUE}, \code{show.p = FALSE}: solo
+#'     \code{1.03 (1.00, 1.06)} (valor por defecto)
+#'   \item \code{show.effect.column = FALSE}, \code{show.p = TRUE}: solo
+#'     \code{0.072} (o \code{NS})
+#'   \item \code{hide.ns = TRUE}: las asociaciones no significativas se eliminan
+#'     del texto (\code{NA}), pero el punto y el IC se siguen dibujando.
+#' }
+#'
+#' Cuando \code{hide.ns = TRUE}, los puntos y los intervalos de confianza continúan
+#' representándose en el forest plot; solo se oculta el texto de los resultados no
+#' significativos. Al ser un \code{NA} intencionado, \code{geom_richtext()} se llama
+#' con \code{na.rm = TRUE} para no generar el aviso \code{"Removed N rows containing
+#' missing values"}. Si no queda ningún texto (por ejemplo, con
+#' \code{show.effect.column = FALSE} y \code{show.p = FALSE}), no se dibujan ni la
+#' columna ni su cabecera.
+#'
+#' Los textos de la leyenda de significación son siempre \code{"p < 0.05"} y
+#' \code{"p >= 0.05"}, aunque se modifique \code{pval_cut}.
+#'
+#' \strong{Limitaciones}
+#' \itemize{
+#'   \item \code{estimate}, \code{lower} y \code{upper} deben ser estrictamente
+#'     positivos (escala log10).
+#'   \item Requiere el paquete \pkg{ggtext} (para \code{geom_richtext()}); si no
+#'     está instalado, la función lanza un error explicativo.
+#'   \item Asume una única fila por combinación variable/nivel (sin dimensión de
+#'     outcome, a diferencia de \code{\link{plot_forest_multimods}}).
+#'   \item La paleta \code{"okabe_ito"} tiene 8 colores; con más variables que
+#'     colores (también con un vector propio) se recicla, con un aviso.
+#'   \item El color del texto de la columna es fijo (negro); el color por variable
+#'     se aplica solo a puntos y barras de error.
+#' }
+#'
+#' @seealso \code{\link{desc_unimods}}, \code{\link{forest_build_labels}},
+#'   \code{\link{plot_forest_multimods}}, \code{\link{plot_forest_multimods_binom}},
+#'   \code{\link{gg_color}}
 #'
 #' @examples
-#' \dontrun{
-#' plot_forest_uni(
-#'   res, lbls_vars = lbls,
+#' dat <- mtcars
+#' dat$am <- factor(dat$am, labels = c("Manual", "Auto"))
+#' dat$cyl <- factor(dat$cyl)
+#' Hmisc::label(dat$mpg) <- "Consumo (mpg)"
+#' Hmisc::label(dat$cyl) <- "Cilindros"
+#'
+#' res <- desc_unimods(y = "am", var2test = c("mpg", "wt", "cyl"), data = dat,
+#'                     type = "logistic")
+#'
+#' # Con los valores por defecto
+#' plot_forest_unimods(res$unimod_ci_df)
+#'
+#' # Mostrando p-valores (NS en los no significativos) y paleta Okabe-Ito
+#' plot_forest_unimods(
+#'   res$unimod_ci_df,
 #'   show.p = TRUE, show.p.label = TRUE, hide.ns = TRUE,
 #'   palette = "okabe"
 #' )
-#'}
+#'
+#' @keywords forest-plot logistic odds-ratio univariate ggplot
+#'
+#' @importFrom ggtext geom_richtext
 #'
 #' @author
-#' Marcos Esteve Hernández \email{marcos.esteve@vhir.org}
+#' Marcos Esteve \email{marcos.esteve@vhir.org}
 #'
 #' Biomedical Data Intelligence Unit (BIDU)
 #' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.

@@ -1,89 +1,123 @@
-#' A summary.quanti.rep Function
+#' @title Resumen descriptivo de una variable numérica con medidas repetidas
 #'
-#' Genera un resumen descriptivo para una variable numérica en estudios con medidas repetidas,
-#' mostrando estadísticas globales y por cada momento temporal. Adicionalmente puede realizar
-#' un ANOVA de medidas repetidas y preparar la salida para su integración en tablas resumen.
+#' @description
+#' Genera un resumen descriptivo de una variable numérica en estudios con medidas
+#' repetidas: estadísticos globales y por cada momento temporal (visita). Opcionalmente
+#' realiza un ANOVA de medidas repetidas y prepara la salida para integrarla en
+#' otras tablas resumen.
 #'
-#' @param data data frame que contiene las variables a analizar.
-#' @param x variable numérica a resumir.
-#' @param tiempo variable que identifica los momentos temporales o visitas.
-#' @param id identificador único de sujeto para el análisis de medidas repetidas.
-#' @param format formato de salida utilizado para los saltos de línea. Valores posibles:
-#' \code{"html"}, \code{"latex"} o \code{"R"}. Por defecto \code{"html"}.
-#' @param show.pval TRUE o FALSE indicando si se realiza el contraste de medidas repetidas y se muestra el p-valor. Por defecto TRUE.
-#' @param show.all TRUE o FALSE indicando si se muestra el resumen global (ALL). Por defecto TRUE.
-#' @param show.n TRUE o FALSE indicando si se muestra el tamaño muestral. Por defecto TRUE.
-#' @param show.stat TRUE o FALSE indicando si se muestra el estadístico F del ANOVA. Por defecto FALSE.
-#' @param prep2sum TRUE o FALSE indicando si la salida se adapta para funciones resumen. Por defecto FALSE.
-#' @param prep.tab TRUE o FALSE indicando si se prepara una estructura tabular auxiliar para integración en otras funciones. Por defecto FALSE.
-#' @param sub.ht TRUE o FALSE indicando si se añade un subíndice identificativo al nombre de la variable. Por defecto TRUE.
-#' @param paired argumento reservado para compatibilidad. Por defecto FALSE.
-#' @param var.tidy TRUE o FALSE indicando si los nombres de las variables se obtienen automáticamente mediante evaluación no estándar. Por defecto TRUE.
-#' @param nround número de decimales utilizados en los resultados. Por defecto 1.
+#' @param data Data frame con las variables, en formato largo (una fila por sujeto y
+#'   visita).
+#' @param x Variable numérica a resumir: nombre de columna, con o sin comillas (si
+#'   \code{var.tidy = TRUE}).
+#' @param tiempo Variable que identifica los momentos temporales o visitas, en el
+#'   mismo formato que \code{x}. Debe ser un factor; véase \sQuote{Details}.
+#' @param id Nombre (texto) de la variable con el identificador único de sujeto.
+#' @param format Formato de los saltos de línea de las celdas: \code{"html"} (por
+#'   defecto), \code{"latex"} o \code{"R"}. Cualquier otro valor elimina los saltos
+#'   de línea.
+#' @param show.pval Lógico. Si es \code{TRUE} (por defecto), realiza el ANOVA de
+#'   medidas repetidas y muestra el p-valor.
+#' @param show.all Lógico. Si es \code{TRUE} (por defecto), añade la columna
+#'   \code{ALL} con el resumen global.
+#' @param show.n Lógico. Si es \code{TRUE} (por defecto), añade la columna \code{n}
+#'   con el número de observaciones completas (filas), no de sujetos.
+#' @param show.stat Lógico. Si es \code{TRUE}, muestra el estadístico F del ANOVA.
+#'   Solo se aplica si \code{show.pval = TRUE} (por defecto, \code{FALSE}).
+#' @param prep2sum Lógico. Si es \code{TRUE}, añade una columna \code{levels} vacía
+#'   a \code{summary} para integrarla con otras funciones resumen (por defecto,
+#'   \code{FALSE}).
+#' @param prep.tab Lógico. Si es \code{TRUE}, añade a la salida \code{df_prep_tab},
+#'   la tabla auxiliar que usa \code{desc_group_rep}. Requiere \code{show.n = TRUE} y
+#'   \code{show.pval = TRUE} (por defecto, \code{FALSE}).
+#' @param sub.ht Lógico. Si es \code{TRUE} (por defecto), añade un superíndice de
+#'   nota al nombre de la variable. Con \code{FALSE} la función falla; véase
+#'   \sQuote{Details}.
+#' @param paired Reservado por compatibilidad; no tiene efecto (por defecto,
+#'   \code{FALSE}).
+#' @param var.tidy Lógico. Si es \code{TRUE} (por defecto), \code{x} y
+#'   \code{tiempo} pueden darse con o sin comillas (\code{id} debe ser siempre
+#'   texto). Si es \code{FALSE}, deben ser texto.
+#' @param nround Número de decimales de los resultados (por defecto, 1).
 #'
 #' @return Una lista con:
-#' \itemize{
-#'   \item \code{rows}: nombre de la variable analizada.
-#'   \item \code{txt_test}: descripción del contraste estadístico realizado.
-#'   \item \code{pval}: p-valor del ANOVA de medidas repetidas.
-#'   \item \code{txt_caption}: texto descriptivo para tablas.
-#'   \item \code{methods}: descripción de las estadísticas mostradas.
-#'   \item \code{summary}: tabla resumen con los resultados.
-#'   \item \code{df_prep_tab}: tabla preparada para funciones resumen (si \code{prep.tab = TRUE}).
+#' \describe{
+#'   \item{\code{rows}}{Nombre de la variable analizada.}
+#'   \item{\code{txt_test}}{Texto con el nombre del test (\code{NULL} si
+#'     \code{show.pval = FALSE}).}
+#'   \item{\code{pval}}{P-valor del ANOVA de medidas repetidas (\code{NULL} si
+#'     \code{show.pval = FALSE}).}
+#'   \item{\code{txt_caption}}{Título de la tabla.}
+#'   \item{\code{methods}}{Descripción del contenido de las celdas.}
+#'   \item{\code{summary}}{Data frame con las columnas \code{variable}, una por
+#'     visita, \code{ALL}, \code{p.value}, \code{stat} y \code{n} (según los
+#'     argumentos \code{show.*}). Cada celda contiene n, media (SD), IC 95 \% de la
+#'     media y mediana [Q1, Q3].}
+#'   \item{\code{df_prep_tab}}{Solo si \code{prep.tab = TRUE}: data frame con
+#'     \code{variable}, \code{levels}, \code{summary}, \code{p.value} y \code{n}.}
 #' }
 #'
 #' @details
-#' Para cada nivel de la variable temporal se calculan:
 #' \itemize{
-#'   \item Número de observaciones (N).
-#'   \item Media y desviación estándar.
-#'   \item Intervalo de confianza del 95\% para la media.
-#'   \item Mediana y rango intercuartílico (IQR).
+#'   \item Para cada visita y para el conjunto global (\code{ALL}) se calculan el
+#'     número de observaciones, la media y la desviación estándar, el intervalo de
+#'     confianza al 95 \% de la media (\code{Publish::ci.mean}) y la mediana con
+#'     los cuartiles.
+#'   \item Con \code{show.pval = TRUE}, el p-valor procede de
+#'     \code{rstatix::get_anova_table(rstatix::anova_test())}, que por defecto
+#'     (\code{correction = "auto"}) aplica la corrección de Greenhouse-Geisser a los
+#'     factores que no cumplen la esfericidad (test de Mauchly con p <= 0.05).
+#'   \item Los valores perdidos en \code{x} se excluyen en cada visita. Los niveles
+#'     de \code{tiempo} sin observaciones aparecen con \code{NA}.
+#'   \item Nota: \code{sub.ht = FALSE} produce un error. Si \code{tiempo} no es un
+#'     factor, la conversión automática falla (\code{could not find function
+#'     "\%>\%<-"}). \code{prep.tab = TRUE} falla con \code{show.n = FALSE} o
+#'     \code{show.pval = FALSE}. La función carga y adjunta \pkg{rstatix} en cada
+#'     llamada (\code{pacman::p_load()}).
 #' }
 #'
-#' Cuando \code{show.pval = TRUE}, se realiza un ANOVA de medidas repetidas utilizando
-#' la función \code{anova_test()} del paquete \code{rstatix}.
+#' @seealso \code{\link{summary.quali.rep}}, \code{\link{summary.quanti}},
+#'   \code{\link{desc_group_rep}}, \code{\link[rstatix]{anova_test}},
+#'   \code{\link[rstatix]{get_anova_table}}, \code{\link[Publish]{ci.mean}}
 #'
-#' @export summary.quanti.rep
-#' @import Hmisc dplyr rstatix pacman
-#' @author Àlex Martí Barrera, Miriam Mota \email{mmota.foix@@gmail.com}
 #' @examples
 #' set.seed(1111)
-#'
 #' df <- data.frame(
 #'   id = rep(1:20, each = 3),
 #'   visita = factor(rep(c("Basal", "Mes1", "Mes3"), 20)),
 #'   colesterol = rnorm(60, 200, 30)
 #' )
+#' # Resumen descriptivo y ANOVA de medidas repetidas
+#' res <- summary.quanti.rep(data = df, x = "colesterol", tiempo = "visita", id = "id")
+#' res$summary
+#' res$pval
 #'
-#' # Resumen descriptivo básico
-#' summary.quanti.rep(
-#'   data = df,
-#'   x = "colesterol",
-#'   tiempo = "visita",
-#'   id = "id"
-#' )
+#' # Nombres sin comillas y estadístico F
+#' res_st <- summary.quanti.rep(df, x = colesterol, tiempo = visita, id = "id",
+#'                              show.stat = TRUE)
+#' res_st$summary[, c("p.value", "stat", "n")]
 #'
-#' # Mostrar estadístico F
-#' summary.quanti.rep(
-#'   data = df,
-#'   x = "colesterol",
-#'   tiempo = "visita",
-#'   id = "id",
-#'   show.stat = TRUE
-#' )
-#'
-#' # Preparar salida para tablas resumen
-#' summary.quanti.rep(
-#'   data = df,
-#'   x = "colesterol",
-#'   tiempo = "visita",
-#'   id = "id",
-#'   prep.tab = TRUE
-#' )
+#' # Tabla auxiliar para desc_group_rep
+#' res_tab <- summary.quanti.rep(df, "colesterol", "visita", "id", prep.tab = TRUE)
+#' res_tab$df_prep_tab[, c("variable", "levels", "p.value", "n")]
 #'
 #' @keywords descriptives repeated-measures longitudinal summary statistics
-
+#'
+#' @importFrom dplyr %>% pull select sym
+#' @importFrom rstatix anova_test get_anova_table
+#' @importFrom Publish ci.mean
+#' @importFrom pacman p_load
+#' @importFrom stats aggregate complete.cases sd median quantile
+#'
+#' @author
+#' Àlex Martí Barrera
+#' 
+#' Miriam Mota \email{miriam.mota@vhir.org}
+#'
+#' Biomedical Data Intelligence Unit (BIDU)
+#' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
+#'
+#' @export
 summary.quanti.rep <- function (
     data,
     x,

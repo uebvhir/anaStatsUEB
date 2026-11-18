@@ -2,40 +2,57 @@
 % Please edit documentation in R/summary.nround.R
 \name{summary.nround}
 \alias{summary.nround}
-\title{Resuelve el numero de decimales (nround) de forma dinamica}
+\title{Resolución dinámica del número de decimales (nround)}
 \usage{
-\method{summary}{nround}(x, nround = 1, sig_sd = 2, nround_min = 1, nround_max = 3)
+summary.nround(x, nround = 1, sig_sd = 2, nround_min = 1, nround_max = 3)
 }
 \arguments{
-\item{x}{vector numerico (variable completa, sin separar por grupos).}
+\item{x}{Vector numérico (variable completa, sin separar por grupos).}
 
-\item{nround}{numerico o "auto".}
+\item{nround}{Número de decimales (numérico) o \code{"auto"} (por defecto, 1).}
 
-\item{sig_sd}{cifras significativas de la SD. Por defecto 2.}
+\item{sig_sd}{Número de cifras significativas de la SD en el modo
+\code{"auto"} (por defecto, 2).}
 
-\item{nround_min, nround_max}{limites de decimales en modo "auto".}
+\item{nround_min, nround_max}{Límites inferior y superior del número de
+decimales en el modo \code{"auto"} (por defecto, 1 y 3).}
 }
 \value{
-entero con el numero de decimales (o \code{nround} sin cambios si es numerico).
+Si \code{nround} es numérico, el mismo valor. Si es \code{"auto"}, un
+entero con el número de decimales:
+\code{sig_sd - 1 - floor(log10(SD))}, acotado a
+[\code{nround_min}, \code{nround_max}].
 }
 \description{
-Si \code{nround} es numerico se devuelve sin cambios (comportamiento historico).
-Si \code{nround = "auto"} se aplica la regla de Hopkins (Hopkins et al., 2011;
-citada por Cole, 2015): decimales suficientes para que la SD de la variable
-completa (todos los grupos juntos) tenga \code{sig_sd} cifras significativas.
-La media y el resto de estadisticos usan los mismos decimales que la SD.
-El resultado se acota a [\code{nround_min}, \code{nround_max}]; con
-\code{nround_min = 1} el modo "auto" solo puede AUMENTAR la precision respecto
-al valor por defecto actual.
+Devuelve el número de decimales que hay que usar al redondear una variable
+cuantitativa. Si \code{nround} es numérico, se devuelve sin cambios
+(comportamiento histórico). Si \code{nround = "auto"}, se aplica la regla de
+Hopkins (Hopkins et al., 2011; citada por Cole, 2015): se usan los decimales
+necesarios para que la desviación estándar (SD) de la variable completa (todos
+los grupos juntos) tenga \code{sig_sd} cifras significativas. La media y el resto
+de estadísticos usan los mismos decimales que la SD.
+
+Función compartida por las funciones descriptivas del paquete (por ejemplo,
+\code{\link{summary.quanti}}).
 }
 \details{
-Funcion compartida por las funciones descriptivas del paquete
-(p. ej. \code{summary.quanti()}).
+\itemize{
+  \item La SD se calcula con \code{stats::sd(x, na.rm = TRUE)}. Si no es finita
+    o es 0 (por ejemplo, un vector constante, vacío o todo \code{NA}), se
+    devuelve \code{nround_min}.
+  \item Con \code{nround_min = 1}, el modo \code{"auto"} solo puede aumentar la
+    precisión respecto al valor por defecto (1 decimal).
+  \item Si \code{nround} no es numérico ni \code{"auto"}, se produce un error.
+  \item Aunque el nombre recuerda a un método S3 de \code{summary()}, es una
+    función normal: se llama directamente, no mediante \code{summary(x)}.
+}
 }
 \examples{
 summary.nround(mtcars$wt, "auto")   # SD = 0.98 -> 2 decimales
 summary.nround(mtcars$mpg, "auto")  # SD = 6.03 -> 1 decimal
-summary.nround(mtcars$wt, 1)        # numerico: sin cambios
+summary.nround(mtcars$wt, 1)        # numérico: sin cambios
+summary.nround(mtcars$disp, "auto", nround_min = 0)  # SD = 123.9 -> 0 decimales
+
 }
 \references{
 Cole TJ. Too many digits: the presentation of numerical data.
@@ -44,7 +61,16 @@ Arch Dis Child. 2015;100(7):608-609. \doi{10.1136/archdischild-2014-307149}
 Hopkins WG, Batterham AM, Pyne DB, Impellizzeri FM. Misplaced decimal places.
 Scand J Med Sci Sports. 2011;21(6):867-868. \doi{10.1111/j.1600-0838.2011.01393.x}
 }
-\author{
-Miquel Vazquez-Santiago <miquel.vazquez@vhir.org>. BIDU-UEB. VHIR
+\seealso{
+\code{\link{summary.quanti}}, \code{\link{desc_group}},
+  \code{\link{summary.quali}}
 }
+\author{
+Miquel Vázquez-Santiago \email{miquel.vazquez@vhir.org}
+
+Biomedical Data Intelligence Unit (BIDU)
+Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
+}
+\keyword{decimales}
 \keyword{internal}
+\keyword{redondeo}

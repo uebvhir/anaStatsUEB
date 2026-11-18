@@ -1,5 +1,6 @@
-#' A desc_ggplot_numeric Function
+#' @title Gráficos exploratorios de variables numéricas frente a variables explicativas
 #'
+#' @description
 #' Genera gráficos exploratorios para una o varias variables numéricas respecto a
 #' un conjunto de variables explicativas. Para variables categóricas crea
 #' boxplots mediante \code{ggplot2} y opcionalmente añade puntos individuales,
@@ -34,9 +35,7 @@
 #' @return Devuelve invisiblemente una lista con los objetos \code{ggplot}
 #' generados y, además, los imprime en pantalla.
 #'
-#' @export desc_ggplot_numeric
 #' @import ggplot2 dplyr purrr Hmisc
-#' @author Àlex Martí Barrera, Miriam Mota \email{mmota.foix@@gmail.com}
 #'
 #' @examples
 #' set.seed(1111)
@@ -88,8 +87,16 @@
 #'   dat = df
 #' )
 #'
+#' @author
+#' Àlex Martí Barrera
+#'
+#' Miriam Mota \email{mmota.foix@gmail.com}
+#'
+#' Biomedical Data Intelligence Unit (BIDU)
+#' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
+#'
 #' @keywords plots ggplot boxplot descriptive
-
+#' @export
 desc_ggplot_numeric <- function(
     y,
     covariates,
