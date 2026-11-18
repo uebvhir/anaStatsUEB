@@ -10,6 +10,7 @@ export(desc_data)
 export(desc_ggplot)
 export(desc_ggplot_numeric)
 export(desc_ggplot_strat)
+export(desc_ggstats)
 export(desc_group)
 export(desc_group_numeric)
 export(desc_group_rep)
@@ -116,17 +117,31 @@ importFrom(dplyr,
 importFrom(dunn.test,dunn.test)
 importFrom(ggplot2,
   aes,
+  element_blank,
+  element_rect,
   element_text,
   facet_grid,
+  geom_boxplot,
+  geom_col,
   geom_errorbarh,
+  geom_jitter,
   geom_point,
+  geom_segment,
+  geom_text,
+  geom_violin,
   geom_vline,
   ggplot,
   labs,
+  margin,
+  position_dodge,
+  position_stack,
   scale_color_brewer,
+  scale_fill_discrete,
   scale_shape_manual,
+  scale_x_discrete,
   scale_x_log10,
   scale_y_continuous,
+  stat_summary,
   theme,
   theme_minimal,
   unit
@@ -170,6 +185,10 @@ importFrom(readxl,
   excel_sheets,
   read_excel
 )
+importFrom(scales,
+  percent,
+  percent_format
+)
 importFrom(stats,
   anova,
   as.formula,
@@ -178,6 +197,7 @@ importFrom(stats,
   pnorm,
   qnorm
 )
+importFrom(stringr,str_wrap)
 importFrom(tibble,
   rownames_to_column,
   tibble
