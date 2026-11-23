@@ -1,22 +1,24 @@
 Package: anaStatsUEB
-Title: Statistical Analysis Functions for the Biomedical Data Intelligence Unit (BIDU) of the Vall d'Hebron Research Institute (VHIR)
+Title: Statistical Analysis and Reporting Functions for Biomedical Data Intelligence Unit (BIDU, VHIR)
 Version: 0.0.0.9000
-Authors@R:c(
-    person("Miriam", "Mota", , "miriam.mota@vhir.org", role = c("aut", "cre")),
-    person("Marcos", "Esteve Hernandez", , "marcos.esteve@vhir.org", role = "aut"),
-    person("Alba", "Garcia Zarzoso", , "alba.garcia.zarzoso@vhir.org", role = "aut"),
-    person("Miquel", "Vazquez-Santiago", , "miquel.vazquez@vhir.org", role = "aut")
+Authors@R: c(
+    person("Miriam", "Mota", , "miriam.mota@vhir.org", role = "aut"),
+    person("Marcos", "Esteve Hernández", , "marcos.esteve@vhir.org", role = "aut",
+            comment = c(ORCID = "0009-0008-5521-3165")),
+    person("Alba", "García Zarzoso", , "alba.garcia.zarzoso@vhir.org", role = "aut"),
+    person("Miquel", "Vázquez-Santiago", , "miquel.vazquez@vhir.org", role = "aut",
+           comment = c(ORCID = "0000-0002-9432-4297"))
   )
 Description: Statistical analysis, reporting and visualization functions
-    developed by the Statistical and Bioinformatits Unit (UEB) of the Vall
-    d'Hebron Research Institute (VHIR). The package includes tools for
-    descriptive statistics, regression modelling, survival analysis,
-    epidemiological studies, biomarker evaluation, data management,
-    graphical visualization and reporting. Maintenance and continuous
-    development are carried out by the Biomedical Data Intelligence Unit
-    (BIDU), Vall d'Hebron Research Institute (VHIR), Vall d'Hebron
-    Barcelona Hospital Campus.
+    developed by the Biomedical Data Intelligence Unit (BIDU, formerly the
+    Statistics and Bioinformatics Unit, UEB) of the Vall d'Hebron Research
+    Institute (VHIR). The package provides tools for descriptive
+    statistics, regression modelling, survival analysis, epidemiological
+    studies, biomarker evaluation (ROC analysis), data management,
+    graphical visualization and reporting in R Markdown.
 License: MIT + file LICENSE
+URL: https://github.com/uebvhir/anaStatsUEB
+BugReports: https://github.com/uebvhir/anaStatsUEB/issues
 Depends:
     binom,
     dplyr,
@@ -27,7 +29,6 @@ Imports:
     car,
     caret,
     data.table,
-    DescTools,
     dunn.test,
     e1071,
     epiR,
@@ -69,7 +70,14 @@ Imports:
     survival,
     tibble,
     tidyr,
+    utils,
     xtable (>= 1.8-2)
+Suggests:
+    ez,
+    ggrepel,
+    segmented,
+    survminer,
+    testthat (>= 3.0.0)
 Config/roxygen2/version: 8.1.1
 Encoding: UTF-8
 LazyData: true

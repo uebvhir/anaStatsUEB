@@ -144,7 +144,8 @@
 #'
 #' Biomedical Data Intelligence Unit (BIDU)
 #' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
-#'
+#' 
+#' @include check_ids_overlap_ueb.R
 #' @export
 check_ids_overlap_ueb <- function(
     l_df, 

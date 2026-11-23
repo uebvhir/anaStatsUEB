@@ -12,11 +12,14 @@
 #'   ejemplo el resultado de \code{\link{list_files_ueb}}.
 #' @param type_file Tipo de archivo a leer: \code{"excel"}, \code{"csv"} o
 #'   \code{"sav"}. Es obligatorio; véase \sQuote{Details}.
-#' @param sep Separador de campos para CSV (por defecto, \code{NULL}). En la versión
-#'   actual \code{NULL} no autodetecta el separador; hay que indicarlo.
-#' @param dec Separador decimal para CSV (por defecto, \code{NULL}). En la versión
-#'   actual hay que indicarlo (\code{"."} o \code{","}), porque \code{NULL} produce
-#'   un error.
+#' @param sep Separador de campos para CSV. Por defecto \code{NULL}, que equivale a
+#'   \code{"auto"}: \code{data.table::fread()} detecta el separador entre
+#'   \code{,}, \code{\\t}, \code{" "}, \code{|}, \code{;} y \code{:}. Para fijarlo
+#'   manualmente, indicar el carácter (p. ej. \code{sep = ","}). No es un valor
+#'   válido pasar \code{""} a \code{fread()}: significa "sin separador" y lee cada
+#'   línea como una única columna. Solo aplica a CSV; se ignora con Excel y SAV.
+#' @param dec Separador decimal para CSV. Por defecto \code{NULL}, que equivale a
+#'   \code{"."}. Solo aplica a CSV; se ignora con Excel y SAV.
 #' @param skip_rows Número de filas que se omiten al principio del archivo (por
 #'   defecto, 0). Se aplica a Excel y CSV; en SAV no tiene efecto.
 #' @param user_na Lógico. Solo para SPSS: si es \code{TRUE} (por defecto), las
@@ -123,11 +126,14 @@ read_df_ueb <- function(
   id_step = 100)
 {
 
+### [C] argument 'type_file': un sol valor vàlid
+  type_file <- match.arg(type_file)
+
 ### 1st double check
   if (!is.character(l_files) || length(l_files) == 0) {
-    
+
     message("No s'han trobat llistat d'arxius: ", l_files)
-  
+
   }
 
 ### list
@@ -138,11 +144,11 @@ read_df_ueb <- function(
 
   ### argument 'type_file'
     if(type_file == 'excel') {
-      
+
       ### Obtenint info sobre totes les fulles i arxius 'excel'
         l_sheet <- readxl::excel_sheets(l_files[[i]])
 
-        df <- lapply(l_sheet, 
+        df <- lapply(l_sheet,
           function(x) readxl::read_excel(l_files[[i]], sheet = x, skip = skip_rows,
             na = if(is.null(na_strings)) '' else na_strings))
 
@@ -150,7 +156,7 @@ read_df_ueb <- function(
         names(df) <- l_sheet
 
     } else if(type_file == 'csv') {
-    
+
     ### Argumnent per als NA
       if (is.null(na_strings)) {
         csv_na_strings <- c('', 'NA')
@@ -158,14 +164,24 @@ read_df_ueb <- function(
         csv_na_strings <- na_strings
       }
 
-    ### getting info about all 'csv' files
+    ### [A] 'sep' i 'dec' NULL -> autodetecció / punt decimal
+    ###     (a fread, sep = NULL vol dir "cap separador": 1 sola columna)
+      csv_sep <- if (is.null(sep)) 'auto' else sep
+      csv_dec <- if (is.null(dec)) '.'    else dec
 
+    ### getting info about all 'csv' files
       df <- lapply(l_files[[i]],
         data.table::fread,
-          sep = sep,
-          dec = dec,
+          sep = csv_sep,
+          dec = csv_dec,
           skip = skip_rows,
           na.strings = csv_na_strings)
+
+    ### [B] avís si algun CSV s'ha llegit amb 1 sola columna
+      if (any(vapply(df, ncol, integer(1)) == 1L)) {
+        warning("CSV llegit amb 1 sola columna: revisa 'sep' (valor utilitzat: '",
+                csv_sep, "').")
+      }
 
     } else if(type_file == 'sav') {
 
@@ -188,11 +204,11 @@ read_df_ueb <- function(
 ### apply 'clean_names'
 ### apply 'remove_empty_cols'
   if (clean_names == TRUE && length(l_df) > 0) {
-    
+
     for(i in seq_along(l_df)){
 
       l_df[[i]] <- l_df[[i]] |>
-        janitor::clean_names(case = 'snake') |> 
+        janitor::clean_names(case = 'snake') |>
         janitor::remove_empty(which = 'cols')
     }
   }
@@ -202,8 +218,9 @@ read_df_ueb <- function(
 
     for(i in seq_along(l_df)){
 
+    ### [D] dplyr::select (abans 'select' sense namespace)
       l_df[[i]] <- l_df[[i]] |>
-        select(
+        dplyr::select(
           -dplyr::starts_with('...', ignore.case = TRUE),
           -dplyr::matches('^x[0-9]+$', ignore.case = TRUE))
     }
@@ -255,25 +272,25 @@ read_df_ueb <- function(
         col_use <- if(isTRUE(id_sheet)) 'id_num' else col_found
         prefix  <- if(isTRUE(id_sheet)) paste0('id_', sheet_nm[i], '_') else 'id_'
 
-        max_value  <- max(as.numeric(l_df[[i]][[col_use]]), na.rm = TRUE) 
+        max_value  <- max(as.numeric(l_df[[i]][[col_use]]), na.rm = TRUE)
         n_digits <- if(is.infinite(max_value) || is.na(max_value)) 3 else nchar(as.character(max_value))
 
-      l_df[[i]] <- l_df[[i]] |> 
+      l_df[[i]] <- l_df[[i]] |>
         dplyr::group_by(
           .data[[col_use]]) |>
         dplyr::mutate(
           .sufix = stringi::stri_pad(as.character(dplyr::row_number()), width = 2, side = 'left', pad = '0'),
         id = paste0(
-          prefix, stringi::stri_pad(as.character(.data[[col_use]]), width = n_digits, side = 'left', pad = '0'), '_', .sufix)) |> 
-        dplyr::ungroup() |> 
-        dplyr::select(-.sufix) |> 
+          prefix, stringi::stri_pad(as.character(.data[[col_use]]), width = n_digits, side = 'left', pad = '0'), '_', .sufix)) |>
+        dplyr::ungroup() |>
+        dplyr::select(-.sufix) |>
         tidyr::separate(
             col = id,
             into = c('id_ori', 'event'),
             sep = '_(?=[^_]+$)',
             remove = FALSE,
             extra = 'drop',
-            fill = 'right') |> 
+            fill = 'right') |>
         dplyr::relocate(starts_with('id'), event)
       }
     }

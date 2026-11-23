@@ -34,6 +34,7 @@
 #' Biomedical Data Intelligence Unit (BIDU)
 #' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 #'
+#' @include desc_changes.R
 #' @export
 desc_changes <- function(x, col = "blue"){
   x <- paste("\n * <span style='color:",col,"'>",x,"</span> \n")

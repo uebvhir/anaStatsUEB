@@ -28,6 +28,7 @@
 #' Biomedical Data Intelligence Unit (BIDU)
 #' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 #'
+#' @include as.character.ueb.R
 #' @export
 as.character.ueb <- function(x){
   lab_var <- Hmisc::label(x)

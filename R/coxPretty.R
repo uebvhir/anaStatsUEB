@@ -38,6 +38,8 @@
 #' Biomedical Data Intelligence Unit (BIDU)
 #' Vall d'Hebron Research Institute (VHIR) | Vall d'Hebron Barcelona Hospital Campus.
 #' @keywords cox coxph survival pretty
+#' 
+#' @include coxPretty.R
 #' @export
 coxPretty <- function(frml, data,
                       summary.cox = "ht",
