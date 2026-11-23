@@ -2,7 +2,9 @@ Package: anaStatsUEB
 Title: Statistical Analysis and Reporting Functions for Biomedical Data Intelligence Unit (BIDU, VHIR)
 Version: 0.0.0.9000
 Authors@R: c(
-    person("Miriam", "Mota", , "miriam.mota@vhir.org", role = "aut"),
+    person("Biomedical Data Intelligence Unit (BIDU)", , , "bidusol@vhir.org" ,
+           role = "cre"),
+    person("Miriam", "Mota-Foix", , "miriam.mota@vhir.org", role = "aut"),
     person("Marcos", "Esteve Hernández", , "marcos.esteve@vhir.org", role = "aut",
             comment = c(ORCID = "0009-0008-5521-3165")),
     person("Alba", "García Zarzoso", , "alba.garcia.zarzoso@vhir.org", role = "aut"),
